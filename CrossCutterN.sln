@@ -1,0 +1,82 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 2012
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CrossCutterN.Advice", "CrossCutterN.Advice\CrossCutterN.Advice.csproj", "{A95340D7-9EE3-4CBA-AAE8-6483BDE21A89}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CrossCutterN.Aspect", "CrossCutterN.Aspect\CrossCutterN.Aspect.csproj", "{439EE3AF-402F-4628-BC75-33D916FA3973}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CrossCutterN.Concern", "CrossCutterN.Concern\CrossCutterN.Concern.csproj", "{8D0D3728-AC7F-4D6B-8DA2-D56365441EFE}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CrossCutterN.Weaver", "CrossCutterN.Weaver\CrossCutterN.Weaver.csproj", "{FF510B46-E092-4D25-B23E-4A11A2BC17FA}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CrossCutterN.Test", "CrossCutterN.Test\CrossCutterN.Test.csproj", "{3E248833-451F-48EA-A1AB-26C77AD3B6A5}"
+	ProjectSection(ProjectDependencies) = postProject
+		{07BAFE89-E11B-4A37-BBF4-0A610EEFBD14} = {07BAFE89-E11B-4A37-BBF4-0A610EEFBD14}
+	EndProjectSection
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CrossCutterN.Command", "CrossCutterN.Command\CrossCutterN.Command.csproj", "{07BAFE89-E11B-4A37-BBF4-0A610EEFBD14}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CrossCutterN.SampleAdvice", "CrossCutterN.SampleAdvice\CrossCutterN.SampleAdvice.csproj", "{AF757C5E-3CEF-40CF-B078-AA7DB93FBE3C}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CrossCutterN.SampleTarget", "CrossCutterN.SampleTarget\CrossCutterN.SampleTarget.csproj", "{D57FF0DF-BDE7-4CBD-8413-3C1F929E2FE8}"
+	ProjectSection(ProjectDependencies) = postProject
+		{07BAFE89-E11B-4A37-BBF4-0A610EEFBD14} = {07BAFE89-E11B-4A37-BBF4-0A610EEFBD14}
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "license", "license", "{BF23C03B-2D55-4F03-BE27-A8AEEA25B8B1}"
+	ProjectSection(SolutionItems) = preProject
+		license.txt = license.txt
+		Mono.Cecil.license.txt = Mono.Cecil.license.txt
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{8E84C013-1E5F-4FD5-B5AA-32403B407EBD}"
+	ProjectSection(SolutionItems) = preProject
+		crosscuttern.ico = crosscuttern.ico
+	EndProjectSection
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{A95340D7-9EE3-4CBA-AAE8-6483BDE21A89}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A95340D7-9EE3-4CBA-AAE8-6483BDE21A89}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A95340D7-9EE3-4CBA-AAE8-6483BDE21A89}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A95340D7-9EE3-4CBA-AAE8-6483BDE21A89}.Release|Any CPU.Build.0 = Release|Any CPU
+		{439EE3AF-402F-4628-BC75-33D916FA3973}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{439EE3AF-402F-4628-BC75-33D916FA3973}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{439EE3AF-402F-4628-BC75-33D916FA3973}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{439EE3AF-402F-4628-BC75-33D916FA3973}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8D0D3728-AC7F-4D6B-8DA2-D56365441EFE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8D0D3728-AC7F-4D6B-8DA2-D56365441EFE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8D0D3728-AC7F-4D6B-8DA2-D56365441EFE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8D0D3728-AC7F-4D6B-8DA2-D56365441EFE}.Release|Any CPU.Build.0 = Release|Any CPU
+		{FF510B46-E092-4D25-B23E-4A11A2BC17FA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{FF510B46-E092-4D25-B23E-4A11A2BC17FA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{FF510B46-E092-4D25-B23E-4A11A2BC17FA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{FF510B46-E092-4D25-B23E-4A11A2BC17FA}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3E248833-451F-48EA-A1AB-26C77AD3B6A5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3E248833-451F-48EA-A1AB-26C77AD3B6A5}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3E248833-451F-48EA-A1AB-26C77AD3B6A5}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3E248833-451F-48EA-A1AB-26C77AD3B6A5}.Release|Any CPU.Build.0 = Release|Any CPU
+		{07BAFE89-E11B-4A37-BBF4-0A610EEFBD14}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{07BAFE89-E11B-4A37-BBF4-0A610EEFBD14}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{07BAFE89-E11B-4A37-BBF4-0A610EEFBD14}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{07BAFE89-E11B-4A37-BBF4-0A610EEFBD14}.Release|Any CPU.Build.0 = Release|Any CPU
+		{AF757C5E-3CEF-40CF-B078-AA7DB93FBE3C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{AF757C5E-3CEF-40CF-B078-AA7DB93FBE3C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{AF757C5E-3CEF-40CF-B078-AA7DB93FBE3C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{AF757C5E-3CEF-40CF-B078-AA7DB93FBE3C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D57FF0DF-BDE7-4CBD-8413-3C1F929E2FE8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D57FF0DF-BDE7-4CBD-8413-3C1F929E2FE8}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D57FF0DF-BDE7-4CBD-8413-3C1F929E2FE8}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D57FF0DF-BDE7-4CBD-8413-3C1F929E2FE8}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{BF23C03B-2D55-4F03-BE27-A8AEEA25B8B1} = {8E84C013-1E5F-4FD5-B5AA-32403B407EBD}
+	EndGlobalSection
+EndGlobal

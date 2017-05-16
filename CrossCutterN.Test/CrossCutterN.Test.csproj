@@ -1,0 +1,140 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{3E248833-451F-48EA-A1AB-26C77AD3B6A5}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>CrossCutterN.Test</RootNamespace>
+    <AssemblyName>CrossCutterN.Test</AssemblyName>
+    <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <ProjectTypeGuids>{3AC096D0-A1C2-E12C-1390-A8335801FDAB};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
+    <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
+    <VSToolsPath Condition="'$(VSToolsPath)' == ''">$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)</VSToolsPath>
+    <ReferencePath>$(ProgramFiles)\Common Files\microsoft shared\VSTT\$(VisualStudioVersion)\UITestExtensionPackages</ReferencePath>
+    <IsCodedUITest>False</IsCodedUITest>
+    <TestProjectType>UnitTest</TestProjectType>
+    <TargetFrameworkProfile />
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <Prefer32Bit>false</Prefer32Bit>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <Prefer32Bit>false</Prefer32Bit>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+    <Reference Include="System.Core">
+      <RequiredTargetFramework>3.5</RequiredTargetFramework>
+    </Reference>
+  </ItemGroup>
+  <Choose>
+    <When Condition="('$(VisualStudioVersion)' == '10.0' or '$(VisualStudioVersion)' == '') and '$(TargetFrameworkVersion)' == 'v3.5'">
+      <ItemGroup>
+        <Reference Include="Microsoft.VisualStudio.QualityTools.UnitTestFramework, Version=10.1.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL" />
+      </ItemGroup>
+    </When>
+    <Otherwise>
+      <ItemGroup>
+        <Reference Include="Microsoft.VisualStudio.QualityTools.UnitTestFramework" />
+      </ItemGroup>
+    </Otherwise>
+  </Choose>
+  <ItemGroup>
+    <Compile Include="MixedTest\MixedTest.cs" />
+    <Compile Include="MixedTest\MixedTestAttribute.cs" />
+    <Compile Include="MixedTest\MixedTestAdvice.cs" />
+    <Compile Include="MixedTest\MixedTestTarget.cs" />
+    <Compile Include="NameExpressionTest\NameExpressionTest.cs" />
+    <Compile Include="NameExpressionTest\NameExpressionTestTarget.cs" />
+    <Compile Include="NameExpressionTest\NameExpressionTestAdvice.cs" />
+    <Compile Include="OptionsTest\OptionsTestAdvice.cs" />
+    <Compile Include="OptionsTest\OptionsTestAttribute.cs" />
+    <Compile Include="OptionsTest\OptionsTestTarget.cs" />
+    <Compile Include="OverwriteTest\OverwriteTest.cs" />
+    <Compile Include="OverwriteTest\OverwriteTestAdvice.cs" />
+    <Compile Include="OverwriteTest\OverwriteTestAttribute.cs" />
+    <Compile Include="OverwriteTest\OverwriteTestTarget.cs" />
+    <Compile Include="ParameterTest\ParameterTest.cs" />
+    <Compile Include="ParameterTest\ParameterTestTarget.cs" />
+    <Compile Include="ParameterTest\ParameterTestAdvice.cs" />
+    <Compile Include="Utilities\MethodAdviceContainer.cs" />
+    <Compile Include="Utilities\MethodAdviceRecord.cs" />
+    <Compile Include="OptionsTest\OptionsTest.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\CrossCutterN.Advice\CrossCutterN.Advice.csproj">
+      <Project>{a95340d7-9ee3-4cba-aae8-6483bde21a89}</Project>
+      <Name>CrossCutterN.Advice</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\CrossCutterN.Concern\CrossCutterN.Concern.csproj">
+      <Project>{8d0d3728-ac7f-4d6b-8da2-d56365441efe}</Project>
+      <Name>CrossCutterN.Concern</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="CrossCutterN.Command.exe.config">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+  <ItemGroup />
+  <Choose>
+    <When Condition="'$(VisualStudioVersion)' == '10.0' And '$(IsCodedUITest)' == 'True'">
+      <ItemGroup>
+        <Reference Include="Microsoft.VisualStudio.QualityTools.CodedUITestFramework, Version=10.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+          <Private>False</Private>
+        </Reference>
+        <Reference Include="Microsoft.VisualStudio.TestTools.UITest.Common, Version=10.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+          <Private>False</Private>
+        </Reference>
+        <Reference Include="Microsoft.VisualStudio.TestTools.UITest.Extension, Version=10.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+          <Private>False</Private>
+        </Reference>
+        <Reference Include="Microsoft.VisualStudio.TestTools.UITesting, Version=10.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+          <Private>False</Private>
+        </Reference>
+      </ItemGroup>
+    </When>
+  </Choose>
+  <Import Project="$(VSToolsPath)\TeamTest\Microsoft.TestTools.targets" Condition="Exists('$(VSToolsPath)\TeamTest\Microsoft.TestTools.targets')" />
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <PropertyGroup>
+    <PostBuildEvent>copy $(SolutionDir)CrossCutterN.Command\$(OutDir)CrossCutterN.Command.exe $(TargetDir)
+copy $(SolutionDir)CrossCutterN.Command\$(OutDir)CrossCutterN.Weaver.dll $(TargetDir)
+copy $(SolutionDir)CrossCutterN.Command\$(OutDir)CrossCutterN.Aspect.dll $(TargetDir)
+copy $(SolutionDir)CrossCutterN.Command\$(OutDir)Mono.Cecil.dll $(TargetDir)
+copy $(SolutionDir)CrossCutterN.Command\$(OutDir)Mono.Cecil.Pdb.dll $(TargetDir)
+$(TargetDir)CrossCutterN.Command.exe $(TargetPath) $(TargetPath)_temp
+del $(TargetPath)
+del $(TargetDir)Mono.Cecil.Pdb.dll
+del $(TargetDir)Mono.Cecil.dll
+del $(TargetDir)CrossCutterN.Aspect.dll
+del $(TargetDir)CrossCutterN.Weaver.dll
+del $(TargetDir)CrossCutterN.Command.exe
+del $(TargetDir)CrossCutterN.Command.exe.config
+rename $(TargetPath)_temp $(TargetFileName)</PostBuildEvent>
+  </PropertyGroup>
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

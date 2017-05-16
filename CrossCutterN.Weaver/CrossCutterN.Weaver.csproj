@@ -1,0 +1,155 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="14.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{FF510B46-E092-4D25-B23E-4A11A2BC17FA}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>CrossCutterN.Weaver</RootNamespace>
+    <AssemblyName>CrossCutterN.Weaver</AssemblyName>
+    <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="Mono.Cecil, Version=0.9.6.0, Culture=neutral, PublicKeyToken=0738eb9f132ed756, processorArchitecture=MSIL">
+      <HintPath>..\packages\Mono.Cecil.0.9.6.4\lib\net45\Mono.Cecil.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Mono.Cecil.Mdb, Version=0.9.6.0, Culture=neutral, PublicKeyToken=0738eb9f132ed756, processorArchitecture=MSIL">
+      <HintPath>..\packages\Mono.Cecil.0.9.6.4\lib\net45\Mono.Cecil.Mdb.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Mono.Cecil.Pdb, Version=0.9.6.0, Culture=neutral, PublicKeyToken=0738eb9f132ed756, processorArchitecture=MSIL">
+      <HintPath>..\packages\Mono.Cecil.0.9.6.4\lib\net45\Mono.Cecil.Pdb.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Mono.Cecil.Rocks, Version=0.9.6.0, Culture=neutral, PublicKeyToken=0738eb9f132ed756, processorArchitecture=MSIL">
+      <HintPath>..\packages\Mono.Cecil.0.9.6.4\lib\net45\Mono.Cecil.Rocks.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Net.Http" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="AssemblyHandler\AdviceParameterFlagExtension.cs" />
+    <Compile Include="AssemblyHandler\IlUtilities.cs" />
+    <Compile Include="AssemblyHandler\IWeavingContext.cs" />
+    <Compile Include="AssemblyHandler\IlHandler.cs" />
+    <Compile Include="AssemblyHandler\WeavingFactory.cs" />
+    <Compile Include="AssemblyHandler\Processor.cs" />
+    <Compile Include="AssemblyHandler\WeavingContext.cs" />
+    <Compile Include="AssemblyHandler\WeavingPlanExtension.cs" />
+    <Compile Include="Batch\AdviceInfo.cs" />
+    <Compile Include="Batch\AdviceParameterFlag.cs" />
+    <Compile Include="Batch\BatchFactory.cs" />
+    <Compile Include="Batch\IAdviceInfo.cs" />
+    <Compile Include="Batch\ICanAddAspectBuilder.cs" />
+    <Compile Include="Batch\IPropertyWeavingPlan.cs" />
+    <Compile Include="Batch\IWeavingBatch.cs" />
+    <Compile Include="Batch\IWeavingPlan.cs" />
+    <Compile Include="Batch\ICanAddJoinPoint.cs" />
+    <Compile Include="Batch\PropertyWeavingPlan.cs" />
+    <Compile Include="Batch\WeavingBatch.cs" />
+    <Compile Include="Batch\WeavingPlan.cs" />
+    <Compile Include="ICanAddAspectBuilder.cs" />
+    <Compile Include="IWeaver.cs" />
+    <Compile Include="Reference\Advice\Parameter\IExecutionContextWriteOnlyReference.cs" />
+    <Compile Include="Statistics\IPropertyMethodWeavingRecords.cs" />
+    <Compile Include="Statistics\PropertyMethodWeavingRecords.cs" />
+    <Compile Include="Utilities\ReflectionUtility.cs" />
+    <Compile Include="Weaver.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Reference\AdviceParameterReference.cs" />
+    <Compile Include="Reference\AdviceParameterReferenceFactory.cs" />
+    <Compile Include="Reference\Advice\Parameter\AttributePropertyReference.cs" />
+    <Compile Include="Reference\Advice\Parameter\IAttributePropertyWriteOnlyReference.cs" />
+    <Compile Include="Reference\Advice\Parameter\IAttributePropertyReference.cs" />
+    <Compile Include="Reference\Advice\Parameter\ParameterFactoryReference.cs" />
+    <Compile Include="Reference\Advice\Parameter\ExecutionContextReference.cs" />
+    <Compile Include="Reference\IAdviceParameterReference.cs" />
+    <Compile Include="Reference\Advice\Parameter\IParameterFactoryReference.cs" />
+    <Compile Include="Reference\Advice\Parameter\IParameterFactoryWriteOnlyReference.cs" />
+    <Compile Include="Reference\Advice\Parameter\IExecutionContextReference.cs" />
+    <Compile Include="Reference\Advice\Parameter\ICanAddAttributePropertyReference.cs" />
+    <Compile Include="Reference\Advice\Parameter\ICanAddAttributePropertyWriteOnlyReference.cs" />
+    <Compile Include="Reference\Advice\Parameter\ICanAddParameterReference.cs" />
+    <Compile Include="Reference\Advice\Parameter\ICanAddParameterWriteOnlyReference.cs" />
+    <Compile Include="Reference\Advice\Parameter\ICanAddCustomAttributeReference.cs" />
+    <Compile Include="Reference\Advice\Parameter\ICanAddCustomAttributeWriteOnlyReference.cs" />
+    <Compile Include="Reference\Advice\Parameter\IWriteOnlyReturnReference.cs" />
+    <Compile Include="Reference\Advice\Parameter\IWriteOnlyReturnWriteOnlyReference.cs" />
+    <Compile Include="Reference\Advice\Parameter\WriteOnlyCustomAttributeReference.cs" />
+    <Compile Include="Reference\Advice\Parameter\WriteOnlyExecutionReference.cs" />
+    <Compile Include="Reference\Advice\Parameter\WriteOnlyParameterReference.cs" />
+    <Compile Include="Reference\Advice\Parameter\WriteOnlyReturnReference.cs" />
+    <Compile Include="Statistics\AssemblyWeavingStatistics.cs" />
+    <Compile Include="Statistics\ClassWeavingStatistics.cs" />
+    <Compile Include="Statistics\ICanAddClassWeavingStatistics.cs" />
+    <Compile Include="Statistics\IWriteOnlyAssemblyWeavingStatistics.cs" />
+    <Compile Include="Statistics\ICanAddPropertyWeavingRecord.cs" />
+    <Compile Include="Statistics\IClassWeavingStatistics.cs" />
+    <Compile Include="Statistics\IMethodWeavingStatistics.cs" />
+    <Compile Include="Statistics\IModuleWeavingStatistics.cs" />
+    <Compile Include="Statistics\IPropertyWeavingStatistics.cs" />
+    <Compile Include="Statistics\IWeavingRecord.cs" />
+    <Compile Include="Statistics\IAssemblyWeavingStatistics.cs" />
+    <Compile Include="Statistics\ICanAddMethodWeavingRecord.cs" />
+    <Compile Include="Statistics\IWriteOnlyClassWeavingStatistics.cs" />
+    <Compile Include="Statistics\MethodWeavingStatistics.cs" />
+    <Compile Include="Statistics\ModuleWeavingStatistics.cs" />
+    <Compile Include="Statistics\PropertyWeavingStatistics.cs" />
+    <Compile Include="Statistics\StatisticsFactory.cs" />
+    <Compile Include="Statistics\WeavingRecord.cs" />
+    <Compile Include="Utilities\AdviceValidator.cs" />
+    <Compile Include="Utilities\Comparer.cs" />
+    <Compile Include="Utilities\ConcernAdapter.cs" />
+    <Compile Include="WeaverFactory.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\CrossCutterN.Advice\CrossCutterN.Advice.csproj">
+      <Project>{a95340d7-9ee3-4cba-aae8-6483bde21a89}</Project>
+      <Name>CrossCutterN.Advice</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\CrossCutterN.Aspect\CrossCutterN.Aspect.csproj">
+      <Project>{439ee3af-402f-4628-bc75-33d916fa3973}</Project>
+      <Name>CrossCutterN.Aspect</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup />
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>
