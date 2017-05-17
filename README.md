@@ -324,6 +324,7 @@ namespace CrossCutterN.SampleTarget
                 ExitAdvice5(execution, executionContext.ExceptionThrown);
                 ExitAdvice6(rtn, executionContext.ExceptionThrown);
                 ExitAdvice7(execution, rtn, executionContext.ExceptionThrown);
+		ExitAdvice8();
                 ...
             }
         }
