@@ -301,6 +301,7 @@ Including/excluding patterns allow the usage of asterisk character ("\*" charact
 ## References
 
 Please refer to [AOP Wikipedia](https://en.wikipedia.org/wiki/Aspect-oriented_programming) for background knowledge of AOP.
+
 Please refer to [Mono.Cecil web site](http://www.mono-project.com/docs/tools+libraries/libraries/Mono.Cecil/) for more information about Mono.Cecil which _CrossCutterN_ depends on for IL weaving.
 
 ## Contact Author
