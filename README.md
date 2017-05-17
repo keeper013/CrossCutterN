@@ -310,6 +310,8 @@ namespace CrossCutterN.SampleTarget
                 ExceptionAdvice3(e);
 		ExceptionAdvice4();
                 ...
+		// CrossCutterN will rethrow the exception to keep the original behaivor
+		throw;
             }
             finally
             {
