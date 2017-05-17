@@ -406,6 +406,12 @@ Including/excluding patterns allow the usage of asterisk character ("\*" charact
 * **_CrossCutterN.SampleAdvice_**: Sample AOP code for a quick demonstration of the tool.
 * **_CrossCutterN.SampleTarget_**: Sample assembly to be injected for a quick demonstration of the tool.
 
+## Extension
+
+If 2 implemented **_AspectBuilder_** s are not sufficient, developers can implement their own aspect builder by implementing _CrossCutterN.Aspect.Builder.IAspectBuilder_ interface defined in assembly _CrossCutterN.Aspect_. Please look into the source code of the assembly to find out about all relevant interfaces and implementations
+
+However, to integrate the newly implemented **_AspectBuilder_** into _CrossCutterN.Command_ tool, source code of _CrossCutterN.Command_ needs to be updated, if the some customized configuration in the configuration file is required.
+
 ## References
 
 Please refer to [AOP Wikipedia](https://en.wikipedia.org/wiki/Aspect-oriented_programming) for background knowledge of AOP.
