@@ -338,6 +338,8 @@ Only the injected portion is done by IL weaving instead of written in C# code. A
 Considering in real life development, multiple concerns may apply to the same method/property (logging, validation, authorization and so on), _CrossCutterN_ is designed to allow such use cases. Injection for one concern is described as one **_AspectBuilder_**, which can generate one **_Aspect_** for a method/property to be injected. One **_Aspect_** may contain one **_advice_** for each join point listed above. When injecting to one target method/property, all **_AspectBuilder_** s will sequentially generate **_Aspect_** s for the target, then each **_advice_** in the **_Aspect_** s will be summarized for each join point and injected to the join point of the target sequentially according to the sequence number applied to the **_AspectBuilder_** which the **_advice_** comes from.  
 In configuration file, sequence number must be applied to each join point configuration element. For the same join point, sequence number of each **_AspectBuilder_** must be different, which is enforced by validation during injection process.
 
+![Multiple Aspect Builders](https://github.com/keeper013/CrossCutterN/blob/master/MultipleAspectBuilder.png)
+
 ### Convenient Injection Control
 
 To allow developers to easily include most methods/properties and exclude certain methods/properties in a class, AOP code injection via custom attribute is designed to be overwritable by hierachy.
