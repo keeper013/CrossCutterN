@@ -1,6 +1,8 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 2012
+# Visual Studio 14
+VisualStudioVersion = 14.0.25420.1
+MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CrossCutterN.Advice", "CrossCutterN.Advice\CrossCutterN.Advice.csproj", "{A95340D7-9EE3-4CBA-AAE8-6483BDE21A89}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CrossCutterN.Aspect", "CrossCutterN.Aspect\CrossCutterN.Aspect.csproj", "{439EE3AF-402F-4628-BC75-33D916FA3973}"
@@ -25,14 +27,11 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CrossCutterN.SampleTarget",
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "license", "license", "{BF23C03B-2D55-4F03-BE27-A8AEEA25B8B1}"
 	ProjectSection(SolutionItems) = preProject
-		license.txt = license.txt
+		LICENSE = LICENSE
 		Mono.Cecil.license.txt = Mono.Cecil.license.txt
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{8E84C013-1E5F-4FD5-B5AA-32403B407EBD}"
-	ProjectSection(SolutionItems) = preProject
-		crosscuttern.ico = crosscuttern.ico
-	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
