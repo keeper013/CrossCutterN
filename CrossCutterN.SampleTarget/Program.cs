@@ -21,9 +21,9 @@ namespace CrossCutterN.SampleTarget
 
         public static int Add2(int x, int y)
         {
-            Console.Out.WriteLine("Inside Add1, starting");
+            Console.Out.WriteLine("Inside Add2, starting");
             var z = x + y;
-            Console.Out.WriteLine("Inside Add1, ending");
+            Console.Out.WriteLine("Inside Add2, ending");
             return z;
         }
     }
