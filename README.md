@@ -254,7 +254,7 @@ namespace CrossCutterN.SampleTarget
 }
 ```
 
-After the method is injected, the assembly of the will represent the following C# code implementation:
+After injection, the following C# code implementation represents the IL in the injected method:
 
 ```C#
 namespace CrossCutterN.SampleTarget
