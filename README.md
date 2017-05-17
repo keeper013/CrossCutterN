@@ -307,6 +307,7 @@ namespace CrossCutterN.SampleTarget
                 ExceptionAdvice1(execution);
                 ExceptionAdvice2(execution, e);
                 ExceptionAdvice3(e);
+		ExceptionAdvice4();
                 ...
             }
             finally
