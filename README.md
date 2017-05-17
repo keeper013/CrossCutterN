@@ -331,7 +331,7 @@ namespace CrossCutterN.SampleTarget
     }
 }
 ```
-Only the injected portion is done by IL weaving instead of written in C# code. After a successful injection, all a developer needs to do is to copy CrossCutterN.Advice assembly and the assembly that contains the declaration and implementation of injected methods (like EntryAdvice1, ExitAdvice7 in the represented code above) in to the search path of the running program (most conveniently the same folder with the injected assembly), to make sure necessary assemblies can be found by the program.
+Only the injected portion is done by IL weaving instead of written in C# code. After a successful injection, all a developer needs to do is to copy _CrossCutterN.Advice_ assembly and the assembly that contains the declaration and implementation of injected methods (like EntryAdvice1, ExitAdvice7 in the represented code above) in to the search path of the running program (most conveniently the same folder with the injected assembly), to make sure necessary assemblies can be found by the program.
 
 ### Multiple Injections to the Same Method/Property 
 
