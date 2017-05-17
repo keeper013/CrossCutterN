@@ -128,9 +128,9 @@ class Target
 {
     public static int Add2(int x, int y)
     {
-    	Console.Out.WriteLine("Inside Add1, starting");
+    	Console.Out.WriteLine("Inside Add2, starting");
     	var z = x + y;
-        Console.Out.WriteLine("Inside Add1, ending");
+        Console.Out.WriteLine("Inside Add2, ending");
         return z;
     }
 }
@@ -169,8 +169,8 @@ And the result is something like the following when executing _CrossCutterN.Samp
 
 ```
 Entry at 2017-05-16 09:13:15.218 PM: Add2(x=1,y=2)
-Inside Add1, starting
-Inside Add1, ending
+Inside Add2, starting
+Inside Add2, ending
 Exit at 2017-05-16 09:13:15.218 PM: returns 3
 ```
 
