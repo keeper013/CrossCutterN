@@ -203,6 +203,7 @@ _CrossCutterN_ allows to inject AOP code at 3 points of methods/property getters
 | --- | --- |
 | () | Empty |
 | (CrossCutterN.Advice.Parameter.IExecution) | Execution |
+| (System.Exception) | Exception |
 | (CrossCutterN.Advice.Parameter.IExecution, System.Exception) | ExecutionException |
 
 #### Exit
