@@ -221,12 +221,13 @@ _CrossCutterN_ allows to inject AOP code at 3 points of methods/property getters
 * _CrossCutterN.Advice.Parameter.IExecution_ parameter contains information of the injected method/property, which includes assembly name, module name, class name, method name, parameter list (which includes name, type and value for each parameter)
 * _System.Exception_ parameter for exception join point is the uncaught exception thrown during execution of the method/property injected  
 * _CrossCutterN.Advice.Parameter.IReturn_ parameter contains return value information of the execution, which includes if has return value (in case of exception thrown uncaught or return type if "void" there will be no return value), return value type and return value itself.
-* _bool_ parameter type for exit join point indicates whether an exception has been thrown and uncaught at the point of leaving the injected method/property. This is an easy way to know whether the execution is successful at the exit point of the method/property.  
-In configuration file, when defining methods to be injected into join points (will be referred to as **_advice_**s in the following content), the _parameterPattern_ configuration attribute should be set to the corresponding configuration value in the tables above to specify parameter list pattern of the advice method.
+* _bool_ parameter type for exit join point indicates whether an exception has been thrown and uncaught at the point of leaving the injected method/property. This is an easy way to know whether the execution is successful at the exit point of the method/property. 
+
+In configuration file, when defining methods to be injected into join points (will be referred to as **_advice_** s in the following content), the _parameterPattern_ configuration attribute should be set to the corresponding configuration value in the tables above to specify parameter list pattern of the advice method.
 
 ### Multiple Injections to the Same Method/Property 
 
-Considering in real life development, multiple concerns may apply to the same method/property (logging, validation, authorization and so on), _CrossCutterN_ is designed to allow such use cases. Injection for one concern is described as one **_AspectBuilder_**, which can generate one **_Aspect_** for a method/property to be injected. One **_Aspect_** may contain one **_advice_** for each join point listed above. When injecting to one target method/property, all **_AspectBuilder_**s will sequentially generate **_Aspect_**s for the target, then each **_advice_** in the **_Aspect_**s will be summarized for each join point and injected to the join point of the target sequentially according to the sequence number applied to the **_AspectBuilder_** which the **_advice_** comes from.  
+Considering in real life development, multiple concerns may apply to the same method/property (logging, validation, authorization and so on), _CrossCutterN_ is designed to allow such use cases. Injection for one concern is described as one **_AspectBuilder_**, which can generate one **_Aspect_** for a method/property to be injected. One **_Aspect_** may contain one **_advice_** for each join point listed above. When injecting to one target method/property, all **_AspectBuilder_** s will sequentially generate **_Aspect_** s for the target, then each **_advice_** in the **_Aspect_** s will be summarized for each join point and injected to the join point of the target sequentially according to the sequence number applied to the **_AspectBuilder_** which the **_advice_** comes from.  
 In configuration file, sequence number must be applied to each join point configuration element. For the same join point, sequence number of each **_AspectBuilder_** must be different, which is enforced by validation during injection process.
 
 ### Conveniont Injection Control
@@ -236,6 +237,7 @@ To allow developers to easily include most methods/properties and exclude certai
 Four pre-defined attribute types are provided:
 
 **_CrossCutterN.Concern.Attribute.ClassConcernAttribute_**: this attribute is valid for classes that all methods and properties are subjects for AOP injection within the classes which has this attribute. It contains following properties
+
 | Property | Description | Default Value |
 | --- | --- | --- |
 | ConcernPublic | if set to false, all public methods/properties in the class won't be injected | true |
@@ -252,6 +254,7 @@ Four pre-defined attribute types are provided:
 | PointCutAtExit | if set to false, injection to Exit join point will be disabled | true |
 
 **_CrossCutterN.Concern.Attribute.MethodConcernAttribute_**: this attribute is valid for methods and propery getters/setters. The mentioned items will be injected if having this custom attribute, regargless if ConcernMethod/ConcernPropertyGetter/ConcernPropertySetter attribute properties are set to false in the class concern attribute, or if there is no class concern attribute applied to the class. It contains following properties:
+
 | Property | Description | Default Value |
 | --- | --- | --- |
 | PointCutAtEntry | if set to false, injection to Entry join point will be disabled | true |
@@ -276,8 +279,8 @@ These attribute properties will overwrite the attribute properties with the same
 
 :exclamation: The pre-defined attributes are all declared as abstract to force developers to inherite from them and use their own custom attributes for AOP code injection. The reason for this is to avoid re-using of the same existing attribute for multiple concern injections. It is encouraged to have dedicated set of attributes for different concern's injection.  
 :exclamation: For the sake of keeping pre-defined attribute properties for injection logic, custom implementation of these 4 attributes must inherit from the above properties. This is enforced by validation of parent class type during injection process.  
-:exclamation: Developers are not requested to inherit from all 4 attributes above to build a complete set of attributes. For example, if only few methods needs to be injected, only inheriting **_CrossCutterN.Concern.Attribute.MethodConcernAttribute_** is good enough. However, at least on of **_CrossCutterN.Concern.Attribute.ClassConcernAttribute_**, **_CrossCutterN.Concern.Attribute.MethodConcernAttribute_** and **_CrossCutterN.Concern.Attribute.PropertyConcernAttribute_** should be inherited to pass the validation of **_ConcernAttributeAspectBuilder_**.
-:exclamation: Note that in configuration section, **_ConcernAttributeAspectBuilder_** and **_NameExpressionAspectBuilder_** have similar configuration settings as the attribute properties listed above. They are **not** the same. The configuration settings in the configuration file are default settings of **_AspectBuilder_**s, hard coded attribute properties, if exist, in those attributes above in the source code overwrites the default settings of the **_AspectBuilder_**s.
+:exclamation: Developers are not requested to inherit from all 4 attributes above to build a complete set of attributes. For example, if only few methods needs to be injected, only inheriting **_CrossCutterN.Concern.Attribute.MethodConcernAttribute_** is good enough. However, at least on of **_CrossCutterN.Concern.Attribute.ClassConcernAttribute_**, **_CrossCutterN.Concern.Attribute.MethodConcernAttribute_** and **_CrossCutterN.Concern.Attribute.PropertyConcernAttribute_** should be inherited to pass the validation of **_ConcernAttributeAspectBuilder_**.  
+:exclamation: Note that in configuration section, **_ConcernAttributeAspectBuilder_** and **_NameExpressionAspectBuilder_** have similar configuration settings as the attribute properties listed above. They are **not** the same. The configuration settings in the configuration file are default settings of **_AspectBuilder_** s, hard coded attribute properties, if exist, in those attributes above in the source code overwrites the default settings of the **_AspectBuilder_** s.
  
  ### AOP Code Injection via Name Matching
  
