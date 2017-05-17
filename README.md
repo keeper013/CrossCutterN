@@ -225,6 +225,113 @@ _CrossCutterN_ allows to inject AOP code at 3 points of methods/property getters
 
 In configuration file, when defining methods to be injected into join points (will be referred to as **_advice_** s in the following content), the _parameterPattern_ configuration attribute should be set to the corresponding configuration value in the tables above to specify parameter list pattern of the advice method.
 
+#### Example for Demonstration
+
+Let's take an example to see what happens after an assembly is injected.
+
+If before injection a method looks like the following:
+
+```C#
+namespace CrossCutterN.SampleTarget
+{
+    using System;
+    using System.Text;
+
+    class Sample
+    {
+        public static string SampleMethod(int x, StringBuilder strb)
+        {
+            if (strb != null)
+            {
+                return strb.ToString() + x;
+            }
+            else
+            {
+                return x.ToString();
+            }
+        }
+    }
+}
+```
+
+After the method is injected, the assembly of the will represent the following C# code implementation:
+
+```C#
+namespace CrossCutterN.SampleTarget
+{
+    using System;
+    using System.Text;
+
+    class Sample
+    {
+        public static string SampleMethod(int x, StringBuilder strb)
+        {
+	    // The following local variables will only be initialized if needed for injected advices
+            string returnValue = null;
+            var executionContext = CrossCutterN.Advice.Parameter.ParameterFactory.InitializeExecutionContext();
+            var executionParameter = CrossCutterN.Advice.Parameter.ParameterFactory.InitializeExecution(
+                "CrossCutterN.SampleTarget, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null", 
+                "CrossCutterN.SampleTarget", 
+                "CrossCutterN.SampleTarget.Sample", 
+                "Sample", 
+                "System.String CrossCutterN.SampleTarget.Sample::SampleMethod(System.String,System.Text.StringBuilder)", 
+                "SampleMethod", 
+                "System.String");
+            executionParameter.AddParameter(
+                CrossCutterN.Advice.Parameter.ParameterFactory.InitializeParameter("x", "System.Int32", 0, x).ToReadOnly());
+            executionParameter.AddParameter(
+                CrossCutterN.Advice.Parameter.ParameterFactory.InitializeParameter("strb", "System.Text.StringBuilder", 1, strb).ToReadOnly());
+            var execution = executionParameter.ToReadOnly();
+            var returnParameter = CrossCutterN.Advice.Parameter.ParameterFactory.InitializeReturn(true, "System.String");
+            try
+            {
+                // Injected Entry Advices
+                EntryAdvice1(execution);
+                EntryAdvice2();
+                ...
+                if (strb != null)
+                {
+                    returnValue = strb.ToString() + x;
+                }
+                else
+                {
+                    returnValue = x.ToString();
+                }
+                return returnValue;
+            }
+            catch (Exception e)
+            {
+                executionContext.MarkExceptionThrown();
+                returnParameter.HasReturn = false;
+                // Injected Exception Advices
+                ExceptionAdvice1(execution);
+                ExceptionAdvice2(execution, e);
+                ExceptionAdvice3(e);
+                ...
+            }
+            finally
+            {
+                if (!executionContext.ExceptionThrown)
+                {
+                    returnParameter.Value = returnValue;
+                }
+                var rtn = returnParameter.ToReadOnly();
+                // Injected Exit Advices
+                ExitAdvice1(execution);
+                ExitAdvice2(rtn);
+                ExitAdvice3(executionContext.ExceptionThrown);
+                ExitAdvice4(execution, rtn);
+                ExitAdvice5(execution, executionContext.ExceptionThrown);
+                ExitAdvice6(rtn, executionContext.ExceptionThrown);
+                ExitAdvice7(execution, rtn, executionContext.ExceptionThrown);
+                ...
+            }
+        }
+    }
+}
+```
+Only the injected portion is done by IL weaving instead of written in C# code. After a successful injection, all a developer needs to do is to copy CrossCutterN.Advice assembly and the assembly that contains the declaration and implementation of injected methods (like EntryAdvice1, ExitAdvice7 in the represented code above) in to the search path of the running program (most conveniently the same folder with the injected assembly), to make sure necessary assemblies can be found by the program.
+
 ### Multiple Injections to the Same Method/Property 
 
 Considering in real life development, multiple concerns may apply to the same method/property (logging, validation, authorization and so on), _CrossCutterN_ is designed to allow such use cases. Injection for one concern is described as one **_AspectBuilder_**, which can generate one **_Aspect_** for a method/property to be injected. One **_Aspect_** may contain one **_advice_** for each join point listed above. When injecting to one target method/property, all **_AspectBuilder_** s will sequentially generate **_Aspect_** s for the target, then each **_advice_** in the **_Aspect_** s will be summarized for each join point and injected to the join point of the target sequentially according to the sequence number applied to the **_AspectBuilder_** which the **_advice_** comes from.  
