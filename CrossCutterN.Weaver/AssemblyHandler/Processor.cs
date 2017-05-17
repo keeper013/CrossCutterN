@@ -7,6 +7,7 @@ namespace CrossCutterN.Weaver.AssemblyHandler
 {
     using System;
     using System.Collections.Generic;
+    using System.IO;
     using System.Linq;
     using Mono.Cecil;
     using Mono.Cecil.Pdb;
@@ -19,10 +20,11 @@ namespace CrossCutterN.Weaver.AssemblyHandler
     {
         public static IAssemblyWeavingStatistics Weave(string inputAssemblyPath, string outputAssemblyPath, IWeavingBatch batch)
         {
+            var readWriteSymbols = File.Exists(Path.ChangeExtension(inputAssemblyPath, "pdb"));
             var readerParameters = new ReaderParameters
             {
-                ReadSymbols = true,
-                SymbolReaderProvider = new PdbReaderProvider()
+                ReadSymbols = readWriteSymbols,
+                SymbolReaderProvider = readWriteSymbols ? new PdbReaderProvider() : null
             };
             var assembly = AssemblyDefinition.ReadAssembly(inputAssemblyPath, readerParameters);
             var assemblyStatistics = StatisticsFactory.InitializeAssemblyWeavingRecord(assembly.FullName);
@@ -93,8 +95,8 @@ namespace CrossCutterN.Weaver.AssemblyHandler
                 }
                 var writerParameters = new WriterParameters
                 {
-                    WriteSymbols = true,
-                    SymbolWriterProvider = new PdbWriterProvider()
+                    WriteSymbols = readWriteSymbols,
+                    SymbolWriterProvider = readWriteSymbols ? new PdbWriterProvider() : null
                 };
                 assembly.Write(outputAssemblyPath, writerParameters);
             }
