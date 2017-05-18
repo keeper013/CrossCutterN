@@ -1,4 +1,4 @@
-# CrossCutterN: A light weight AOP tool for .NET
+# CrossCutterN: A light weight AOP Tool for .NET
 
 _CrossCutterN_ is designed to allow .NET developers to inject customized AOP code into existing assemblies without the need of re-compilation of them. It allows to inject customized AOP code at the point of **entry**, **exception** and **exit** of **methods** and **property getters and setters** via **custom attributes** and **name matching**.
 
