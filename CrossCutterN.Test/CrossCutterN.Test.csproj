@@ -112,26 +112,28 @@
   <Import Project="$(VSToolsPath)\TeamTest\Microsoft.TestTools.targets" Condition="Exists('$(VSToolsPath)\TeamTest\Microsoft.TestTools.targets')" />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
-    <PostBuildEvent>copy $(SolutionDir)CrossCutterN.Command\$(OutDir)CrossCutterN.Command.exe $(TargetDir)
-copy $(SolutionDir)CrossCutterN.Command\$(OutDir)CrossCutterN.Weaver.dll $(TargetDir)
-copy $(SolutionDir)CrossCutterN.Command\$(OutDir)CrossCutterN.Aspect.dll $(TargetDir)
-copy $(SolutionDir)CrossCutterN.Command\$(OutDir)Mono.Cecil.dll $(TargetDir)
-copy $(SolutionDir)CrossCutterN.Command\$(OutDir)Mono.Cecil.Pdb.dll $(TargetDir)
-$(TargetDir)CrossCutterN.Command.exe $(TargetPath) $(TargetPath)_temp
-del $(TargetPath)
-del $(TargetDir)Mono.Cecil.Pdb.dll
-del $(TargetDir)Mono.Cecil.dll
-del $(TargetDir)CrossCutterN.Aspect.dll
-del $(TargetDir)CrossCutterN.Weaver.dll
-del $(TargetDir)CrossCutterN.Command.exe
-del $(TargetDir)CrossCutterN.Command.exe.config
-rename $(TargetPath)_temp $(TargetFileName)</PostBuildEvent>
+    <PostBuildEvent>
+    </PostBuildEvent>
   </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
   <Target Name="BeforeBuild">
   </Target>
-  <Target Name="AfterBuild">
-  </Target>
   -->
+  <PropertyGroup>
+    <CommandPath>$(SolutionDir)CrossCutterN.Command/$(OutDir)</CommandPath>
+  </PropertyGroup>
+  <Target Name="AfterBuild">
+    <PropertyGroup>
+      <CommandPath Condition=" '$(OS)' != 'Unix' ">$(SolutionDir)CrossCutterN.Command\$(OutDir)</CommandPath>
+    </PropertyGroup>
+    <ItemGroup>
+      <CommandFiles Include="$(CommandPath)CrossCutterN.Command.exe;$(CommandPath)CrossCutterN.Weaver.dll;$(CommandPath)CrossCutterN.Aspect.dll;$(CommandPath)Mono.Cecil.dll;$(CommandPath)Mono.Cecil.Pdb.dll" />
+      <ToBeCleanedFiles Include="$(TargetDir)CrossCutterN.Command.exe;$(TargetDir)CrossCutterN.Weaver.dll;$(TargetDir)CrossCutterN.Aspect.dll;$(TargetDir)Mono.Cecil.dll;$(TargetDir)Mono.Cecil.Pdb.dll;$(TargetDir)CrossCutter.Command.exe.config;$(TargetPath)" />
+    </ItemGroup>
+    <Copy SourceFiles="@(CommandFiles)" DestinationFolder="$(TargetDir)" />
+    <Exec Command="$(TargetDir)CrossCutterN.Command.exe $(TargetPath) $(TargetPath)_temp" />
+    <Delete Files="@(ToBeCleanedFiles)" ContinueOnError="true" />
+    <Move SourceFiles="$(TargetPath)_temp" DestinationFiles="$(TargetPath)" />
+  </Target>
 </Project>
