@@ -133,7 +133,7 @@
     </ItemGroup>
     <Copy SourceFiles="@(CommandFiles)" DestinationFolder="$(TargetDir)" />
 	<Exec Condition=" '$(OS)' == 'Unix' " Command="chmod a+x $(TargetDir)CrossCutterN.Command.exe"/>
-    <Exec Command="$(TargetDir)CrossCutterN.Command.exe $(TargetPath) $(TargetPath)_temp" />
+    <Exec Command="$(TargetDir)CrossCutterN.Command.exe $(TargetDir)CrossCutterN.Test.dll $(TargetDir)CrossCutterN.Test.dll_temp" />
     <Delete Files="@(ToBeCleanedFiles)" ContinueOnError="true" />
     <Move SourceFiles="$(TargetPath)_temp" DestinationFiles="$(TargetPath)" />
   </Target>
