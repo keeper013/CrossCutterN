@@ -1,8 +1,8 @@
 language: csharp
 solution: CrossCutterN.sln
 install:
-  - nuget restore solution-name.sln
+  - nuget restore CrossCutterN.sln
   - nuget install NUnit.Runners -Version 2.6.4 -OutputDirectory testrunner
 script:
-  - xbuild /p:Configuration=Release solution-name.sln
-  - mono ./testrunner/NUnit.Runners.2.6.4/tools/nunit-console.exe ./MyProject.Tests/bin/Release/MyProject.Tests.dll
+  - xbuild /p:Configuration=Release CrossCutterN.sln
+  - mono ./testrunner/NUnit.Runners.2.6.4/tools/nunit-console.exe ./CrossCutterN.Test/bin/Release/CrossCutterN.Test.dll
