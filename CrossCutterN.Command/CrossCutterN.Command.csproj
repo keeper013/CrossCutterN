@@ -47,27 +47,8 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="AddBuilderByConfiguration.cs" />
-    <Compile Include="Configuration\AdviceElement.cs" />
-    <Compile Include="Configuration\AdviceParameterPattern.cs" />
-    <Compile Include="Configuration\AspectBuilderElement.cs" />
-    <Compile Include="Configuration\AspectBuilderOptionsElement.cs" />
-    <Compile Include="Configuration\BaseStaticMethodElement.cs" />
-    <Compile Include="Configuration\ConcernAttributeAspectBuilderConstructorElement.cs" />
-    <Compile Include="Configuration\ConcernAttributeAspectBuilderCollection.cs" />
-    <Compile Include="Configuration\ConcernAttributeAspectBuilderElement.cs" />
-    <Compile Include="Configuration\ConcernAttributeAspectBuilderOptionsElement.cs" />
     <Compile Include="Configuration\CrossCutterNSection.cs" />
-    <Compile Include="Configuration\EnumConverter.cs" />
-    <Compile Include="Configuration\JoinPointSettingsCollection.cs" />
-    <Compile Include="Configuration\JoinPointSettingElement.cs" />
-    <Compile Include="Configuration\NameExpressionAspectBuilderCollection.cs" />
-    <Compile Include="Configuration\NameExpressionAspectBuilderConstructorElement.cs" />
-    <Compile Include="Configuration\NameExpressionAspectBuilderElement.cs" />
-    <Compile Include="Configuration\NameExpressionCollection.cs" />
-    <Compile Include="Configuration\NameExpressionElement.cs" />
     <Compile Include="LogWeavingStatistics.cs" />
-    <Compile Include="Configuration\AdviceElementExtension.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

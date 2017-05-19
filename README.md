@@ -350,7 +350,7 @@ To allow developers to easily include most methods/properties and exclude certai
 
 Four pre-defined attribute types are provided:
 
-**_CrossCutterN.Concern.Attribute.ClassConcernAttribute_**: this attribute is valid for classes that all methods and properties are subjects for AOP injection within the classes which has this attribute. It contains following properties
+**_CrossCutterN.Advice.Concern.ClassConcernAttribute_**: this attribute is valid for classes that all methods and properties are subjects for AOP injection within the classes which has this attribute. It contains following properties
 
 | Property | Description | Default Value |
 | --- | --- | --- |
@@ -367,7 +367,7 @@ Four pre-defined attribute types are provided:
 | PointCutAtException | if set to false, injection to Exception join point will be disabled | true |
 | PointCutAtExit | if set to false, injection to Exit join point will be disabled | true |
 
-**_CrossCutterN.Concern.Attribute.MethodConcernAttribute_**: this attribute is valid for methods and propery getters/setters. The mentioned items will be injected if having this custom attribute, regargless if ConcernMethod/ConcernPropertyGetter/ConcernPropertySetter attribute properties are set to false in the class concern attribute, or if there is no class concern attribute applied to the class. It contains following properties:
+**_CrossCutterN.Advice.Concern.MethodConcernAttribute_**: this attribute is valid for methods and propery getters/setters. The mentioned items will be injected if having this custom attribute, regargless if ConcernMethod/ConcernPropertyGetter/ConcernPropertySetter attribute properties are set to false in the class concern attribute, or if there is no class concern attribute applied to the class. It contains following properties:
 
 | Property | Description | Default Value |
 | --- | --- | --- |
@@ -377,7 +377,7 @@ Four pre-defined attribute types are provided:
 
 These attribute properties will overwrite the attribute properties with the same name in concern class attribute or concern property value.
 
-**_CrossCutterN.Concern.Attribute.PropertyConcernAttribute_**: this attribute is valid for properties only. The property getters/setters will be injected if the properties have this attribute, regardless if \ConcernPropertyGetter/ConcernPropertySetter attribute properties are set to false in the class concern attribute, or if there is no class concern attribute applied to the class. It contains following properties:
+**_CrossCutterN.Advice.Concern.PropertyConcernAttribute_**: this attribute is valid for properties only. The property getters/setters will be injected if the properties have this attribute, regardless if \ConcernPropertyGetter/ConcernPropertySetter attribute properties are set to false in the class concern attribute, or if there is no class concern attribute applied to the class. It contains following properties:
 
 | Property | Description | Default Value |
 | --- | --- | --- |
@@ -389,7 +389,7 @@ These attribute properties will overwrite the attribute properties with the same
 
 These attribute properties will overwrite the attribute properties with the same name in concern class attribute.
 
-**_CrossCutterN.Concern.Attribute.NoConcernAttribute_**: this attribute is valid for methods/properties/property getters/property setters. The mentioned items and their child items (methods to class, getter/setter to property) will not be injected if having this attribute, unless overwritten. It has no properties.
+**_CrossCutterN.Advice.Concern.NoConcernAttribute_**: this attribute is valid for methods/properties/property getters/property setters. The mentioned items and their child items (methods to class, getter/setter to property) will not be injected if having this attribute, unless overwritten. It has no properties.
 
 :exclamation: The pre-defined attributes are all declared as abstract to force developers to inherite from them and use their own custom attributes for AOP code injection. The reason for this is to avoid re-using of the same existing attribute for multiple concern injections. It is encouraged to have dedicated set of attributes for different concern's injection.
 
@@ -397,13 +397,52 @@ These attribute properties will overwrite the attribute properties with the same
 
 :exclamation: Developers are not requested to inherit from all 4 attributes above to build a complete set of attributes. For example, if only few methods needs to be injected, only inheriting **_CrossCutterN.Concern.Attribute.MethodConcernAttribute_** is good enough. However, at least on of **_CrossCutterN.Concern.Attribute.ClassConcernAttribute_**, **_CrossCutterN.Concern.Attribute.MethodConcernAttribute_** and **_CrossCutterN.Concern.Attribute.PropertyConcernAttribute_** should be inherited to pass the validation of **_ConcernAttributeAspectBuilder_**.
 
-:exclamation: Note that in configuration section, **_ConcernAttributeAspectBuilder_** and **_NameExpressionAspectBuilder_** have similar configuration settings as the attribute properties listed above. They are **not** the same. The configuration settings in the configuration file are default settings of **_AspectBuilder_** s, hard coded attribute properties, if exist, in those attributes above in the source code overwrites the default settings of the **_AspectBuilder_** s.
+:exclamation: Note that in configuration section, **_ConcernAttributeAspectBuilder_** and **_NameExpressionAspectBuilder_** have similar configuration settings as the attribute properties listed above. They are **not** the same. The configuration options in the configuration file are default settings of **_AspectBuilder_** s, in case the value of the corresponding attribute property is not defined. Hard coded attribute properties, if exist, overwrites the default settings of the **_AspectBuilder_** s.
+
+Available configuration options for **_ConcernAttributeAspectBuilder_** with default values are listed below:
+
+| Configuration Option | Description | Default Value |
+| --- | --- | --- |
+| ConcernPublic | if set to false, all public methods/properties in the class won't be injected | true |
+| ConcernProtected | if set to false, all protected methods/properties in the class won't be injected | false |
+| ConcernInternal | if set to false, all internal methods/properties in the class won't be injected | false |
+| ConcernPrivate | if set to false, all private methods/properties in the class won't be injected | false |
+| ConcernInstance | if set to false, all instance methods/properties in the class won't be injected | true |
+| ConcernStatic | if set to false, all static methods/properties in the class won't be injected | true |
+| ConcernMethod | if set to false, all static methods in the class won't be injected | true |
+| ConcernPropertyGetter | if set to false, all property getters in the class won't be injected | false |
+| ConcernPropertySetter | if set to false, all property setters in the class won't be injected | false |
+| PointCutAtEntry | if set to false, injection to Entry join point will be disabled | true |
+| PointCutAtException | if set to false, injection to Exception join point will be disabled | true |
+| PointCutAtExit | if set to false, injection to Exit join point will be disabled | true |
  
  ### AOP Code Injection via Name Matching
  
-AOP code injection via name matching supports including and excluding methpd/property name patterns. If a method's/properties' name matches an excluded pattern, it won't be injected even if it also matches one of the included patterns.
- 
 Including/excluding patterns allow the usage of asterisk character ("\*" character) as a wildcard to match any number of any characters, and this is the only supported wildcard character for pattern matching for now.
+
+Available configuration options for **_NameExpressionAspectBuilder_** with default values are listed below:
+
+| Configuration Option | Description | Default Value |
+| --- | --- | --- |
+| ConcernPublic | if set to false, all public methods/properties in the class won't be injected | true |
+| ConcernProtected | if set to false, all protected methods/properties in the class won't be injected | false |
+| ConcernInternal | if set to false, all internal methods/properties in the class won't be injected | false |
+| ConcernPrivate | if set to false, all private methods/properties in the class won't be injected | false |
+| ConcernInstance | if set to false, all instance methods/properties in the class won't be injected | true |
+| ConcernStatic | if set to false, all static methods/properties in the class won't be injected | true |
+| ConcernMethod | if set to false, all static methods in the class won't be injected | true |
+| ConcernPropertyGetter | if set to false, all property getters in the class won't be injected | false |
+| ConcernPropertySetter | if set to false, all property setters in the class won't be injected | false |
+
+Note that it doesn't have _PointCutAtEntry_, _PointCutAtException_ and _PointCutAtExit_ options. If this **_AspectBuilder_** is not supposed to inject to a certain join point, simply don't add the advice for that join point will do.
+
+AOP code injection via name matching supports including and excluding method/property name patterns, and other options as ConcernPublic, Concern Static as mentioned above. The matching rules are as following:
+
+* if the method/property is matched by one of the including patterns which contains wildcards
+ * if the method/property fits the option settings (public method/property matches ConcernPublic = true and so on), it will be injected.
+ * if the method/property doesn't fit the option settings (public method/property matches ConcernPublic = true and so on), it will not be injected.
+* if the method/property is matched by one of the excluding patterns, it will not be injected even if it is also matched by one of the including patterns that contains wildcards.
+* if the method/property is matched by one of the including patterns which doesn't contain wildcards, it will be injected, regardless of any other configurations or settings, which is called "Exact match takes priority" rule.
 
 ## Project Structure
 * **_CrossCutterN.Advice_**: Basic support assembly for _CrossCutterN_ tool. Please make sure that this assembly is copied over to the directories where injected assemblies are deployed. It contains pre-defined advice parameters.
@@ -429,5 +468,5 @@ Please refer to [Mono.Cecil web site](http://www.mono-project.com/docs/tools+lib
 
 ## Contact Author
 
-Should there be any issues or inquiries, please submit an issue to this project. Or alternatively, send an email to keeper013@gmail.com.  
+Should there be any issues, suggestions or inquiries, please submit an issue to this project. Or alternatively, send an email to keeper013@gmail.com.  
 Thanks

@@ -32,13 +32,28 @@ namespace CrossCutterN.Test.NameExpressionTest
 
         public static void MethodNotMentioned()
         {
-            
+            ToBeMatchedButIsPrivate();
         }
 
         public static int PropertyNotMentioned
         {
             get { return _value; }
             set { _value = value; }
+        }
+
+        private static void ToBeMatchedButIsPrivate()
+        {
+            
+        }
+
+        public static void NotMentionedToTestExactOverwrite()
+        {
+            NotToBeMatchedButMatchedByExact();
+        }
+
+        private static void NotToBeMatchedButMatchedByExact()
+        {
+            
         }
     }
 }

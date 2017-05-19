@@ -13,8 +13,8 @@ namespace CrossCutterN.Aspect.Builder
 
     internal class NameExpressionAspectBuilder : AspectBuilderWithDefaultOptions, IWriteOnlyNameExpressionAspectBuilder
     {
-        private readonly List<string> _includes = new List<string>();
-        private readonly List<string> _excludes = new List<string>(); 
+        private readonly IDictionary<string, bool> _includes = new Dictionary<string, bool>();
+        private readonly ISet<string> _excludes = new HashSet<string>(); 
 
         public NameExpressionAspectBuilder(ICollection<string> includes, ICollection<string> excludes)
         {
@@ -24,12 +24,33 @@ namespace CrossCutterN.Aspect.Builder
             }
             foreach (var pattern in includes)
             {
-                _includes.Add(FormatPattern(pattern));
+                if (String.IsNullOrWhiteSpace(pattern))
+                {
+                    throw new ArgumentException("Empty string can't serve as pattern", "includes");
+                }
+                if (_includes.ContainsKey(pattern))
+                {
+                    throw new ArgumentException(string.Format("Duplicated pattern: {0}", pattern), "includes");
+                }
+                _includes.Add(FormatPattern(pattern), ContainsWildCard(pattern));
             }
             if (excludes != null && excludes.Any())
             {
                 foreach (var pattern in excludes)
                 {
+                    if (String.IsNullOrWhiteSpace(pattern))
+                    {
+                        throw new ArgumentException("Empty string can't serve as pattern", "excludes");
+                    }
+                    if (_excludes.Contains(pattern))
+                    {
+                        throw new ArgumentException(string.Format("Duplicated pattern: {0}", pattern), "excludes");
+                    }
+                    if (_includes.ContainsKey(pattern))
+                    {
+                        throw new ArgumentException(
+                            string.Format("Pattern include/exclude confliction: {0}, no point to exclude and include the same pattern", pattern), "excludes");
+                    }
                     _excludes.Add(FormatPattern(pattern));
                 }
             }
@@ -45,7 +66,9 @@ namespace CrossCutterN.Aspect.Builder
             var aspect = AspectFactory.InitializeAspect();
             var fullName = string.Format("{0}.{1}", method.ClassFullName, method.MethodName);
             var joinPoints = Enum.GetValues(typeof (JoinPoint)).Cast<JoinPoint>().ToList();
-            if (ConcernMethod && PatternMatch(fullName) && MethodMatch(method))
+            var match = PatternMatch(fullName);
+            if((match == PatternMatchType.WildCard && ConcernMethod && MethodMatch(method)) ||
+                match == PatternMatchType.Exact)
             {
                 foreach (var joinPoint in joinPoints)
                 {
@@ -69,7 +92,9 @@ namespace CrossCutterN.Aspect.Builder
             var setterAspect = AspectFactory.InitializeAspect();
             var fullName = string.Format("{0}.{1}", property.ClassFullName, property.PropertyName);
             var joinPoints = Enum.GetValues(typeof (JoinPoint)).Cast<JoinPoint>().ToList();
-            if(ConcernPropertyGetter && PatternMatch(fullName) && PropertyGetterMatch(property))
+            var match = PatternMatch(fullName);
+            if ((match == PatternMatchType.WildCard && ConcernPropertyGetter && PropertyGetterMatch(property)) ||
+                match == PatternMatchType.Exact)
             {
                 foreach (var joinPoint in joinPoints)
                 {
@@ -79,7 +104,9 @@ namespace CrossCutterN.Aspect.Builder
                     }
                 }
             }
-            if (ConcernPropertySetter && PatternMatch(fullName) && PropertySetterMatch(property))
+
+            if ((match == PatternMatchType.WildCard && ConcernPropertySetter && PropertySetterMatch(property)) ||
+                match == PatternMatchType.Exact)
             {
                 foreach (var joinPoint in joinPoints)
                 {
@@ -155,10 +182,39 @@ namespace CrossCutterN.Aspect.Builder
             return true;
         }
 
-        private bool PatternMatch(string name)
+        private PatternMatchType PatternMatch(string name)
         {
-            return !_excludes.Any(pattern => Regex.IsMatch(name, pattern)) &&
-                   _includes.Any(pattern => Regex.IsMatch(name, pattern));
+            var result = PatternMatchType.No;
+            foreach (var pattern in _includes)
+            {
+                if (Regex.IsMatch(name, pattern.Key))
+                {
+                    if (pattern.Value)
+                    {
+                        result = PatternMatchType.WildCard;
+                    }
+                    else
+                    {
+                        result = PatternMatchType.Exact;
+                        break;
+                    }
+                }
+            }
+            // exact match overwrites exclusion
+            if (result == PatternMatchType.WildCard)
+            {
+                // exclusion overwrites wildcard match
+                if (_excludes.Any(pattern => Regex.IsMatch(name, pattern)))
+                {
+                    result = PatternMatchType.No;
+                }
+            }
+            return result;
+        }
+
+        private static bool ContainsWildCard(string pattern)
+        {
+            return pattern.Contains('*');
         }
 
         private static string FormatPattern(string pattern)
@@ -186,5 +242,7 @@ namespace CrossCutterN.Aspect.Builder
             }
             return string.Join("\\.", sections).Replace("*", ".*");
         }
+
+        private enum PatternMatchType { No, Exact, WildCard }
     }
 }

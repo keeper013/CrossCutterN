@@ -6,6 +6,7 @@
 namespace CrossCutterN.Command.Configuration
 {
     using System.Configuration;
+    using Aspect.Configuration;
 
     public class CrossCutterNSection : ConfigurationSection
     {

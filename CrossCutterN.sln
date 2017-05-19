@@ -1,13 +1,9 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 14
-VisualStudioVersion = 14.0.25420.1
-MinimumVisualStudioVersion = 10.0.40219.1
+# Visual Studio 2012
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CrossCutterN.Advice", "CrossCutterN.Advice\CrossCutterN.Advice.csproj", "{A95340D7-9EE3-4CBA-AAE8-6483BDE21A89}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CrossCutterN.Aspect", "CrossCutterN.Aspect\CrossCutterN.Aspect.csproj", "{439EE3AF-402F-4628-BC75-33D916FA3973}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CrossCutterN.Concern", "CrossCutterN.Concern\CrossCutterN.Concern.csproj", "{8D0D3728-AC7F-4D6B-8DA2-D56365441EFE}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CrossCutterN.Weaver", "CrossCutterN.Weaver\CrossCutterN.Weaver.csproj", "{FF510B46-E092-4D25-B23E-4A11A2BC17FA}"
 EndProject
@@ -47,10 +43,6 @@ Global
 		{439EE3AF-402F-4628-BC75-33D916FA3973}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{439EE3AF-402F-4628-BC75-33D916FA3973}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{439EE3AF-402F-4628-BC75-33D916FA3973}.Release|Any CPU.Build.0 = Release|Any CPU
-		{8D0D3728-AC7F-4D6B-8DA2-D56365441EFE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{8D0D3728-AC7F-4D6B-8DA2-D56365441EFE}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{8D0D3728-AC7F-4D6B-8DA2-D56365441EFE}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{8D0D3728-AC7F-4D6B-8DA2-D56365441EFE}.Release|Any CPU.Build.0 = Release|Any CPU
 		{FF510B46-E092-4D25-B23E-4A11A2BC17FA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{FF510B46-E092-4D25-B23E-4A11A2BC17FA}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{FF510B46-E092-4D25-B23E-4A11A2BC17FA}.Release|Any CPU.ActiveCfg = Release|Any CPU

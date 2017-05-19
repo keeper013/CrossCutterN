@@ -9,7 +9,7 @@ namespace CrossCutterN.Aspect.Builder
     using System.Collections.Generic;
     using System.Linq;
     using Concern;
-    using CrossCutterN.Concern.Attribute;
+    using Advice.Concern;
 
     internal sealed class ConcernAttributeAspectBuilder : AspectBuilderWithDefaultOptions, IWriteOnlyConcernAttributeAspectBuilder
     {

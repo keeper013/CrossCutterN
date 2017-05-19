@@ -8,18 +8,20 @@ namespace CrossCutterN.Test.OptionsTest
     using System;
     using System.Text;
     using System.Linq;
-    using Microsoft.VisualStudio.TestTools.UnitTesting;
+    using NUnit.Framework;
     using Utilities;
 
-    [TestClass]
+    [TestFixture]
     public class OptionsTest
     {
-        [TestMethod]
-        public void InstanceTest()
+        // "Aa" is a work around to make sure that this test runs first
+        // Because this test contains static constructor triggering test
+        [Test]
+        public void TestAaConstructor()
         {
-            // constructor test
             MethodAdviceContainer.Clear();
             var derived = new OptionsTestTargetDerived();
+            Console.Out.WriteLine(derived);
             var content = MethodAdviceContainer.Content;
             Assert.AreEqual(18, content.Count);
             // private static constructor
@@ -59,11 +61,15 @@ namespace CrossCutterN.Test.OptionsTest
             Assert.AreEqual(".ctor", content.ElementAt(16).Execution.Name);
             Assert.AreEqual("ProtectedExit", content.ElementAt(17).Name);
             Assert.AreEqual(".ctor", content.ElementAt(17).Execution.Name);
+        }
 
-            //internal property test
+        [Test]
+        public void TestInternalProperty()
+        {
+            var derived = new OptionsTestTargetDerived();
             MethodAdviceContainer.Clear();
             derived.InternalInstanceFunc(1);
-            content = MethodAdviceContainer.Content;
+            var content = MethodAdviceContainer.Content;
             Assert.AreEqual(12, content.Count);
             Assert.AreEqual("InternalEntry", content.ElementAt(0).Name);
             Assert.AreEqual("get_InternalInstanceFunc", content.ElementAt(0).Execution.Name);
@@ -89,12 +95,16 @@ namespace CrossCutterN.Test.OptionsTest
             Assert.AreEqual("Square", content.ElementAt(10).Execution.Name);
             Assert.AreEqual("PrivateExit", content.ElementAt(11).Name);
             Assert.AreEqual("Square", content.ElementAt(11).Execution.Name);
+        }
 
-            // internal function test
+        [Test]
+        public void TestInternalFunction()
+        {
+            var derived = new OptionsTestTargetDerived();
             MethodAdviceContainer.Clear();
             var strb = new StringBuilder();
             derived.InternalMultipleParameter(ref strb, 1, "str", null);
-            content = MethodAdviceContainer.Content;
+            var content = MethodAdviceContainer.Content;
             Assert.AreEqual(12, content.Count);
             Assert.AreEqual("InternalEntry", content.ElementAt(0).Name);
             Assert.AreEqual("InternalMultipleParameter", content.ElementAt(0).Execution.Name);
@@ -120,11 +130,15 @@ namespace CrossCutterN.Test.OptionsTest
             Assert.AreEqual("InternalMultipleParameter", content.ElementAt(10).Execution.Name);
             Assert.AreEqual("InternalExit", content.ElementAt(11).Name);
             Assert.AreEqual("InternalMultipleParameter", content.ElementAt(11).Execution.Name);
+        }
 
-            // public function test
+        [Test]
+        public void TestPublicFunction()
+        {
+            var derived = new OptionsTestTargetDerived();
             MethodAdviceContainer.Clear();
             derived.PublicReturnObj(1, "a");
-            content = MethodAdviceContainer.Content;
+            var content = MethodAdviceContainer.Content;
             Assert.AreEqual(12, content.Count);
             Assert.AreEqual("PublicEntry", content.ElementAt(0).Name);
             Assert.AreEqual("PublicReturnObj", content.ElementAt(0).Execution.Name);
@@ -150,17 +164,25 @@ namespace CrossCutterN.Test.OptionsTest
             Assert.AreEqual("PublicReturnObj", content.ElementAt(10).Execution.Name);
             Assert.AreEqual("PublicExit", content.ElementAt(11).Name);
             Assert.AreEqual("PublicReturnObj", content.ElementAt(11).Execution.Name);
+        }
 
-            // not weaved function test
+        [Test]
+        public void TestNotWeaved()
+        {
+            var derived = new OptionsTestTargetDerived();
             MethodAdviceContainer.Clear();
             derived.Square(10);
-            content = MethodAdviceContainer.Content;
+            var content = MethodAdviceContainer.Content;
             Assert.AreEqual(0, content.Count);
+        }
 
-            // abstract function shouldn't be weaved
+        [Test]
+        public void TestAbstractFunction()
+        {
+            var derived = new OptionsTestTargetDerived();
             MethodAdviceContainer.Clear();
             derived.TestAbstract(1);
-            content = MethodAdviceContainer.Content;
+            var content = MethodAdviceContainer.Content;
             Assert.AreEqual(12, content.Count);
             Assert.AreEqual("ProtectedEntry", content.ElementAt(0).Name);
             Assert.AreEqual("ProtectedReturnString", content.ElementAt(0).Execution.Name);
@@ -188,8 +210,8 @@ namespace CrossCutterN.Test.OptionsTest
             Assert.AreEqual("ProtectedReturnString", content.ElementAt(11).Execution.Name);
         }
 
-        [TestMethod]
-        public void StaticTest()
+        [Test]
+        public void TestStatic()
         {
             MethodAdviceContainer.Clear();
             Console.Out.WriteLine(OptionsTestTargetBase.PublicStaticInt);

@@ -10,6 +10,7 @@ namespace CrossCutterN.Command
     using System.IO;
     using Configuration;
     using Weaver;
+    using Weaver.Utilities;
 
     class Program
     {

@@ -5,7 +5,7 @@
 
 namespace CrossCutterN.Test.OptionsTest
 {
-    using Concern.Attribute;
+    using Advice.Concern;
 
     internal sealed class OptionsConcernClassAttribute : ClassConcernAttribute
     {

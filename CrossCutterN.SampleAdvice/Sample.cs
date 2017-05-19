@@ -8,7 +8,7 @@ namespace CrossCutterN.SampleAdvice
     using System;
     using System.Text;
     using Advice.Parameter;
-    using Concern.Attribute;
+    using Advice.Concern;
 
     public sealed class SampleConcernMethodAttribute : MethodConcernAttribute
     {
@@ -29,7 +29,7 @@ namespace CrossCutterN.SampleAdvice
                 strb.Remove(strb.Length - 1, 1);
             }
             strb.Append(")");
-            Console.Out.WriteLine("Entry at {0}: {1}", DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss.fff tt"), strb.ToString());
+            Console.Out.WriteLine("Entry at {0}: {1}", DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss.fff tt"), strb);
         }
 
         public static void OnExit(IReturn rReturn)

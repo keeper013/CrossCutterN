@@ -5,7 +5,7 @@
 
 namespace CrossCutterN.Test.OverwriteTest
 {
-    using Concern.Attribute;
+    using Advice.Concern;
 
     internal sealed class OverwriteConcernClassAttribute : ClassConcernAttribute
     {

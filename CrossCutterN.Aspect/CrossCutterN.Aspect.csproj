@@ -31,6 +31,7 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
+    <Reference Include="System.configuration" />
     <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
@@ -65,6 +66,24 @@
     <Compile Include="Concern\Parameter.cs" />
     <Compile Include="Concern\ConcernFactory.cs" />
     <Compile Include="Concern\Property.cs" />
+    <Compile Include="Configuration\AdviceElement.cs" />
+    <Compile Include="Configuration\AdviceElementExtension.cs" />
+    <Compile Include="Configuration\AdviceParameterPattern.cs" />
+    <Compile Include="Configuration\AspectBuilderElement.cs" />
+    <Compile Include="Configuration\AspectBuilderOptionsElement.cs" />
+    <Compile Include="Configuration\BaseStaticMethodElement.cs" />
+    <Compile Include="Configuration\ConcernAttributeAspectBuilderCollection.cs" />
+    <Compile Include="Configuration\ConcernAttributeAspectBuilderConstructorElement.cs" />
+    <Compile Include="Configuration\ConcernAttributeAspectBuilderElement.cs" />
+    <Compile Include="Configuration\ConcernAttributeAspectBuilderOptionsElement.cs" />
+    <Compile Include="Configuration\EnumConverter.cs" />
+    <Compile Include="Configuration\JoinPointSettingElement.cs" />
+    <Compile Include="Configuration\JoinPointSettingsCollection.cs" />
+    <Compile Include="Configuration\NameExpressionAspectBuilderCollection.cs" />
+    <Compile Include="Configuration\NameExpressionAspectBuilderConstructorElement.cs" />
+    <Compile Include="Configuration\NameExpressionAspectBuilderElement.cs" />
+    <Compile Include="Configuration\NameExpressionCollection.cs" />
+    <Compile Include="Configuration\NameExpressionElement.cs" />
     <Compile Include="IAspect.cs" />
     <Compile Include="Aspect.cs" />
     <Compile Include="AspectFactory.cs" />
@@ -78,10 +97,6 @@
     <ProjectReference Include="..\CrossCutterN.Advice\CrossCutterN.Advice.csproj">
       <Project>{a95340d7-9ee3-4cba-aae8-6483bde21a89}</Project>
       <Name>CrossCutterN.Advice</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\CrossCutterN.Concern\CrossCutterN.Concern.csproj">
-      <Project>{8d0d3728-ac7f-4d6b-8da2-d56365441efe}</Project>
-      <Name>CrossCutterN.Concern</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

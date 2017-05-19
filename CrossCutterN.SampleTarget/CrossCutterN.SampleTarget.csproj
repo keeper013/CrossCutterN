@@ -58,10 +58,6 @@
       <Project>{a95340d7-9ee3-4cba-aae8-6483bde21a89}</Project>
       <Name>CrossCutterN.Advice</Name>
     </ProjectReference>
-    <ProjectReference Include="..\CrossCutterN.Concern\CrossCutterN.Concern.csproj">
-      <Project>{8d0d3728-ac7f-4d6b-8da2-d56365441efe}</Project>
-      <Name>CrossCutterN.Concern</Name>
-    </ProjectReference>
     <ProjectReference Include="..\CrossCutterN.SampleAdvice\CrossCutterN.SampleAdvice.csproj">
       <Project>{af757c5e-3cef-40cf-b078-aa7db93fbe3c}</Project>
       <Name>CrossCutterN.SampleAdvice</Name>

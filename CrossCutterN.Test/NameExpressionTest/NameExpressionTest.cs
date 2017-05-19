@@ -7,14 +7,14 @@ namespace CrossCutterN.Test.NameExpressionTest
 {
     using System;
     using System.Linq;
-    using Microsoft.VisualStudio.TestTools.UnitTesting;
+    using NUnit.Framework;
     using Utilities;
 
-    [TestClass]
+    [TestFixture]
     public class NameExpressionTest
     {
-        [TestMethod]
-        public void TestNameExpression()
+        [Test]
+        public void TestNotMentioned()
         {
             // not mentioned method
             MethodAdviceContainer.Clear();
@@ -27,11 +27,15 @@ namespace CrossCutterN.Test.NameExpressionTest
             NameExpressionTestTarget.PropertyNotMentioned = 1;
             content = MethodAdviceContainer.Content;
             Assert.AreEqual(0, content.Count);
+        }
 
+        [Test]
+        public void TextEcluded()
+        {
             // excluded method
             MethodAdviceContainer.Clear();
             NameExpressionTestTarget.MethodNotToBeConcerned();
-            content = MethodAdviceContainer.Content;
+            var content = MethodAdviceContainer.Content;
             Assert.AreEqual(0, content.Count);
 
             // excluded property
@@ -39,11 +43,15 @@ namespace CrossCutterN.Test.NameExpressionTest
             NameExpressionTestTarget.PropertyNotToBeConcerned = 2;
             content = MethodAdviceContainer.Content;
             Assert.AreEqual(0, content.Count);
+        }
 
+        [Test]
+        public void TestIncluded()
+        {
             // included method
             MethodAdviceContainer.Clear();
             NameExpressionTestTarget.MethodToBeConcerned();
-            content = MethodAdviceContainer.Content;
+            var content = MethodAdviceContainer.Content;
             Assert.AreEqual(1, content.Count);
             Assert.AreEqual("Entry", content.ElementAt(0).Name);
 
@@ -52,6 +60,17 @@ namespace CrossCutterN.Test.NameExpressionTest
             NameExpressionTestTarget.PropertyToBeConcerned = 3;
             Console.Out.WriteLine(NameExpressionTestTarget.PropertyToBeConcerned);
             content = MethodAdviceContainer.Content;
+            Assert.AreEqual(1, content.Count);
+            Assert.AreEqual("Entry", content.ElementAt(0).Name);
+        }
+
+        [Test]
+        public void TestExactMatch()
+        {
+            // matched by exact overwrites all
+            MethodAdviceContainer.Clear();
+            NameExpressionTestTarget.NotMentionedToTestExactOverwrite();
+            var content = MethodAdviceContainer.Content;
             Assert.AreEqual(1, content.Count);
             Assert.AreEqual("Entry", content.ElementAt(0).Name);
         }

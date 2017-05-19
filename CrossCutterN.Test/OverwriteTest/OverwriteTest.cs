@@ -7,13 +7,13 @@ namespace CrossCutterN.Test.OverwriteTest
 {
     using System;
     using System.Linq;
-    using Microsoft.VisualStudio.TestTools.UnitTesting;
+    using NUnit.Framework;
     using Utilities;
 
-    [TestClass]
+    [TestFixture]
     public class OverwriteTest
     {
-        [TestMethod]
+        [Test]
         public void TestClassOverwrittenByOther()
         {
             // Constructor test
@@ -56,7 +56,7 @@ namespace CrossCutterN.Test.OverwriteTest
             Assert.AreEqual("Exit", content.ElementAt(3).Name);
         }
 
-        [TestMethod]
+        [Test]
         public void TestNoClassAttribute()
         {
             // Constructor test
@@ -88,7 +88,7 @@ namespace CrossCutterN.Test.OverwriteTest
             Assert.AreEqual(0, content.Count);
         }
 
-        [TestMethod]
+        [Test]
         public void TestClassAttributeOverwrite()
         {
             // Constructor test

@@ -3,16 +3,15 @@
  * Author: David Cui
  */
 
-using System.Text;
-
 namespace CrossCutterN.Test.ParameterTest
 {
     using System;
     using System.Linq;
-    using Microsoft.VisualStudio.TestTools.UnitTesting;
+    using System.Text;
+    using NUnit.Framework;
     using Utilities;
 
-    [TestClass]
+    [TestFixture]
     public class ParameterTest
     {
         private int Square(int i)
@@ -20,8 +19,7 @@ namespace CrossCutterN.Test.ParameterTest
             return i*i;
         }
 
-        // All
-        [TestMethod]
+        [Test]
         public void TestAllException()
         {
             MethodAdviceContainer.Clear();
@@ -54,7 +52,7 @@ namespace CrossCutterN.Test.ParameterTest
             }
         }
 
-        [TestMethod]
+        [Test]
         public void TestAll()
         {
             MethodAdviceContainer.Clear();
@@ -65,7 +63,7 @@ namespace CrossCutterN.Test.ParameterTest
             Assert.AreEqual(x, content.ElementAt(1).Return.Value);
         }
 
-        [TestMethod]
+        [Test]
         public void TestVoidReturn()
         {
             MethodAdviceContainer.Clear();
@@ -78,7 +76,7 @@ namespace CrossCutterN.Test.ParameterTest
             Assert.IsFalse(hasException != null && (hasException.HasValue && hasException.Value));
         }
 
-        [TestMethod]
+        [Test]
         public void TestNoExecution()
         {
             MethodAdviceContainer.Clear();
@@ -105,7 +103,7 @@ namespace CrossCutterN.Test.ParameterTest
             }
         }
 
-        [TestMethod]
+        [Test]
         public void TestNoReturn()
         {
             MethodAdviceContainer.Clear();
@@ -115,7 +113,7 @@ namespace CrossCutterN.Test.ParameterTest
             Assert.IsNull(content.ElementAt(1).Return);
         }
 
-        [TestMethod]
+        [Test]
         public void TestNoHasException()
         {
             MethodAdviceContainer.Clear();
@@ -135,7 +133,7 @@ namespace CrossCutterN.Test.ParameterTest
             }
         }
 
-        [TestMethod]
+        [Test]
         public void TestNoException()
         {
             MethodAdviceContainer.Clear();
@@ -155,7 +153,7 @@ namespace CrossCutterN.Test.ParameterTest
             }
         }
 
-        [TestMethod]
+        [Test]
         public void TestOnlyExecution()
         {
             MethodAdviceContainer.Clear();

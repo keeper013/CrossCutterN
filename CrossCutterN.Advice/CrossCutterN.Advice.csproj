@@ -46,6 +46,10 @@
     <Compile Include="Common\IrreversibleOperation.cs" />
     <Compile Include="Common\ReadOnlyCollectionLookup.cs" />
     <Compile Include="Common\StringKeyIntSortKeyReadOnlyCollectionLookup.cs" />
+    <Compile Include="Concern\ClassConcernAttribute.cs" />
+    <Compile Include="Concern\MethodConcernAttribute.cs" />
+    <Compile Include="Concern\NoConcernAttribute.cs" />
+    <Compile Include="Concern\PropertyConcernAttribute.cs" />
     <Compile Include="Parameter\AttributeProperty.cs" />
     <Compile Include="Parameter\CustomAttribute.cs" />
     <Compile Include="Parameter\IWriteOnlyReturn.cs" />

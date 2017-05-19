@@ -6,24 +6,26 @@
 namespace CrossCutterN.Test.MixedTest
 {
     using System.Linq;
-    using Microsoft.VisualStudio.TestTools.UnitTesting;
+    using NUnit.Framework;
     using Utilities;
 
-    [TestClass]
+    [TestFixture]
     public class MixedTest
     {
-        [TestMethod]
+        [Test]
         public void TestMixed()
         {
             MethodAdviceContainer.Clear();
             MixedTestTarget.ConcernedByAttributeAndClassName();
             var content = MethodAdviceContainer.Content;
-            Assert.AreEqual(3, content.Count);
-            Assert.AreEqual("EntryByAttribute", content.ElementAt(0).Name);
-            Assert.AreEqual("ConcernedByAttributeAndClassName", content.ElementAt(0).Execution.Name);
-            Assert.AreEqual("ExitByAttribute", content.ElementAt(1).Name);
-            Assert.AreEqual("ExitByNameExpression", content.ElementAt(2).Name);
-            Assert.AreEqual("ConcernedByAttributeAndClassName", content.ElementAt(2).Execution.Name);
+            Assert.AreEqual(7, content.Count);
+            Assert.AreEqual("EntryByAttribute1", content.ElementAt(0).Name);
+            Assert.AreEqual("EntryByAttribute2", content.ElementAt(1).Name);
+            Assert.AreEqual("EntryByAttribute3", content.ElementAt(2).Name);
+            Assert.AreEqual("ExitByAttribute1", content.ElementAt(3).Name);
+            Assert.AreEqual("ExitByNameExpression", content.ElementAt(4).Name);
+            Assert.AreEqual("ExitByAttribute2", content.ElementAt(5).Name);
+            Assert.AreEqual("ExitByAttribute3", content.ElementAt(6).Name);
         }
     }
 }
