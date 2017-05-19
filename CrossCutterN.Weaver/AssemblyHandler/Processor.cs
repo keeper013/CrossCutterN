@@ -21,6 +21,7 @@ namespace CrossCutterN.Weaver.AssemblyHandler
         public static IAssemblyWeavingStatistics Weave(string inputAssemblyPath, string outputAssemblyPath, IWeavingBatch batch)
         {
             var readWriteSymbols = File.Exists(Path.ChangeExtension(inputAssemblyPath, "pdb"));
+            readWriteSymbols = false;
             var readerParameters = new ReaderParameters
             {
                 ReadSymbols = readWriteSymbols,
