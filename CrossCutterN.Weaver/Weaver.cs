@@ -27,7 +27,7 @@ namespace CrossCutterN.Weaver
             _writeOnlyBatch.AddAspectBuilder(id, builder, sequenceDict);
         }
 
-        public IAssemblyWeavingStatistics Weave(string inputAssemblyPath, string outputAssemblyPath)
+        public IAssemblyWeavingStatistics Weave(string inputAssemblyPath, string outputAssemblyPath, bool includeSymbol)
         {
             if(_batch == null)
             {
@@ -41,7 +41,7 @@ namespace CrossCutterN.Weaver
             {
                 throw new ArgumentNullException("outputAssemblyPath");
             }
-            return Processor.Weave(inputAssemblyPath, outputAssemblyPath, _batch);
+            return Processor.Weave(inputAssemblyPath, outputAssemblyPath, _batch, includeSymbol);
         }
 
         public IWeaver ToReadOnly()

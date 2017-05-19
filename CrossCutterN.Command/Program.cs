@@ -19,13 +19,16 @@ namespace CrossCutterN.Command
 
         static void Main(string[] args)
         {
-            if(args.Length != 2)
+            if(args.Length < 2 && 3 < args.Length)
             {
                 Console.Out.WriteLine("Usage: Weave aspects into .NET assemblies");
-                Console.Out.WriteLine("Usage: {0} <input assembly path> <output assembly path>");
-                Console.Out.WriteLine("Example: {0} C:\test.dll test_weaved.dll");
+                Console.Out.WriteLine("Usage: {0} <input assembly path> <output assembly path> <includeSymbol>(optional, Y/N, default is N)");
+                Console.Out.WriteLine("Example: {0} C:\test.dll C:\test_weaved.dll");
+                Console.Out.WriteLine("Example: {0} C:\test.dll C:\test_weaved.dll Y");
                 return;
             }
+            bool includeSymbol = (args.Length == 3) && args[2].Equals("Y");
+
             var config = (CrossCutterNSection)ConfigurationManager.GetSection("crossCutterN");
             var weaverToBuild = WeaverFactory.InitializeWeaver();
             var concernAttributeAspectBuilderCount = config.ConcernAttributeAspectBuilders.Count;
@@ -42,7 +45,7 @@ namespace CrossCutterN.Command
             var inputAssembly = args[0];
             var outputAssembly = args[1];
             Console.Out.WriteLine("Starting to load {0}, weaving into {1}", inputAssembly, outputAssembly);
-            var statistics = weaver.Weave(inputAssembly, outputAssembly);
+            var statistics = weaver.Weave(inputAssembly, outputAssembly, includeSymbol);
             var fileName = string.Format(LogFileName, DateTime.Now.ToString("yyyy_MM_dd_HH_mm_ss_fff"));
             using (var file = new StreamWriter(fileName, true))
             {

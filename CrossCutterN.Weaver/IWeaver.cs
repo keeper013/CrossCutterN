@@ -9,6 +9,6 @@ namespace CrossCutterN.Weaver
 
     public interface IWeaver
     {
-        IAssemblyWeavingStatistics Weave(string inputAssemblyPath, string outputAssemblyPath);
+        IAssemblyWeavingStatistics Weave(string inputAssemblyPath, string outputAssemblyPath, bool includeSymbol);
     }
 }

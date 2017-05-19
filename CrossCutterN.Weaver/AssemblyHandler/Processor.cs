@@ -18,14 +18,16 @@ namespace CrossCutterN.Weaver.AssemblyHandler
 
     internal static class Processor
     {
-        public static IAssemblyWeavingStatistics Weave(string inputAssemblyPath, string outputAssemblyPath, IWeavingBatch batch)
+        public static IAssemblyWeavingStatistics Weave(string inputAssemblyPath, string outputAssemblyPath, IWeavingBatch batch, bool includeSymbol)
         {
-            var readWriteSymbols = File.Exists(Path.ChangeExtension(inputAssemblyPath, "pdb"));
-            readWriteSymbols = false;
+            if(includeSymbol && !File.Exists(Path.ChangeExtension(inputAssemblyPath, "pdb")))
+            {
+                throw new ArgumentException("Can't find pdb file for symbol", "includeSymbol");
+            }
             var readerParameters = new ReaderParameters
             {
-                ReadSymbols = readWriteSymbols,
-                SymbolReaderProvider = readWriteSymbols ? new PdbReaderProvider() : null
+                ReadSymbols = includeSymbol,
+                SymbolReaderProvider = includeSymbol ? new PdbReaderProvider() : null
             };
             var assembly = AssemblyDefinition.ReadAssembly(inputAssemblyPath, readerParameters);
             var assemblyStatistics = StatisticsFactory.InitializeAssemblyWeavingRecord(assembly.FullName);
@@ -96,8 +98,8 @@ namespace CrossCutterN.Weaver.AssemblyHandler
                 }
                 var writerParameters = new WriterParameters
                 {
-                    WriteSymbols = readWriteSymbols,
-                    SymbolWriterProvider = readWriteSymbols ? new PdbWriterProvider() : null
+                    WriteSymbols = includeSymbol,
+                    SymbolWriterProvider = includeSymbol ? new PdbWriterProvider() : null
                 };
                 assembly.Write(outputAssemblyPath, writerParameters);
             }
