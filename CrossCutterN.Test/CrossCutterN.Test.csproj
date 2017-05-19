@@ -133,8 +133,10 @@
     </ItemGroup>
     <Copy SourceFiles="@(CommandFiles)" DestinationFolder="$(TargetDir)" />
 	<Exec Condition=" '$(OS)' == 'Unix' " Command="chmod a+x $(TargetDir)CrossCutterN.Command.exe"/>
-    <Exec Command="$(TargetDir)CrossCutterN.Command.exe $(TargetDir)CrossCutterN.Test.dll $(TargetDir)CrossCutterN.Test.dll_temp" />
+	<Exec Condition=" '$(OS)' == 'Unix' " Command="mono $(TargetDir)CrossCutterN.Command.exe $(TargetDir)CrossCutterN.Test.dll $(TargetDir)CrossCutterN.Test.dll_temp" />
+	<Exec Condition=" '$(OS)' != 'Unix' " Command="$(TargetDir)CrossCutterN.Command.exe $(TargetPath) $(TargetPath)_temp" />
     <Delete Files="@(ToBeCleanedFiles)" ContinueOnError="true" />
-    <Move SourceFiles="$(TargetPath)_temp" DestinationFiles="$(TargetPath)" />
+	<Move Condition=" '$(OS)' == 'Unix' " SourceFiles="$(TargetDir)CrossCutterN.Test.dll_temp" DestinationFiles="$(TargetDir)CrossCutterN.Test.dll" />
+    <Move Condition=" '$(OS)' != 'Unix' " SourceFiles="$(TargetPath)_temp" DestinationFiles="$(TargetPath)" />
   </Target>
 </Project>
