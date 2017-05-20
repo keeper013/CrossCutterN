@@ -129,14 +129,16 @@
     </PropertyGroup>
     <ItemGroup>
       <CommandFiles Include="$(CommandPath)CrossCutterN.Command.exe;$(CommandPath)CrossCutterN.Weaver.dll;$(CommandPath)CrossCutterN.Aspect.dll;$(CommandPath)Mono.Cecil.dll;$(CommandPath)Mono.Cecil.Pdb.dll" />
-      <ToBeCleanedFiles Include="$(TargetDir)CrossCutterN.Command.exe;$(TargetDir)CrossCutterN.Weaver.dll;$(TargetDir)CrossCutterN.Aspect.dll;$(TargetDir)Mono.Cecil.dll;$(TargetDir)Mono.Cecil.Pdb.dll;$(TargetDir)CrossCutter.Command.exe.config;$(TargetPath)" />
+      <ToBeCleanedFiles Include="$(TargetDir)CrossCutterN.Command.exe;$(TargetDir)CrossCutterN.Weaver.dll;$(TargetDir)CrossCutterN.Aspect.dll;$(TargetDir)Mono.Cecil.dll;$(TargetDir)Mono.Cecil.Pdb.dll;$(TargetDir)CrossCutterN.Command.exe.config;$(TargetPath)" />
     </ItemGroup>
     <Copy SourceFiles="@(CommandFiles)" DestinationFolder="$(TargetDir)" />
 	<Exec Condition=" '$(OS)' == 'Unix' " Command="chmod a+x $(TargetDir)CrossCutterN.Command.exe"/>
 	<Exec Condition=" '$(OS)' == 'Unix' " Command="mono $(TargetDir)CrossCutterN.Command.exe $(TargetDir)CrossCutterN.Test.dll $(TargetDir)CrossCutterN.Test.dll_temp" />
 	<Exec Condition=" '$(OS)' != 'Unix' " Command="$(TargetDir)CrossCutterN.Command.exe $(TargetPath) $(TargetPath)_temp Y" />
     <Delete Files="@(ToBeCleanedFiles)" ContinueOnError="true" />
-	<Move Condition=" '$(OS)' == 'Unix' " SourceFiles="$(TargetDir)CrossCutterN.Test.dll_temp" DestinationFiles="$(TargetDir)CrossCutterN.Test.dll" />
-    <Move Condition=" '$(OS)' != 'Unix' " SourceFiles="$(TargetPath)_temp" DestinationFiles="$(TargetPath)" />
+	<Copy Condition=" '$(OS)' == 'Unix' " SourceFiles="$(TargetDir)CrossCutterN.Test.dll_temp" DestinationFiles="$(TargetDir)CrossCutterN.Test.dll" />
+	<Delete Condition=" '$(OS)' == 'Unix' " Files="$(TargetDir)CrossCutterN.Test.dll_temp" ContinueOnError="true" />
+    <Copy Condition=" '$(OS)' != 'Unix' " SourceFiles="$(TargetPath)_temp" DestinationFiles="$(TargetPath)" />
+	<Delete Condition=" '$(OS)' != 'Unix' " Files="$(TargetPath)_temp" ContinueOnError="true" />
   </Target>
 </Project>
