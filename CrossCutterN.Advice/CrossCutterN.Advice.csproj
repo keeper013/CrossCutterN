@@ -40,7 +40,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Common\ICanConvertToReadOnly.cs" />
+    <Compile Include="Common\ICanConvert.cs" />
     <Compile Include="Common\IHasId.cs" />
     <Compile Include="Common\IHasSortKey.cs" />
     <Compile Include="Common\IrreversibleOperation.cs" />

@@ -78,7 +78,7 @@ namespace CrossCutterN.Aspect.Builder
                     }
                 }
             }
-            return aspect.ToReadOnly();
+            return aspect.Convert();
         }
 
         public override IPropertyAspect GetAspect(IProperty property)
@@ -116,7 +116,7 @@ namespace CrossCutterN.Aspect.Builder
                     }
                 }
             }
-            return AspectFactory.InitializePropertyAspect(getterAspect.ToReadOnly(), setterAspect.ToReadOnly());
+            return AspectFactory.InitializePropertyAspect(getterAspect.Convert(), setterAspect.Convert());
         }
 
         private bool MethodMatch(IMethod method)

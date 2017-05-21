@@ -62,7 +62,7 @@ namespace CrossCutterN.Advice.Parameter
             _customAttributes.Add(attribute);
         }
 
-        public IParameter ToReadOnly()
+        public IParameter Convert()
         {
             _readOnly.Apply();
             return this;

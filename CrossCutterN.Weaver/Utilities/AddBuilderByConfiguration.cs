@@ -79,7 +79,7 @@ namespace CrossCutterN.Weaver.Utilities
                 builder.SetAdvice(settings.JoinPoint, settings.ToMethodInfo());
                 sequenceDict[settings.JoinPoint] = settings.Sequence;
             }
-            weaver.AddAspectBuilder(element.Id, builder.ToReadOnly(), sequenceDict);
+            weaver.AddAspectBuilder(element.Id, builder.Convert(), sequenceDict);
         }
 
         private static void SetBuilderOptions(this IWriteOnlyConcernAttributeAspectBuilder builder, ConcernAttributeAspectBuilderOptionsElement options)

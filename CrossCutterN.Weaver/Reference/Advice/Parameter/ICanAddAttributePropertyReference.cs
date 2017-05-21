@@ -13,6 +13,6 @@ namespace CrossCutterN.Weaver.Reference.Advice.Parameter
         TypeReference ReadOnlyTypeReference { get; }
 
         MethodReference AddAttributePropertyMethod { get; }
-        MethodReference ToReadOnlyMethod { get; }
+        MethodReference ConvertMethod { get; }
     }
 }

@@ -91,7 +91,7 @@ namespace CrossCutterN.Weaver.Batch
                     plan.AddJoinPoint(joinPoint, id, advice, info.Sequence, info.ParameterFlag);
                 }
             }
-            return plan.ToReadOnly();
+            return plan.Convert();
         }
 
         public IPropertyWeavingPlan BuildPlan(IProperty property)
@@ -119,10 +119,10 @@ namespace CrossCutterN.Weaver.Batch
                     setterPlan.AddJoinPoint(joinPoint, id, advice, info.Sequence, info.ParameterFlag);
                 }
             }
-            return BatchFactory.InitializePropertyWeavingPlan(getterPlan.ToReadOnly(), setterPlan.ToReadOnly());
+            return BatchFactory.InitializePropertyWeavingPlan(getterPlan.Convert(), setterPlan.Convert());
         }
 
-        public IWeavingBatch ToReadOnly()
+        public IWeavingBatch Convert()
         {
             if(!_builders.Any())
             {

@@ -8,7 +8,7 @@ namespace CrossCutterN.Weaver.Statistics
     using System;
     using Advice.Common;
 
-    internal interface IWriteOnlyAssemblyWeavingStatistics : ICanConvertToReadOnly<IAssemblyWeavingStatistics>
+    internal interface IWriteOnlyAssemblyWeavingStatistics : ICanConvert<IAssemblyWeavingStatistics>
     {
         Exception Exception { set; }
         void AddModuleWeavingStatistics(IModuleWeavingStatistics statistics);

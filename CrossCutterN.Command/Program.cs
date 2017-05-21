@@ -41,7 +41,7 @@ namespace CrossCutterN.Command
             {
                 weaverToBuild.AddBuilder(config.NameExpressionAspectBuilders[i]);
             }
-            var weaver = weaverToBuild.ToReadOnly();
+            var weaver = weaverToBuild.Convert();
             var inputAssembly = args[0];
             var outputAssembly = args[1];
             Console.Out.WriteLine("Starting to load {0}, weaving into {1}", inputAssembly, outputAssembly);

@@ -38,7 +38,7 @@ namespace CrossCutterN.Aspect
             _pointCut.Add(joinPoint, advice);
         }
 
-        public IAspect ToReadOnly()
+        public IAspect Convert()
         {
             // Considering aspect generation is extendable, empty aspect is possible by customized aspect builders
             // So no empty aspect checking performed here, only readonly operation

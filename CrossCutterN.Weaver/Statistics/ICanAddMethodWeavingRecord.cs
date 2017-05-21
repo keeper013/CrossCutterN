@@ -12,7 +12,7 @@ namespace CrossCutterN.Weaver.Statistics
         void AddWeavingRecord(IWeavingRecord record);
     }
 
-    internal interface ICanAddMethodWeavingRecord<out T> : ICanAddMethodWeavingRecord, ICanConvertToReadOnly<T> where T : class
+    internal interface ICanAddMethodWeavingRecord<out T> : ICanAddMethodWeavingRecord, ICanConvert<T> where T : class
     {
     }
 }

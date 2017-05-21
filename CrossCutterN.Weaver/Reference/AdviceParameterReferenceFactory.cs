@@ -50,20 +50,20 @@ namespace CrossCutterN.Weaver.Reference
             reference.InitializeParameterMethod = type.GetMethod(methodInitializeParameter);
             reference.InitializeReturnMethod = type.GetMethod(methodInitializeReturn);
 
-            return reference.ToReadOnly();
+            return reference.Convert();
         }
 
         private static ICanAddParameterReference InitializeExecution(ModuleDefinition module)
         {
             const string methodAddParameter = "AddParameter";
-            const string methodToReadOnly = "ToReadOnly";
+            const string methodConvert = "Convert";
             var reference = new WriteOnlyExecutionReference(module);
             var type = typeof(ICanAddParameter);
             reference.AddParameterMethod = type.GetMethod(methodAddParameter);
             reference.ReadOnlyTypeReference = typeof(IExecution);
             reference.TypeReference = type;
-            reference.ToReadOnlyMethod = typeof(ICanConvertToReadOnly<IExecution>).GetMethod(methodToReadOnly);
-            return reference.ToReadOnly();
+            reference.ConvertMethod = typeof(ICanConvert<IExecution>).GetMethod(methodConvert);
+            return reference.Convert();
         }
 
         private static IExecutionContextReference InitializeExecutionContext(ModuleDefinition module)
@@ -81,27 +81,27 @@ namespace CrossCutterN.Weaver.Reference
         private static ICanAddCustomAttributeReference InitializeParameter(ModuleDefinition module)
         {
             const string methodAddCustomAttribute = "AddCustomAttribute";
-            const string methodToReadOnly = "ToReadOnly";
+            const string methodConvert = "Convert";
             var reference = new WriteOnlyParameterReference(module);
             var type = typeof(ICanAddCustomAttribute);
             reference.AddCustomAttributeMethod = type.GetMethod(methodAddCustomAttribute);
             reference.ReadOnlyTypeReference = typeof(IParameter);
-            reference.ToReadOnlyMethod = typeof(ICanConvertToReadOnly<IParameter>).GetMethod(methodToReadOnly);
+            reference.ConvertMethod = typeof(ICanConvert<IParameter>).GetMethod(methodConvert);
             reference.TypeReference = type;
-            return reference.ToReadOnly();
+            return reference.Convert();
         }
 
         private static ICanAddAttributePropertyReference InitializeCustomAttribute(ModuleDefinition module)
         {
             const string methodAddAttributeProperty = "AddAttributeProperty";
-            const string methodToReadOnly = "ToReadOnly";
+            const string methodConvert = "Convert";
             var reference = new WriteOnlyCustomAttributeReference(module);
             var type = typeof(ICanAddAttributeProperty);
             reference.AddAttributePropertyMethod = type.GetMethod(methodAddAttributeProperty);
             reference.ReadOnlyTypeReference = typeof(CrossCutterN.Advice.Parameter.ICustomAttribute);
-            reference.ToReadOnlyMethod = typeof(ICanConvertToReadOnly<CrossCutterN.Advice.Parameter.ICustomAttribute>).GetMethod(methodToReadOnly);
+            reference.ConvertMethod = typeof(ICanConvert<CrossCutterN.Advice.Parameter.ICustomAttribute>).GetMethod(methodConvert);
             reference.TypeReference = type;
-            return reference.ToReadOnly();
+            return reference.Convert();
         }
 
         private static IAttributePropertyReference InitializeAttributeProperty(ModuleDefinition module)
@@ -109,22 +109,22 @@ namespace CrossCutterN.Weaver.Reference
             var reference = new AttributePropertyReference(module);
             var type = typeof(IAttributeProperty);
             reference.TypeReference = type;
-            return reference.ToReadOnly();
+            return reference.Convert();
         }
 
         private static IWriteOnlyReturnReference InitializeReturn(ModuleDefinition module)
         {
             const string propertyHasReturn = "HasReturn";
             const string propertyValue = "Value";
-            const string methodToReadOnly = "ToReadOnly";
+            const string methodConvert = "Convert";
             var reference = new WriteOnlyReturnReference(module);
             var type = typeof(IWriteOnlyReturn);
             reference.HasReturnSetter = type.GetProperty(propertyHasReturn).GetSetMethod();
             reference.ReadOnlyTypeReference = typeof(IReturn);
-            reference.ToReadOnlyMethod = typeof(ICanConvertToReadOnly<IReturn>).GetMethod(methodToReadOnly);
+            reference.ConvertMethod = typeof(ICanConvert<IReturn>).GetMethod(methodConvert);
             reference.TypeReference = type;
             reference.ValueSetter = type.GetProperty(propertyValue).GetSetMethod();
-            return reference.ToReadOnly();
+            return reference.Convert();
         }
     }
 }

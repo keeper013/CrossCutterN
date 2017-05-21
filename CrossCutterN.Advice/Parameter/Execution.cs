@@ -87,7 +87,7 @@ namespace CrossCutterN.Advice.Parameter
             return _parameters.Has(name);
         }
 
-        public IExecution ToReadOnly()
+        public IExecution Convert()
         {
             _readOnly.Apply();
             return this;

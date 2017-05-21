@@ -10,7 +10,7 @@ namespace CrossCutterN.Weaver.Batch
     using Aspect.Builder;
     using Aspect;
 
-    internal interface ICanAddAspectBuilder : ICanConvertToReadOnly<IWeavingBatch>
+    internal interface ICanAddAspectBuilder : ICanConvert<IWeavingBatch>
     {
         void AddAspectBuilder(string id, IAspectBuilder builder, IReadOnlyDictionary<JoinPoint, int> sequenceDict);
     }

@@ -51,7 +51,7 @@ namespace CrossCutterN.Advice.Parameter
             TypeName = typeName;
         }
 
-        public IReturn ToReadOnly()
+        public IReturn Convert()
         {
             if(string.IsNullOrWhiteSpace(TypeName))
             {

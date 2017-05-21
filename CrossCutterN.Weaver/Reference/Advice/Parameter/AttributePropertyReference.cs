@@ -46,7 +46,7 @@ namespace CrossCutterN.Weaver.Reference.Advice.Parameter
             }
         }
 
-        public IAttributePropertyReference ToReadOnly()
+        public IAttributePropertyReference Convert()
         {
             if(_typeReference == null)
             {

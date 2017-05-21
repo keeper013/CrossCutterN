@@ -117,7 +117,7 @@ namespace CrossCutterN.Weaver.Statistics
             _statistics.Add(statistics);
         }
 
-        public IModuleWeavingStatistics ToReadOnly()
+        public IModuleWeavingStatistics Convert()
         {
             _readOnly.Apply();
             return this;

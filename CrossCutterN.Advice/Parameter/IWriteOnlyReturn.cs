@@ -6,7 +6,7 @@ namespace CrossCutterN.Advice.Parameter
 {
     using Common;
 
-    public interface IWriteOnlyReturn : ICanConvertToReadOnly<IReturn>
+    public interface IWriteOnlyReturn : ICanConvert<IReturn>
     {
         bool HasReturn { set; }
         object Value { set; }

@@ -9,12 +9,12 @@ namespace CrossCutterN.Weaver.Reference.Advice.Parameter
     using System.Reflection;
     using CrossCutterN.Advice.Common;
 
-    internal interface ICanAddCustomAttributeWriteOnlyReference : ICanConvertToReadOnly<ICanAddCustomAttributeReference>
+    internal interface ICanAddCustomAttributeWriteOnlyReference : ICanConvert<ICanAddCustomAttributeReference>
     {
         Type TypeReference { set; }
         Type ReadOnlyTypeReference { set; }
 
         MethodInfo AddCustomAttributeMethod { set; }
-        MethodInfo ToReadOnlyMethod { set; }
+        MethodInfo ConvertMethod { set; }
     }
 }

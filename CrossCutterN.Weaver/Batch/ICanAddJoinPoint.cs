@@ -9,7 +9,7 @@ namespace CrossCutterN.Weaver.Batch
     using Aspect;
     using Advice.Common;
 
-    internal interface ICanAddJoinPoint : ICanConvertToReadOnly<IWeavingPlan>
+    internal interface ICanAddJoinPoint : ICanConvert<IWeavingPlan>
     {
         void AddJoinPoint(JoinPoint joinPoint, string builderId, MethodInfo advice, int sequence, AdviceParameterFlag flag);
     }

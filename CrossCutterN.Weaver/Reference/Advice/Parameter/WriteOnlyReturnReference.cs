@@ -117,7 +117,7 @@ namespace CrossCutterN.Weaver.Reference.Advice.Parameter
             }
         }
 
-        MethodReference IWriteOnlyReturnReference.ToReadOnlyMethod
+        MethodReference IWriteOnlyReturnReference.ConvertMethod
         {
             get
             {
@@ -126,7 +126,7 @@ namespace CrossCutterN.Weaver.Reference.Advice.Parameter
             }
         }
 
-        public MethodInfo ToReadOnlyMethod
+        public MethodInfo ConvertMethod
         {
             set
             {
@@ -139,7 +139,7 @@ namespace CrossCutterN.Weaver.Reference.Advice.Parameter
             }
         }
 
-        public IWriteOnlyReturnReference ToReadOnly()
+        public IWriteOnlyReturnReference Convert()
         {
             if (_hasReturnSetter == null || _typeReference == null || _valueSetter == null || 
                 _toReadOnlyMethod == null || _readOnlyTypeReference == null)

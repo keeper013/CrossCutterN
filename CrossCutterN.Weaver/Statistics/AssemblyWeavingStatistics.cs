@@ -140,7 +140,7 @@ namespace CrossCutterN.Weaver.Statistics
             _statistics.Add(statistics);
         }
 
-        public IAssemblyWeavingStatistics ToReadOnly()
+        public IAssemblyWeavingStatistics Convert()
         {
             _readOnly.Apply();
             return this;

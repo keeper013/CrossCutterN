@@ -127,19 +127,19 @@ namespace CrossCutterN.Weaver.AssemblyHandler
                                 }
                             }
                             // evaluation stack after the following statement: bottom->ICanAddParameters->ICanAddParameters->ICanAddCustomAttribute->ICanAddCustomAttribute->ICustomAttribute
-                            _instructions.Add(_processor.Create(OpCodes.Callvirt, _context.AdviceParameterReference.CustomAttribute.ToReadOnlyMethod));
+                            _instructions.Add(_processor.Create(OpCodes.Callvirt, _context.AdviceParameterReference.CustomAttribute.ConvertMethod));
                             // evaluation stack after the following statement: bottom->ICanAddParameters->ICanAddParameters->ICanAddCustomAttribute
                             _instructions.Add(_processor.Create(OpCodes.Callvirt, _context.AdviceParameterReference.Parameter.AddCustomAttributeMethod));
                         }
                     }
                     // evaluation stack after the following statement: bottom->ICanAddParameters->ICanAddParameters->IParameter
-                    _instructions.Add(_processor.Create(OpCodes.Callvirt, _context.AdviceParameterReference.Parameter.ToReadOnlyMethod));
+                    _instructions.Add(_processor.Create(OpCodes.Callvirt, _context.AdviceParameterReference.Parameter.ConvertMethod));
                     // evaluation stack after the following statement: bottom->ICanAddParameters
                     _instructions.Add(_processor.Create(OpCodes.Callvirt, _context.AdviceParameterReference.Execution.AddParameterMethod));
                 }
             }
             // evaluation stack after the following statement: bottom->IMethodExecution
-            _instructions.Add(_processor.Create(OpCodes.Callvirt, _context.AdviceParameterReference.Execution.ToReadOnlyMethod));
+            _instructions.Add(_processor.Create(OpCodes.Callvirt, _context.AdviceParameterReference.Execution.ConvertMethod));
             _context.ExecutionVariableIndex = _method.Body.Variables.Count;
             _method.Body.Variables.Add(new VariableDefinition(_context.AdviceParameterReference.Execution.ReadOnlyTypeReference));
             _instructions.Add(_processor.Create(OpCodes.Stloc, _context.ExecutionVariableIndex));
@@ -275,7 +275,7 @@ namespace CrossCutterN.Weaver.AssemblyHandler
                     _instructions.Add(_processor.Create(OpCodes.Ldloc, _context.ReturnVariableIndex));
                 }
                 // evaluation stack after the following statement: bottom->IReturn
-                _instructions.Add(_processor.Create(OpCodes.Callvirt, _context.AdviceParameterReference.Return.ToReadOnlyMethod));
+                _instructions.Add(_processor.Create(OpCodes.Callvirt, _context.AdviceParameterReference.Return.ConvertMethod));
                 _context.ReturnVariableIndex = _method.Body.Variables.Count;
                 _method.Body.Variables.Add(new VariableDefinition(_context.AdviceParameterReference.Return.ReadOnlyTypeReference));
                 _instructions.Add(_processor.Create(OpCodes.Stloc, _context.ReturnVariableIndex));

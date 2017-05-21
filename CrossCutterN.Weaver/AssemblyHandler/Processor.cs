@@ -56,7 +56,7 @@ namespace CrossCutterN.Weaver.AssemblyHandler
                             {
                                 var propertyStatistics = StatisticsFactory.InitializePropertyWeavingRecord(property.Name, property.FullName);
                                 WeaveProperty(property, plan, context, propertyStatistics);
-                                var propertyStatisticsFinished = propertyStatistics.ToReadOnly();
+                                var propertyStatisticsFinished = propertyStatistics.Convert();
                                 if (propertyStatisticsFinished.JoinPointCount > 0)
                                 {
                                     classStatistics.AddPropertyWeavingStatistics(propertyStatisticsFinished);
@@ -77,20 +77,20 @@ namespace CrossCutterN.Weaver.AssemblyHandler
                             {
                                 var methodStatistics = StatisticsFactory.InitializeMethodWeavingRecord(method.Name, method.FullName);
                                 WeaveMethod(method, plan, context, methodStatistics);
-                                var methodStatisticsFinished = methodStatistics.ToReadOnly();
+                                var methodStatisticsFinished = methodStatistics.Convert();
                                 if(methodStatisticsFinished.JoinPointCount > 0)
                                 {
                                     classStatistics.AddMethodWeavingStatistics(methodStatisticsFinished);
                                 }
                             }
                         }
-                        var classStatisticsFinished = classStatistics.ToReadOnly();
+                        var classStatisticsFinished = classStatistics.Convert();
                         if(classStatisticsFinished.WeavedMethodPropertyCount > 0)
                         {
                             moduleStatistics.AddClassWeavingStatistics(classStatisticsFinished);
                         }
                     }
-                    var moduleStatisticsFinished = moduleStatistics.ToReadOnly();
+                    var moduleStatisticsFinished = moduleStatistics.Convert();
                     if(moduleStatisticsFinished.WeavedClassCount > 0)
                     {
                         assemblyStatistics.AddModuleWeavingStatistics(moduleStatisticsFinished);
@@ -107,7 +107,7 @@ namespace CrossCutterN.Weaver.AssemblyHandler
             {
                 assemblyStatistics.Exception = e;
             }
-            return assemblyStatistics.ToReadOnly();
+            return assemblyStatistics.Convert();
         }
 
         public static void WeaveMethod(MethodDefinition method, IWeavingPlan plan, IWeavingContext context,

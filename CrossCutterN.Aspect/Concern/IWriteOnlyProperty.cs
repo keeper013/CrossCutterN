@@ -8,7 +8,7 @@ namespace CrossCutterN.Aspect.Concern
     using System.Collections.Generic;
     using Advice.Common;
 
-    public interface IWriteOnlyProperty : ICanConvertToReadOnly<IProperty>
+    public interface IWriteOnlyProperty : ICanConvert<IProperty>
     {
         void AddCustomAttribute(ICustomAttribute attribute);
         void AddGetterCustomAttribute(ICustomAttribute attribute);

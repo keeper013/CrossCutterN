@@ -7,7 +7,7 @@ namespace CrossCutterN.Advice.Parameter
 {
     using Common;
 
-    public interface ICanAddCustomAttribute : ICanConvertToReadOnly<IParameter>
+    public interface ICanAddCustomAttribute : ICanConvert<IParameter>
     {
         void AddCustomAttribute(ICustomAttribute attribute);
     }

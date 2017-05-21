@@ -5,8 +5,8 @@
  
  namespace CrossCutterN.Advice.Common
 {
-    public interface ICanConvertToReadOnly<out T>
+    public interface ICanConvert<out T>
     {
-        T ToReadOnly();
+        T Convert();
     }
 }

@@ -1,0 +1,242 @@
+Assembly Name: CrossCutterN.Test, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
+Weaved: 1 modules, 7 classes, 21 methods, 8 properties.
+
+	Module: E:\GitHub\CrossCutterN\CrossCutterN.Test\bin\Debug\CrossCutterN.Test.dll
+	Weaved 7 classes, 21 methods, 8 properties.
+
+		Class: CrossCutterN.Test.ParameterTest.ParameterTestTarget
+		Weaved 8 methods, 0 properties
+
+			Method: System.Void CrossCutterN.Test.ParameterTest.ParameterTestTarget::AllExceptionTest(System.Int32,System.Text.StringBuilder,System.Func`2<System.Int32,System.Int32>)
+			3 advices weaved
+				Entry 0 CrossCutterN.Test.ParameterTest.ParameterTestAdvice.EntryExecution(CrossCutterN.Advice.Parameter.IExecution) NameExpressionAllParameter
+				Exception 0 CrossCutterN.Test.ParameterTest.ParameterTestAdvice.ExceptionExecutionException(CrossCutterN.Advice.Parameter.IExecution,System.Exception) NameExpressionAllParameter
+				Exit 0 CrossCutterN.Test.ParameterTest.ParameterTestAdvice.ExitExecutionReturnHasException(CrossCutterN.Advice.Parameter.IExecution,CrossCutterN.Advice.Parameter.IReturn,System.Boolean) NameExpressionAllParameter
+
+			Method: System.Void CrossCutterN.Test.ParameterTest.ParameterTestTarget::AllVoidReturnTest()
+			3 advices weaved
+				Entry 0 CrossCutterN.Test.ParameterTest.ParameterTestAdvice.EntryExecution(CrossCutterN.Advice.Parameter.IExecution) NameExpressionAllParameter
+				Exception 0 CrossCutterN.Test.ParameterTest.ParameterTestAdvice.ExceptionExecutionException(CrossCutterN.Advice.Parameter.IExecution,System.Exception) NameExpressionAllParameter
+				Exit 0 CrossCutterN.Test.ParameterTest.ParameterTestAdvice.ExitExecutionReturnHasException(CrossCutterN.Advice.Parameter.IExecution,CrossCutterN.Advice.Parameter.IReturn,System.Boolean) NameExpressionAllParameter
+
+			Method: System.Int32 CrossCutterN.Test.ParameterTest.ParameterTestTarget::AllTest()
+			3 advices weaved
+				Entry 0 CrossCutterN.Test.ParameterTest.ParameterTestAdvice.EntryExecution(CrossCutterN.Advice.Parameter.IExecution) NameExpressionAllParameter
+				Exception 0 CrossCutterN.Test.ParameterTest.ParameterTestAdvice.ExceptionExecutionException(CrossCutterN.Advice.Parameter.IExecution,System.Exception) NameExpressionAllParameter
+				Exit 0 CrossCutterN.Test.ParameterTest.ParameterTestAdvice.ExitExecutionReturnHasException(CrossCutterN.Advice.Parameter.IExecution,CrossCutterN.Advice.Parameter.IReturn,System.Boolean) NameExpressionAllParameter
+
+			Method: System.Void CrossCutterN.Test.ParameterTest.ParameterTestTarget::NoExecutionTest()
+			3 advices weaved
+				Entry 0 CrossCutterN.Test.ParameterTest.ParameterTestAdvice.EntryEmpty() NameExpressionNoExecution
+				Exception 0 CrossCutterN.Test.ParameterTest.ParameterTestAdvice.ExceptionException(System.Exception) NameExpressionNoExecution
+				Exit 0 CrossCutterN.Test.ParameterTest.ParameterTestAdvice.ExitReturnHasException(CrossCutterN.Advice.Parameter.IReturn,System.Boolean) NameExpressionNoExecution
+
+			Method: System.String CrossCutterN.Test.ParameterTest.ParameterTestTarget::NoReturnTest(System.Int32,System.Func`2<System.Int32,System.Int32>)
+			3 advices weaved
+				Entry 0 CrossCutterN.Test.ParameterTest.ParameterTestAdvice.EntryExecution(CrossCutterN.Advice.Parameter.IExecution) NameExpressionNoReturn
+				Exception 0 CrossCutterN.Test.ParameterTest.ParameterTestAdvice.ExceptionExecutionException(CrossCutterN.Advice.Parameter.IExecution,System.Exception) NameExpressionNoReturn
+				Exit 0 CrossCutterN.Test.ParameterTest.ParameterTestAdvice.ExitExecutionHasException(CrossCutterN.Advice.Parameter.IExecution,System.Boolean) NameExpressionNoReturn
+
+			Method: System.Void CrossCutterN.Test.ParameterTest.ParameterTestTarget::NoHasExceptionTest()
+			1 advices weaved
+				Exit 0 CrossCutterN.Test.ParameterTest.ParameterTestAdvice.ExitExecutionReturn(CrossCutterN.Advice.Parameter.IExecution,CrossCutterN.Advice.Parameter.IReturn) NameExpressionNoHasException
+
+			Method: System.Void CrossCutterN.Test.ParameterTest.ParameterTestTarget::NoExceptionTest()
+			1 advices weaved
+				Exception 0 CrossCutterN.Test.ParameterTest.ParameterTestAdvice.ExceptionExecution(CrossCutterN.Advice.Parameter.IExecution) NameExpressionNoException
+
+			Method: System.Void CrossCutterN.Test.ParameterTest.ParameterTestTarget::OnlyExecutionTest()
+			2 advices weaved
+				Exception 0 CrossCutterN.Test.ParameterTest.ParameterTestAdvice.ExceptionExecution(CrossCutterN.Advice.Parameter.IExecution) NameExpressionOnlyExecution
+				Exit 0 CrossCutterN.Test.ParameterTest.ParameterTestAdvice.ExitExecution(CrossCutterN.Advice.Parameter.IExecution) NameExpressionOnlyExecution
+
+		Class: CrossCutterN.Test.OverwriteTest.OverwriteTestTarget
+		Weaved 2 methods, 1 properties
+
+			Method: System.Void CrossCutterN.Test.OverwriteTest.OverwriteTestTarget::OverwriteByMethodConcern()
+			3 advices weaved
+				Entry 0 CrossCutterN.Test.OverwriteTest.OverwriteTestAdvice.Entry() ConcernAttributeOverwrite
+				Exception 0 CrossCutterN.Test.OverwriteTest.OverwriteTestAdvice.Exception() ConcernAttributeOverwrite
+				Exit 0 CrossCutterN.Test.OverwriteTest.OverwriteTestAdvice.Exit() ConcernAttributeOverwrite
+
+			Method: System.Void CrossCutterN.Test.OverwriteTest.OverwriteTestTarget::ThrowException()
+			1 advices weaved
+				Exception 0 CrossCutterN.Test.OverwriteTest.OverwriteTestAdvice.Exception() ConcernAttributeOverwrite
+
+			Property: System.Int32 CrossCutterN.Test.OverwriteTest.OverwriteTestTarget::OverwriteByPropertyConcern()
+			3 advices weaved
+			 Getter:
+				Entry 0 CrossCutterN.Test.OverwriteTest.OverwriteTestAdvice.Entry() ConcernAttributeOverwrite
+				Exception 0 CrossCutterN.Test.OverwriteTest.OverwriteTestAdvice.Exception() ConcernAttributeOverwrite
+				Exit 0 CrossCutterN.Test.OverwriteTest.OverwriteTestAdvice.Exit() ConcernAttributeOverwrite
+			 Setter:
+
+		Class: CrossCutterN.Test.OverwriteTest.OverwriteTestClassNotMarked
+		Weaved 2 methods, 1 properties
+
+			Method: System.Void CrossCutterN.Test.OverwriteTest.OverwriteTestClassNotMarked::InternalMethodConceredByAttribute()
+			3 advices weaved
+				Entry 0 CrossCutterN.Test.OverwriteTest.OverwriteTestAdvice.Entry() ConcernAttributeOverwrite
+				Exception 0 CrossCutterN.Test.OverwriteTest.OverwriteTestAdvice.Exception() ConcernAttributeOverwrite
+				Exit 0 CrossCutterN.Test.OverwriteTest.OverwriteTestAdvice.Exit() ConcernAttributeOverwrite
+
+			Method: System.Void CrossCutterN.Test.OverwriteTest.OverwriteTestClassNotMarked::OnlyExit()
+			1 advices weaved
+				Exit 0 CrossCutterN.Test.OverwriteTest.OverwriteTestAdvice.Exit() ConcernAttributeOverwrite
+
+			Property: System.Int32 CrossCutterN.Test.OverwriteTest.OverwriteTestClassNotMarked::InternalProperty()
+			3 advices weaved
+			 Getter:
+				Entry 0 CrossCutterN.Test.OverwriteTest.OverwriteTestAdvice.Entry() ConcernAttributeOverwrite
+				Exception 0 CrossCutterN.Test.OverwriteTest.OverwriteTestAdvice.Exception() ConcernAttributeOverwrite
+				Exit 0 CrossCutterN.Test.OverwriteTest.OverwriteTestAdvice.Exit() ConcernAttributeOverwrite
+			 Setter:
+
+		Class: CrossCutterN.Test.OverwriteTest.OverwriteTestClassPropertyConcerned
+		Weaved 0 methods, 1 properties
+
+			Property: System.Int32 CrossCutterN.Test.OverwriteTest.OverwriteTestClassPropertyConcerned::InernalProperty()
+			3 advices weaved
+			 Getter:
+				Entry 0 CrossCutterN.Test.OverwriteTest.OverwriteTestAdvice.Entry() ConcernAttributeOverwrite
+				Exception 0 CrossCutterN.Test.OverwriteTest.OverwriteTestAdvice.Exception() ConcernAttributeOverwrite
+				Exit 0 CrossCutterN.Test.OverwriteTest.OverwriteTestAdvice.Exit() ConcernAttributeOverwrite
+			 Setter:
+
+		Class: CrossCutterN.Test.OptionsTest.OptionsTestTargetBase
+		Weaved 6 methods, 4 properties
+
+			Method: System.Void CrossCutterN.Test.OptionsTest.OptionsTestTargetBase::.cctor()
+			6 advices weaved
+				Entry 0 CrossCutterN.Test.OptionsTest.OptionsTestAdvice.PrivateEntry(CrossCutterN.Advice.Parameter.IExecution) ConcernAttributePrivate
+				Entry 1 CrossCutterN.Test.OptionsTest.OptionsTestAdvice.StaticEntry(CrossCutterN.Advice.Parameter.IExecution) ConcernAttributeStatic
+				Entry 2 CrossCutterN.Test.OptionsTest.OptionsTestAdvice.MethodEntry(CrossCutterN.Advice.Parameter.IExecution) ConcernAttributeMethod
+				Exit 0 CrossCutterN.Test.OptionsTest.OptionsTestAdvice.MethodExit(CrossCutterN.Advice.Parameter.IExecution,CrossCutterN.Advice.Parameter.IReturn,System.Boolean) ConcernAttributeMethod
+				Exit 1 CrossCutterN.Test.OptionsTest.OptionsTestAdvice.StaticExit(CrossCutterN.Advice.Parameter.IExecution,CrossCutterN.Advice.Parameter.IReturn,System.Boolean) ConcernAttributeStatic
+				Exit 2 CrossCutterN.Test.OptionsTest.OptionsTestAdvice.PrivateExit(CrossCutterN.Advice.Parameter.IExecution,CrossCutterN.Advice.Parameter.IReturn,System.Boolean) ConcernAttributePrivate
+
+			Method: System.Void CrossCutterN.Test.OptionsTest.OptionsTestTargetBase::.ctor()
+			6 advices weaved
+				Entry 0 CrossCutterN.Test.OptionsTest.OptionsTestAdvice.ProtectedEntry(CrossCutterN.Advice.Parameter.IExecution) ConcernAttributeProtected
+				Entry 1 CrossCutterN.Test.OptionsTest.OptionsTestAdvice.InstanceEntry(CrossCutterN.Advice.Parameter.IExecution) ConcernAttributeInstance
+				Entry 2 CrossCutterN.Test.OptionsTest.OptionsTestAdvice.MethodEntry(CrossCutterN.Advice.Parameter.IExecution) ConcernAttributeMethod
+				Exit 0 CrossCutterN.Test.OptionsTest.OptionsTestAdvice.MethodExit(CrossCutterN.Advice.Parameter.IExecution,CrossCutterN.Advice.Parameter.IReturn,System.Boolean) ConcernAttributeMethod
+				Exit 1 CrossCutterN.Test.OptionsTest.OptionsTestAdvice.InstanceExit(CrossCutterN.Advice.Parameter.IExecution,CrossCutterN.Advice.Parameter.IReturn,System.Boolean) ConcernAttributeInstance
+				Exit 2 CrossCutterN.Test.OptionsTest.OptionsTestAdvice.ProtectedExit(CrossCutterN.Advice.Parameter.IExecution,CrossCutterN.Advice.Parameter.IReturn,System.Boolean) ConcernAttributeProtected
+
+			Method: System.Text.StringBuilder CrossCutterN.Test.OptionsTest.OptionsTestTargetBase::PublicReturnObj(System.Int32,System.String)
+			6 advices weaved
+				Entry 0 CrossCutterN.Test.OptionsTest.OptionsTestAdvice.PublicEntry(CrossCutterN.Advice.Parameter.IExecution) ConcernAttributePublic
+				Entry 1 CrossCutterN.Test.OptionsTest.OptionsTestAdvice.InstanceEntry(CrossCutterN.Advice.Parameter.IExecution) ConcernAttributeInstance
+				Entry 2 CrossCutterN.Test.OptionsTest.OptionsTestAdvice.MethodEntry(CrossCutterN.Advice.Parameter.IExecution) ConcernAttributeMethod
+				Exit 0 CrossCutterN.Test.OptionsTest.OptionsTestAdvice.MethodExit(CrossCutterN.Advice.Parameter.IExecution,CrossCutterN.Advice.Parameter.IReturn,System.Boolean) ConcernAttributeMethod
+				Exit 1 CrossCutterN.Test.OptionsTest.OptionsTestAdvice.InstanceExit(CrossCutterN.Advice.Parameter.IExecution,CrossCutterN.Advice.Parameter.IReturn,System.Boolean) ConcernAttributeInstance
+				Exit 2 CrossCutterN.Test.OptionsTest.OptionsTestAdvice.PublicExit(CrossCutterN.Advice.Parameter.IExecution,CrossCutterN.Advice.Parameter.IReturn,System.Boolean) ConcernAttributePublic
+
+			Method: System.String CrossCutterN.Test.OptionsTest.OptionsTestTargetBase::ProtectedReturnString()
+			6 advices weaved
+				Entry 0 CrossCutterN.Test.OptionsTest.OptionsTestAdvice.ProtectedEntry(CrossCutterN.Advice.Parameter.IExecution) ConcernAttributeProtected
+				Entry 1 CrossCutterN.Test.OptionsTest.OptionsTestAdvice.StaticEntry(CrossCutterN.Advice.Parameter.IExecution) ConcernAttributeStatic
+				Entry 2 CrossCutterN.Test.OptionsTest.OptionsTestAdvice.MethodEntry(CrossCutterN.Advice.Parameter.IExecution) ConcernAttributeMethod
+				Exit 0 CrossCutterN.Test.OptionsTest.OptionsTestAdvice.MethodExit(CrossCutterN.Advice.Parameter.IExecution,CrossCutterN.Advice.Parameter.IReturn,System.Boolean) ConcernAttributeMethod
+				Exit 1 CrossCutterN.Test.OptionsTest.OptionsTestAdvice.StaticExit(CrossCutterN.Advice.Parameter.IExecution,CrossCutterN.Advice.Parameter.IReturn,System.Boolean) ConcernAttributeStatic
+				Exit 2 CrossCutterN.Test.OptionsTest.OptionsTestAdvice.ProtectedExit(CrossCutterN.Advice.Parameter.IExecution,CrossCutterN.Advice.Parameter.IReturn,System.Boolean) ConcernAttributeProtected
+
+			Method: System.Func`2<System.Int32,System.Int32> CrossCutterN.Test.OptionsTest.OptionsTestTargetBase::InternalMultipleParameter(System.Text.StringBuilder&,System.Int32,System.String,System.Action`1<System.Int32>)
+			6 advices weaved
+				Entry 0 CrossCutterN.Test.OptionsTest.OptionsTestAdvice.InternalEntry(CrossCutterN.Advice.Parameter.IExecution) ConcernAttributeInternal
+				Entry 1 CrossCutterN.Test.OptionsTest.OptionsTestAdvice.InstanceEntry(CrossCutterN.Advice.Parameter.IExecution) ConcernAttributeInstance
+				Entry 2 CrossCutterN.Test.OptionsTest.OptionsTestAdvice.MethodEntry(CrossCutterN.Advice.Parameter.IExecution) ConcernAttributeMethod
+				Exit 0 CrossCutterN.Test.OptionsTest.OptionsTestAdvice.MethodExit(CrossCutterN.Advice.Parameter.IExecution,CrossCutterN.Advice.Parameter.IReturn,System.Boolean) ConcernAttributeMethod
+				Exit 1 CrossCutterN.Test.OptionsTest.OptionsTestAdvice.InstanceExit(CrossCutterN.Advice.Parameter.IExecution,CrossCutterN.Advice.Parameter.IReturn,System.Boolean) ConcernAttributeInstance
+				Exit 2 CrossCutterN.Test.OptionsTest.OptionsTestAdvice.InternalExit(CrossCutterN.Advice.Parameter.IExecution,CrossCutterN.Advice.Parameter.IReturn,System.Boolean) ConcernAttributeInternal
+
+			Method: System.Int32 CrossCutterN.Test.OptionsTest.OptionsTestTargetBase::Square(System.Int32)
+			6 advices weaved
+				Entry 0 CrossCutterN.Test.OptionsTest.OptionsTestAdvice.PrivateEntry(CrossCutterN.Advice.Parameter.IExecution) ConcernAttributePrivate
+				Entry 1 CrossCutterN.Test.OptionsTest.OptionsTestAdvice.StaticEntry(CrossCutterN.Advice.Parameter.IExecution) ConcernAttributeStatic
+				Entry 2 CrossCutterN.Test.OptionsTest.OptionsTestAdvice.MethodEntry(CrossCutterN.Advice.Parameter.IExecution) ConcernAttributeMethod
+				Exit 0 CrossCutterN.Test.OptionsTest.OptionsTestAdvice.MethodExit(CrossCutterN.Advice.Parameter.IExecution,CrossCutterN.Advice.Parameter.IReturn,System.Boolean) ConcernAttributeMethod
+				Exit 1 CrossCutterN.Test.OptionsTest.OptionsTestAdvice.StaticExit(CrossCutterN.Advice.Parameter.IExecution,CrossCutterN.Advice.Parameter.IReturn,System.Boolean) ConcernAttributeStatic
+				Exit 2 CrossCutterN.Test.OptionsTest.OptionsTestAdvice.PrivateExit(CrossCutterN.Advice.Parameter.IExecution,CrossCutterN.Advice.Parameter.IReturn,System.Boolean) ConcernAttributePrivate
+
+			Property: System.Int32 CrossCutterN.Test.OptionsTest.OptionsTestTargetBase::PublicStaticInt()
+			6 advices weaved
+			 Getter:
+				Entry 0 CrossCutterN.Test.OptionsTest.OptionsTestAdvice.PublicEntry(CrossCutterN.Advice.Parameter.IExecution) ConcernAttributePublic
+				Entry 1 CrossCutterN.Test.OptionsTest.OptionsTestAdvice.StaticEntry(CrossCutterN.Advice.Parameter.IExecution) ConcernAttributeStatic
+				Entry 2 CrossCutterN.Test.OptionsTest.OptionsTestAdvice.PropertyGetterEntry(CrossCutterN.Advice.Parameter.IExecution) ConcernAttributePropertyGetter
+				Exit 0 CrossCutterN.Test.OptionsTest.OptionsTestAdvice.PropertyGetterExit(CrossCutterN.Advice.Parameter.IExecution,CrossCutterN.Advice.Parameter.IReturn,System.Boolean) ConcernAttributePropertyGetter
+				Exit 1 CrossCutterN.Test.OptionsTest.OptionsTestAdvice.StaticExit(CrossCutterN.Advice.Parameter.IExecution,CrossCutterN.Advice.Parameter.IReturn,System.Boolean) ConcernAttributeStatic
+				Exit 2 CrossCutterN.Test.OptionsTest.OptionsTestAdvice.PublicExit(CrossCutterN.Advice.Parameter.IExecution,CrossCutterN.Advice.Parameter.IReturn,System.Boolean) ConcernAttributePublic
+			 Setter:
+
+			Property: System.String CrossCutterN.Test.OptionsTest.OptionsTestTargetBase::ProtectedInstanceString()
+			6 advices weaved
+			 Getter:
+			 Setter:
+				Entry 0 CrossCutterN.Test.OptionsTest.OptionsTestAdvice.ProtectedEntry(CrossCutterN.Advice.Parameter.IExecution) ConcernAttributeProtected
+				Entry 1 CrossCutterN.Test.OptionsTest.OptionsTestAdvice.InstanceEntry(CrossCutterN.Advice.Parameter.IExecution) ConcernAttributeInstance
+				Entry 2 CrossCutterN.Test.OptionsTest.OptionsTestAdvice.PropertySetterEntry(CrossCutterN.Advice.Parameter.IExecution) ConcernAttributePropertySetter
+				Exit 0 CrossCutterN.Test.OptionsTest.OptionsTestAdvice.PropertySetterExit(CrossCutterN.Advice.Parameter.IExecution,CrossCutterN.Advice.Parameter.IReturn,System.Boolean) ConcernAttributePropertySetter
+				Exit 1 CrossCutterN.Test.OptionsTest.OptionsTestAdvice.InstanceExit(CrossCutterN.Advice.Parameter.IExecution,CrossCutterN.Advice.Parameter.IReturn,System.Boolean) ConcernAttributeInstance
+				Exit 2 CrossCutterN.Test.OptionsTest.OptionsTestAdvice.ProtectedExit(CrossCutterN.Advice.Parameter.IExecution,CrossCutterN.Advice.Parameter.IReturn,System.Boolean) ConcernAttributeProtected
+
+			Property: System.Func`2<System.Int32,System.Int32> CrossCutterN.Test.OptionsTest.OptionsTestTargetBase::InternalInstanceFunc()
+			12 advices weaved
+			 Getter:
+				Entry 0 CrossCutterN.Test.OptionsTest.OptionsTestAdvice.InternalEntry(CrossCutterN.Advice.Parameter.IExecution) ConcernAttributeInternal
+				Entry 1 CrossCutterN.Test.OptionsTest.OptionsTestAdvice.InstanceEntry(CrossCutterN.Advice.Parameter.IExecution) ConcernAttributeInstance
+				Entry 2 CrossCutterN.Test.OptionsTest.OptionsTestAdvice.PropertyGetterEntry(CrossCutterN.Advice.Parameter.IExecution) ConcernAttributePropertyGetter
+				Exit 0 CrossCutterN.Test.OptionsTest.OptionsTestAdvice.PropertyGetterExit(CrossCutterN.Advice.Parameter.IExecution,CrossCutterN.Advice.Parameter.IReturn,System.Boolean) ConcernAttributePropertyGetter
+				Exit 1 CrossCutterN.Test.OptionsTest.OptionsTestAdvice.InstanceExit(CrossCutterN.Advice.Parameter.IExecution,CrossCutterN.Advice.Parameter.IReturn,System.Boolean) ConcernAttributeInstance
+				Exit 2 CrossCutterN.Test.OptionsTest.OptionsTestAdvice.InternalExit(CrossCutterN.Advice.Parameter.IExecution,CrossCutterN.Advice.Parameter.IReturn,System.Boolean) ConcernAttributeInternal
+			 Setter:
+				Entry 0 CrossCutterN.Test.OptionsTest.OptionsTestAdvice.InternalEntry(CrossCutterN.Advice.Parameter.IExecution) ConcernAttributeInternal
+				Entry 1 CrossCutterN.Test.OptionsTest.OptionsTestAdvice.InstanceEntry(CrossCutterN.Advice.Parameter.IExecution) ConcernAttributeInstance
+				Entry 2 CrossCutterN.Test.OptionsTest.OptionsTestAdvice.PropertySetterEntry(CrossCutterN.Advice.Parameter.IExecution) ConcernAttributePropertySetter
+				Exit 0 CrossCutterN.Test.OptionsTest.OptionsTestAdvice.PropertySetterExit(CrossCutterN.Advice.Parameter.IExecution,CrossCutterN.Advice.Parameter.IReturn,System.Boolean) ConcernAttributePropertySetter
+				Exit 1 CrossCutterN.Test.OptionsTest.OptionsTestAdvice.InstanceExit(CrossCutterN.Advice.Parameter.IExecution,CrossCutterN.Advice.Parameter.IReturn,System.Boolean) ConcernAttributeInstance
+				Exit 2 CrossCutterN.Test.OptionsTest.OptionsTestAdvice.InternalExit(CrossCutterN.Advice.Parameter.IExecution,CrossCutterN.Advice.Parameter.IReturn,System.Boolean) ConcernAttributeInternal
+
+			Property: System.Text.StringBuilder CrossCutterN.Test.OptionsTest.OptionsTestTargetBase::StringBuilder()
+			6 advices weaved
+			 Getter:
+				Entry 0 CrossCutterN.Test.OptionsTest.OptionsTestAdvice.PrivateEntry(CrossCutterN.Advice.Parameter.IExecution) ConcernAttributePrivate
+				Entry 1 CrossCutterN.Test.OptionsTest.OptionsTestAdvice.InstanceEntry(CrossCutterN.Advice.Parameter.IExecution) ConcernAttributeInstance
+				Entry 2 CrossCutterN.Test.OptionsTest.OptionsTestAdvice.PropertyGetterEntry(CrossCutterN.Advice.Parameter.IExecution) ConcernAttributePropertyGetter
+				Exit 0 CrossCutterN.Test.OptionsTest.OptionsTestAdvice.PropertyGetterExit(CrossCutterN.Advice.Parameter.IExecution,CrossCutterN.Advice.Parameter.IReturn,System.Boolean) ConcernAttributePropertyGetter
+				Exit 1 CrossCutterN.Test.OptionsTest.OptionsTestAdvice.InstanceExit(CrossCutterN.Advice.Parameter.IExecution,CrossCutterN.Advice.Parameter.IReturn,System.Boolean) ConcernAttributeInstance
+				Exit 2 CrossCutterN.Test.OptionsTest.OptionsTestAdvice.PrivateExit(CrossCutterN.Advice.Parameter.IExecution,CrossCutterN.Advice.Parameter.IReturn,System.Boolean) ConcernAttributePrivate
+			 Setter:
+
+		Class: CrossCutterN.Test.NameExpressionTest.NameExpressionTestTarget
+		Weaved 2 methods, 1 properties
+
+			Method: System.Void CrossCutterN.Test.NameExpressionTest.NameExpressionTestTarget::MethodToBeConcerned()
+			1 advices weaved
+				Entry 0 CrossCutterN.Test.NameExpressionTest.NameExpressionTestAdvice.Entry() NameExpression
+
+			Method: System.Void CrossCutterN.Test.NameExpressionTest.NameExpressionTestTarget::NotToBeMatchedButMatchedByExact()
+			1 advices weaved
+				Entry 0 CrossCutterN.Test.NameExpressionTest.NameExpressionTestAdvice.Entry() NameExpression
+
+			Property: System.Int32 CrossCutterN.Test.NameExpressionTest.NameExpressionTestTarget::PropertyToBeConcerned()
+			1 advices weaved
+			 Getter:
+				Entry 0 CrossCutterN.Test.NameExpressionTest.NameExpressionTestAdvice.Entry() NameExpression
+			 Setter:
+
+		Class: CrossCutterN.Test.MixedTest.MixedTestTarget
+		Weaved 1 methods, 0 properties
+
+			Method: System.Void CrossCutterN.Test.MixedTest.MixedTestTarget::ConcernedByAttributeAndClassName()
+			7 advices weaved
+				Entry 0 CrossCutterN.Test.MixedTest.MixedTestAdvice.EntryByAttribute1(CrossCutterN.Advice.Parameter.IExecution) ConcernAttribute1Mixed
+				Entry 1 CrossCutterN.Test.MixedTest.MixedTestAdvice.EntryByAttribute2(CrossCutterN.Advice.Parameter.IExecution) ConcernAttribute2Mixed
+				Entry 2 CrossCutterN.Test.MixedTest.MixedTestAdvice.EntryByAttribute3(CrossCutterN.Advice.Parameter.IExecution) ConcernAttribute3Mixed
+				Exit 0 CrossCutterN.Test.MixedTest.MixedTestAdvice.ExitByAttribute1() ConcernAttribute1Mixed
+				Exit 1 CrossCutterN.Test.MixedTest.MixedTestAdvice.ExitByNameExpression(CrossCutterN.Advice.Parameter.IExecution) NameExpressionMixed
+				Exit 2 CrossCutterN.Test.MixedTest.MixedTestAdvice.ExitByAttribute2() ConcernAttribute2Mixed
+				Exit 3 CrossCutterN.Test.MixedTest.MixedTestAdvice.ExitByAttribute3() ConcernAttribute3Mixed
+

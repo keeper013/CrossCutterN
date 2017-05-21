@@ -44,13 +44,13 @@ namespace CrossCutterN.Weaver
             return Processor.Weave(inputAssemblyPath, outputAssemblyPath, _batch, includeSymbol);
         }
 
-        public IWeaver ToReadOnly()
+        public IWeaver Convert()
         {
             if (_writeOnlyBatch == null)
             {
                 throw new InvalidOperationException("The weaver has been set to read-only already.");
             }
-            _batch = _writeOnlyBatch.ToReadOnly();
+            _batch = _writeOnlyBatch.Convert();
             _writeOnlyBatch = null;
             return this;
         }

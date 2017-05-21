@@ -7,7 +7,7 @@ namespace CrossCutterN.Weaver.Statistics
 {
     using Advice.Common;
 
-    internal interface ICanAddClassWeavingStatistics : ICanConvertToReadOnly<IModuleWeavingStatistics>
+    internal interface ICanAddClassWeavingStatistics : ICanConvert<IModuleWeavingStatistics>
     {
         void AddClassWeavingStatistics(IClassWeavingStatistics statistics);
     }

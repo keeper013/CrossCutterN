@@ -37,7 +37,7 @@ namespace CrossCutterN.Weaver.Utilities
                 }
             }
             writableMethod.ClassCustomAttributes = classCustomAttributes;
-            return writableMethod.ToReadOnly();
+            return writableMethod.Convert();
         }
 
         public static IProperty Convert(this Mono.Cecil.PropertyDefinition property, IReadOnlyCollection<ICustomAttribute> classCustomAttributes)
@@ -73,7 +73,7 @@ namespace CrossCutterN.Weaver.Utilities
                 }
             }
             writableProperty.ClassCustomAttributes = classCustomAttributes;
-            return writableProperty.ToReadOnly();
+            return writableProperty.Convert();
         }
 
         private static IParameter Convert(this Mono.Cecil.ParameterDefinition parameter, int sequence)
@@ -91,7 +91,7 @@ namespace CrossCutterN.Weaver.Utilities
                     writableParameter.AddCustomAttribute(Convert(parameter.CustomAttributes[i], i));
                 }
             }
-            return writableParameter.ToReadOnly();
+            return writableParameter.Convert();
         }
 
         public static ICustomAttribute Convert(this Mono.Cecil.CustomAttribute attribute, int sequence)
@@ -108,7 +108,7 @@ namespace CrossCutterN.Weaver.Utilities
                     customAttribute.AddAttributeProperty(Convert(attribute.Properties[i], i));
                 }
             }
-            return customAttribute.ToReadOnly();
+            return customAttribute.Convert();
         }
 
         private static IAttributeProperty Convert(Mono.Cecil.CustomAttributeNamedArgument property, int sequence)

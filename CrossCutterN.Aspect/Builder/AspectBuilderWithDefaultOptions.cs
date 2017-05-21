@@ -197,7 +197,7 @@ namespace CrossCutterN.Aspect.Builder
             _pointCut.Add(joinPoint, advice);
         }
 
-        public IAspectBuilder ToReadOnly()
+        public IAspectBuilder Convert()
         {
             if (!_pointCut.Any())
             {

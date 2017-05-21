@@ -163,7 +163,7 @@ namespace CrossCutterN.Weaver.Reference.Advice.Parameter
             }
         }
 
-        public IParameterFactoryReference ToReadOnly()
+        public IParameterFactoryReference Convert()
         {
             if (_initializeExecution == null || _initializeExecutionContext == null || _initializeReturn == null)
             {

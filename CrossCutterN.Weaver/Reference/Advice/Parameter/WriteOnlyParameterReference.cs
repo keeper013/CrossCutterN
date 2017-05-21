@@ -95,7 +95,7 @@ namespace CrossCutterN.Weaver.Reference.Advice.Parameter
             }
         }
 
-        MethodReference ICanAddCustomAttributeReference.ToReadOnlyMethod
+        MethodReference ICanAddCustomAttributeReference.ConvertMethod
         {
             get
             {
@@ -104,7 +104,7 @@ namespace CrossCutterN.Weaver.Reference.Advice.Parameter
             }
         }
 
-        public MethodInfo ToReadOnlyMethod
+        public MethodInfo ConvertMethod
         {
             set
             {
@@ -117,7 +117,7 @@ namespace CrossCutterN.Weaver.Reference.Advice.Parameter
             }
         }
 
-        public ICanAddCustomAttributeReference ToReadOnly()
+        public ICanAddCustomAttributeReference Convert()
         {
             if(_addCustomAttributeMethod == null || _readOnlyTypeReference == null ||  
                 _toReadOnlyMethod == null || _typeReference == null)

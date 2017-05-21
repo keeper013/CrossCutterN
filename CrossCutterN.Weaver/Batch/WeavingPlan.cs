@@ -73,7 +73,7 @@ namespace CrossCutterN.Weaver.Batch
             return _plan[joinPoint].Values.ToList().AsReadOnly();
         }
 
-        public IWeavingPlan ToReadOnly()
+        public IWeavingPlan Convert()
         {
             // with possibility to be empty, plan may be empty if the population process isn't monitored
             // and the code looks dirty to monitor weaving plan population
