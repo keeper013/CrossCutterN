@@ -83,7 +83,6 @@
     <Compile Include="Statistics\IPropertyMethodWeavingRecords.cs" />
     <Compile Include="Statistics\PropertyMethodWeavingRecords.cs" />
     <Compile Include="Utilities\AddBuilderByConfiguration.cs" />
-    <Compile Include="Utilities\ReflectionUtility.cs" />
     <Compile Include="Weaver.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Reference\AdviceParameterReference.cs" />

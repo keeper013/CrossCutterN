@@ -45,6 +45,7 @@
     <Compile Include="Common\IHasSortKey.cs" />
     <Compile Include="Common\IrreversibleOperation.cs" />
     <Compile Include="Common\ReadOnlyCollectionLookup.cs" />
+    <Compile Include="Common\ReflectionUtility.cs" />
     <Compile Include="Common\StringKeyIntSortKeyReadOnlyCollectionLookup.cs" />
     <Compile Include="Concern\ClassConcernAttribute.cs" />
     <Compile Include="Concern\MethodConcernAttribute.cs" />
@@ -68,6 +69,12 @@
     <Compile Include="Parameter\Parameter.cs" />
     <Compile Include="Parameter\Return.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Switch\AdviceSwitch.cs" />
+    <Compile Include="Switch\ClassAdviceSwitch.cs" />
+    <Compile Include="Switch\IAdviceSwitch.cs" />
+    <Compile Include="Switch\IAdviceSwitchBuildUp.cs" />
+    <Compile Include="Switch\IAdviceSwitchLookUp.cs" />
+    <Compile Include="Switch\IClassAdviceSwitch.cs" />
   </ItemGroup>
   <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

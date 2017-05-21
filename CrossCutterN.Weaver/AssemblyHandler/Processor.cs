@@ -212,7 +212,7 @@ namespace CrossCutterN.Weaver.AssemblyHandler
                     var advice = advices.ElementAt(i);
                     handler.CallAdvice(advice);
                     var record = StatisticsFactory.InitializeWeavingRecord(
-                        JoinPoint.Entry, advice.BuilderId, advice.Advice.GetFullName(), advice.Advice.GetSignature(), i);
+                        JoinPoint.Entry, advice.BuilderId, advice.Advice.GetFullName(), advice.Advice.GetSignatureWithTypeFullName(), i);
                     statistics.AddWeavingRecord(record);
                 }
                 handler.FinalizeWeavingEntry();
@@ -230,7 +230,7 @@ namespace CrossCutterN.Weaver.AssemblyHandler
                     var advice = advices.ElementAt(i);
                     handler.CallAdvice(advice);
                     var record = StatisticsFactory.InitializeWeavingRecord(
-                        JoinPoint.Exception, advice.BuilderId, advice.Advice.GetFullName(), advice.Advice.GetSignature(), i);
+                        JoinPoint.Exception, advice.BuilderId, advice.Advice.GetFullName(), advice.Advice.GetSignatureWithTypeFullName(), i);
                     statistics.AddWeavingRecord(record);
                 }
             }
@@ -249,7 +249,7 @@ namespace CrossCutterN.Weaver.AssemblyHandler
                     var advice = advices.ElementAt(i);
                     handler.CallAdvice(advice);
                     var record = StatisticsFactory.InitializeWeavingRecord(
-                        JoinPoint.Exit, advice.BuilderId, advice.Advice.GetFullName(), advice.Advice.GetSignature(), i);
+                        JoinPoint.Exit, advice.BuilderId, advice.Advice.GetFullName(), advice.Advice.GetSignatureWithTypeFullName(), i);
                     statistics.AddWeavingRecord(record);
                 }
             }

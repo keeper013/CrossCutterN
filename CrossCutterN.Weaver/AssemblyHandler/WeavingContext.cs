@@ -50,7 +50,7 @@ namespace CrossCutterN.Weaver.AssemblyHandler
             {
                 throw new ArgumentNullException("method");
             }
-            var key = method.GetSignature();
+            var key = method.GetSignatureWithTypeFullName();
             if (!_methodReferences.ContainsKey(key))
             {
                 _methodReferences.Add(key, _module.Import(method));
@@ -63,7 +63,7 @@ namespace CrossCutterN.Weaver.AssemblyHandler
             {
                 throw new ArgumentNullException("method");
             }
-            var key = method.GetSignature();
+            var key = method.GetSignatureWithTypeFullName();
             if (!_methodReferences.ContainsKey(key))
             {
                 _methodReferences.Add(key, _module.Import(method));
