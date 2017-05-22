@@ -7,26 +7,22 @@ namespace CrossCutterN.Advice.Switch
 {
     using System;
     using System.Collections.Generic;
+    using Common;
 
-    internal class ClassAdviceSwitch : IClassAdviceSwitch
+    internal sealed class ClassAdviceSwitch : IClassAdviceSwitch, IClassAdviceSwitchBuildUp
     {
-        private Dictionary<string, Dictionary<string, int>> _propertySwitchDictionary = new Dictionary<string, Dictionary<string, int>>();
-        private Dictionary<string, Dictionary<string, int>> _methodSwitchDictionary = new Dictionary<string, Dictionary<string, int>>();
-        private Dictionary<string, List<int>> _aspectSwitchDictionary = new Dictionary<string, List<int>>();
+        private readonly Dictionary<string, Dictionary<string, int>> _propertySwitchDictionary = new Dictionary<string, Dictionary<string, int>>();
+        private readonly Dictionary<string, Dictionary<string, int>> _methodSwitchDictionary = new Dictionary<string, Dictionary<string, int>>();
+        private readonly Dictionary<string, List<int>> _aspectSwitchDictionary = new Dictionary<string, List<int>>();
         private readonly IDictionary<int, bool> _switchDictionary;
-        private readonly string _className;
+        private readonly IrreversibleOperation _complete = new IrreversibleOperation();
 
-        public ClassAdviceSwitch(string className, IDictionary<int, bool> switchDictionary)
+        public ClassAdviceSwitch(IDictionary<int, bool> switchDictionary)
         {
-            if(string.IsNullOrWhiteSpace(className))
-            {
-                throw new ArgumentException("className");
-            }
             if(switchDictionary == null)
             {
                 throw new ArgumentNullException("switchDictionary");
             }
-            _className = className;
             _switchDictionary = switchDictionary;
         }
 
@@ -36,183 +32,56 @@ namespace CrossCutterN.Advice.Switch
             {
                 throw new ArgumentNullException("aspect");
             }
+            _complete.Assert(true);
             return _aspectSwitchDictionary.ContainsKey(aspect);
         }
 
-        public int SwitchPropertyAspect(string propertyName, string aspect)
-        {
-            var id = LocatePropertyAspectSwitch(propertyName, aspect);
-            _switchDictionary[id] = !_switchDictionary[id];
-            return 1;
-        }
+        #region Switch
 
-        public int SwitchAspect(string aspect)
+        public int Switch(SwitchStatus status)
         {
-            var ids = LocateAspectSwitches(aspect);
-            foreach (var id in ids)
+            _complete.Assert(true);
+            var enumerator = _aspectSwitchDictionary.GetEnumerator();
+            var count = 0;
+            while (enumerator.MoveNext())
             {
-                _switchDictionary[id] = !_switchDictionary[id];
+                foreach (var id in enumerator.Current.Value)
+                {
+                    _switchDictionary[id] = Switch(!_switchDictionary[id], status);
+                }
+                count += enumerator.Current.Value.Count;
             }
-            return ids.Count;
+            return count;
         }
 
-        public int SwitchMethod(string methodSignature)
+        public int SwitchAspect(string aspect, SwitchStatus status)
         {
-            var ids = LocateMethodSwitches(methodSignature);
-            foreach (var id in ids)
-            {
-                _switchDictionary[id] = !_switchDictionary[id];
-            }
-            return ids.Count;
-        }
-
-        public int SwitchMethodAspect(string methodSignature, string aspect)
-        {
-            var id = LocateMethodAspectSwitch(methodSignature, aspect);
-            _switchDictionary[id] = !_switchDictionary[id];
-            return 1;
-        }
-
-        public int SwitchProperty(string propertyName)
-        {
-            var ids = LocatePropertySwitches(propertyName);
-            foreach (var id in ids)
-            {
-                _switchDictionary[id] = !_switchDictionary[id];
-            }
-            return ids.Count;
-        }
-
-        public int SwitchOffPropertyAspect(string propertyName, string aspect)
-        {
-            var id = LocatePropertyAspectSwitch(propertyName, aspect);
-            _switchDictionary[id] = false;
-            return 1;
-        }
-
-        public int SwitchOffAspect(string aspect)
-        {
-            var ids = LocateAspectSwitches(aspect);
-            foreach (var id in ids)
-            {
-                _switchDictionary[id] = false;
-            }
-            return ids.Count;
-        }
-
-        public int SwitchOffMethod(string methodSignature)
-        {
-            var ids = LocateMethodSwitches(methodSignature);
-            foreach (var id in ids)
-            {
-                _switchDictionary[id] = false;
-            }
-            return ids.Count;
-        }
-
-        public int SwitchOffMethodAspect(string methodSignature, string aspect)
-        {
-            var id = LocateMethodAspectSwitch(methodSignature, aspect);
-            _switchDictionary[id] = false;
-            return 1;
-        }
-
-        public int SwitchOffProperty(string propertyName)
-        {
-            var ids = LocatePropertySwitches(propertyName);
-            foreach (var id in ids)
-            {
-                _switchDictionary[id] = false;
-            }
-            return ids.Count;
-        }
-
-        public int SwitchOnPropertyAspect(string propertyName, string aspect)
-        {
-            var id = LocatePropertyAspectSwitch(propertyName, aspect);
-            _switchDictionary[id] = true;
-            return 1;
-        }
-
-        public int SwitchOnAspect(string aspect)
-        {
-            var ids = LocateAspectSwitches(aspect);
-            foreach (var id in ids)
-            {
-                _switchDictionary[id] = true;
-            }
-            return ids.Count;
-        }
-
-        public int SwitchOnMethod(string methodSignature)
-        {
-            var ids = LocateMethodSwitches(methodSignature);
-            foreach (var id in ids)
-            {
-                _switchDictionary[id] = true;
-            }
-            return ids.Count;
-        }
-
-        public int SwitchOnMethodAspect(string methodSignature, string aspect)
-        {
-            var id = LocateMethodAspectSwitch(methodSignature, aspect);
-            _switchDictionary[id] = true;
-            return 1;
-        }
-
-        public int SwitchOnProperty(string propertyName)
-        {
-            var ids = LocatePropertySwitches(propertyName);
-            foreach (var id in ids)
-            {
-                _switchDictionary[id] = true;
-            }
-            return ids.Count;
-        }
-
-        private int LocatePropertyAspectSwitch(string propertyName, string aspect)
-        {
-            if (string.IsNullOrEmpty(propertyName))
-            {
-                throw new ArgumentNullException("propertyName");
-            }
+#if DEBUG
+            // the code will be called in client assembly, so reducing unnecessary validations for performance consideration
             if (string.IsNullOrEmpty(aspect))
             {
                 throw new ArgumentNullException("aspect");
             }
-            if (!_propertySwitchDictionary.ContainsKey(propertyName))
-            {
-                throw new ArgumentException(
-                    string.Format("Invalid property name {0} in class {1}", propertyName, _className), "propertyName");
-            }
-            var aspectDictionary = _propertySwitchDictionary[propertyName];
-            // apply this exception to avoid user switching off wrong aspect name
-            if (!aspectDictionary.ContainsKey(aspect))
-            {
-                throw new ArgumentException(
-                    string.Format("Aspect {0} is not applied to property {1} of class {2}", aspect, propertyName, _className), "aspect");
-            }
-            return aspectDictionary[aspect];
-        }
-
-        private ICollection<int> LocateAspectSwitches(string aspect)
-        {
-            if (string.IsNullOrEmpty(aspect))
-            {
-                throw new ArgumentNullException("aspect");
-            }
-            // apply this exception to avoid user switching off wrong aspect name
+            _complete.Assert(true);
             if (!_aspectSwitchDictionary.ContainsKey(aspect))
             {
                 throw new ArgumentException(
-                    string.Format("Aspect {0} isn't applied to any property or method in class {1}", aspect, _className), "aspect");
+                    string.Format("Aspect {0} isn't applied to any property or method", aspect), "aspect");
             }
-            return _aspectSwitchDictionary[aspect];
+#endif
+            var ids = _aspectSwitchDictionary[aspect];
+            _complete.Assert(true);
+            foreach (var id in ids)
+            {
+                _switchDictionary[id] = Switch(!_switchDictionary[id], status);
+            }
+            return ids.Count;
         }
 
-        private ICollection<int> LocateMethodSwitches(string methodSignature)
+        public int SwitchMethod(string methodSignature, SwitchStatus status)
         {
+#if DEBUG
+            // the code will be called in client assembly, so reducing unnecessary validations for performance consideration
             if (string.IsNullOrEmpty(methodSignature))
             {
                 throw new ArgumentNullException("methodSignature");
@@ -220,13 +89,23 @@ namespace CrossCutterN.Advice.Switch
             if (!_methodSwitchDictionary.ContainsKey(methodSignature))
             {
                 throw new ArgumentException(
-                    string.Format("Method {0} isn't applied to any property or method in class {1}", methodSignature, _className), "methodSignature");
+                    string.Format("Method {0} isn't applied to any property or method", methodSignature), "methodSignature");
             }
-            return _methodSwitchDictionary[methodSignature].Values;
+#endif
+            _complete.Assert(true);
+            var ids = _methodSwitchDictionary[methodSignature].Values;
+            _complete.Assert(true);
+            foreach (var id in ids)
+            {
+                _switchDictionary[id] = Switch(_switchDictionary[id], status);
+            }
+            return ids.Count;
         }
 
-        private int LocateMethodAspectSwitch(string methodSignature, string aspect)
+        public int SwitchMethodAspect(string methodSignature, string aspect, SwitchStatus status)
         {
+#if DEBUG
+            // the code will be called in client assembly, so reducing unnecessary validations for performance consideration
             if (string.IsNullOrEmpty(methodSignature))
             {
                 throw new ArgumentNullException("methodSignature");
@@ -238,20 +117,27 @@ namespace CrossCutterN.Advice.Switch
             if (!_methodSwitchDictionary.ContainsKey(methodSignature))
             {
                 throw new ArgumentException(
-                    string.Format("Method {0} isn't applied to any property or method in class {1}", methodSignature, _className), "methodSignature");
+                    string.Format("Method {0} isn't applied to any property or method", methodSignature), "methodSignature");
             }
+#endif
+            _complete.Assert(true);
             var aspectDictionary = _methodSwitchDictionary[methodSignature];
             // apply this exception to avoid user switching off wrong aspect name
             if (!aspectDictionary.ContainsKey(aspect))
             {
                 throw new ArgumentException(
-                    string.Format("Aspect {0} is not applied to method {1} of class {2}", aspect, methodSignature, _className), "aspect");
+                    string.Format("Aspect {0} is not applied to method {1}", aspect, methodSignature), "aspect");
             }
-            return aspectDictionary[aspect];
+            var id = aspectDictionary[aspect];
+            _complete.Assert(true);
+            _switchDictionary[id] = Switch(!_switchDictionary[id], status);
+            return 1;
         }
 
-        private ICollection<int> LocatePropertySwitches(string propertyName)
+        public int SwitchProperty(string propertyName, SwitchStatus status)
         {
+#if DEBUG
+            // the code will be called in client assembly, so reducing unnecessary validations for performance consideration
             if (string.IsNullOrEmpty(propertyName))
             {
                 throw new ArgumentNullException("propertyName");
@@ -259,9 +145,134 @@ namespace CrossCutterN.Advice.Switch
             if (!_propertySwitchDictionary.ContainsKey(propertyName))
             {
                 throw new ArgumentException(
-                    string.Format("Property {0} isn't applied to any property or method in class {1}", propertyName, _className), "propertyName");
+                    string.Format("Property {0} isn't applied to any property or method", propertyName), "propertyName");
             }
-            return _propertySwitchDictionary[propertyName].Values;
+#endif
+            _complete.Assert(true);
+            var ids = _propertySwitchDictionary[propertyName].Values;
+            _complete.Assert(true);
+            foreach (var id in ids)
+            {
+                _switchDictionary[id] = Switch(!_switchDictionary[id], status);
+            }
+            return ids.Count;
         }
+
+        public int SwitchPropertyAspect(string propertyName, string aspect, SwitchStatus status)
+        {
+#if DEBUG
+            // the code will be called in client assembly, so reducing unnecessary validations for performance consideration
+            if (string.IsNullOrEmpty(propertyName))
+            {
+                throw new ArgumentNullException("propertyName");
+            }
+            if (string.IsNullOrEmpty(aspect))
+            {
+                throw new ArgumentNullException("aspect");
+            }
+            if (!_propertySwitchDictionary.ContainsKey(propertyName))
+            {
+                throw new ArgumentException(
+                    string.Format("Invalid property name {0}", propertyName), "propertyName");
+            }
+#endif
+            _complete.Assert(true);
+            // apply this exception to avoid user switching off wrong aspect name
+            var aspectDictionary = _propertySwitchDictionary[propertyName];
+            if (!aspectDictionary.ContainsKey(aspect))
+            {
+                throw new ArgumentException(
+                    string.Format("Aspect {0} is not applied to property {1}", aspect, propertyName), "aspect");
+            }
+            var id = aspectDictionary[aspect];
+            _complete.Assert(true);
+            _switchDictionary[id] = Switch(_switchDictionary[id], status);
+            return 1;
+        }
+
+        #endregion
+
+        #region BuildUp
+
+        public void RegisterSwitch(int id, string propertyName, string methodSignature, string aspect)
+        {
+#if DEBUG
+            // the code will be called in client assembly, so reducing unnecessary validations for performance consideration
+            if (string.IsNullOrWhiteSpace(aspect))
+            {
+                throw new ArgumentNullException("aspect");
+            }
+            if (string.IsNullOrWhiteSpace(methodSignature))
+            {
+                throw new ArgumentException("Method of property can't be empty");
+            }
+            if (!string.IsNullOrWhiteSpace(methodSignature) && _methodSwitchDictionary.ContainsKey(methodSignature) && _methodSwitchDictionary[methodSignature].ContainsKey(aspect))
+            {
+                throw new ArgumentException(
+                    string.Format("Aspect {0} is added for property method {1} already", aspect, propertyName), "aspect");
+            }
+            if (_aspectSwitchDictionary.ContainsKey(aspect) && _aspectSwitchDictionary[aspect].Contains(id))
+            {
+                throw new ArgumentException(string.Format("Id {0} is added to aspect {1} already", id, aspect), "id");
+            }
+#endif
+            _complete.Assert(false);
+            if (!string.IsNullOrWhiteSpace(propertyName))
+            {
+                if (_propertySwitchDictionary.ContainsKey(propertyName))
+                {
+                    _propertySwitchDictionary[propertyName].Add(aspect, id);
+                }
+                else
+                {
+                    _propertySwitchDictionary.Add(propertyName, new Dictionary<string, int> { { aspect, id } });
+                }
+            }
+            if (!string.IsNullOrWhiteSpace(methodSignature))
+            {
+                if (_methodSwitchDictionary.ContainsKey(methodSignature))
+                {
+                    _methodSwitchDictionary[methodSignature].Add(aspect, id);
+                }
+                else
+                {
+                    _methodSwitchDictionary.Add(methodSignature, new Dictionary<string, int> {{aspect, id}});
+                }
+            }
+            if (_aspectSwitchDictionary.ContainsKey(aspect))
+            {
+                _aspectSwitchDictionary[aspect].Add(id);
+            }
+            else
+            {
+                _aspectSwitchDictionary.Add(aspect, new List<int> { id });
+            }
+        }
+
+        public IClassAdviceSwitch Convert()
+        {
+            _complete.Apply();
+            return this;
+        }
+
+        #endregion
+
+        #region Switch Utilities
+
+        private static bool Switch(bool value, SwitchStatus status)
+        {
+            switch (status)
+            {
+                case SwitchStatus.On:
+                    return true;
+                case SwitchStatus.Off:
+                    return false;
+                case SwitchStatus.Switched:
+                    return !value;
+            }
+            throw new InvalidOperationException(string.Format("Unexpected switch status: {0}", status));
+        }
+
+        #endregion
     }
 }

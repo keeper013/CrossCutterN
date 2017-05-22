@@ -70,11 +70,18 @@
     <Compile Include="Parameter\Return.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Switch\AdviceSwitch.cs" />
+    <Compile Include="Switch\AdviceSwitchController.cs" />
     <Compile Include="Switch\ClassAdviceSwitch.cs" />
+    <Compile Include="Switch\ClassAdviceSwitchOperation.cs" />
     <Compile Include="Switch\IAdviceSwitch.cs" />
     <Compile Include="Switch\IAdviceSwitchBuildUp.cs" />
     <Compile Include="Switch\IAdviceSwitchLookUp.cs" />
     <Compile Include="Switch\IClassAdviceSwitch.cs" />
+    <Compile Include="Switch\IClassAdviceSwitchBuildUp.cs" />
+    <Compile Include="Switch\IClassAdviceSwitchOperation.cs" />
+    <Compile Include="Switch\SequenceGenerator.cs" />
+    <Compile Include="Switch\SwitchFactory.cs" />
+    <Compile Include="Switch\SwitchOperation.cs" />
   </ItemGroup>
   <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

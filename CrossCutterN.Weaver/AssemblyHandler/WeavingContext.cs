@@ -10,8 +10,8 @@ namespace CrossCutterN.Weaver.AssemblyHandler
     using System.Collections.Generic;
     using Mono.Cecil;
     using Mono.Cecil.Cil;
+    using Advice.Common;
     using Reference;
-    using Utilities;
 
     internal class WeavingContext : IWeavingContext
     {

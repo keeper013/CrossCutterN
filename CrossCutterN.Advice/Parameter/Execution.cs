@@ -34,6 +34,8 @@ namespace CrossCutterN.Advice.Parameter
         internal MethodExecution(string assemblyFullName, string nameSpace, string classFullName, 
             string className, string fullName, string name, string returnType)
         {
+#if DEBUG
+            // the code will be called in client assembly, so reducing unnecessary validations for performance consideration
             if(string.IsNullOrWhiteSpace(assemblyFullName))
             {
                 throw new ArgumentNullException("assemblyFullName");
@@ -62,6 +64,7 @@ namespace CrossCutterN.Advice.Parameter
             {
                 throw new ArgumentNullException("returnType");
             }
+#endif
             AssemblyFullName = assemblyFullName;
             Namespace = nameSpace;
             ClassFullName = classFullName;

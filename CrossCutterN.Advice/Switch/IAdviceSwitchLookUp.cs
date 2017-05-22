@@ -5,7 +5,7 @@
 
 namespace CrossCutterN.Advice.Switch
 {
-    internal interface IAdviceSwitchLookUp
+    public interface IAdviceSwitchLookUp
     {
         bool IsOn(int id);
     }

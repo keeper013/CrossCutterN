@@ -9,22 +9,11 @@ namespace CrossCutterN.Advice.Switch
     {
         bool IsAspectApplied(string aspect);
 
-        int SwitchMethod(string methodSignature);
-        int SwitchProperty(string propertyName);
-        int SwitchAspect(string aspect);
-        int SwitchMethodAspect(string methodSignature, string aspect);
-        int SwitchPropertyAspect(string propertyName, string aspect);
-
-        int SwitchOnMethod(string methodSignature);
-        int SwitchOnProperty(string propertyName);
-        int SwitchOnAspect(string aspect);
-        int SwitchOnMethodAspect(string methodSignature, string aspect);
-        int SwitchOnPropertyAspect(string propertyName, string aspect);
-
-        int SwitchOffMethod(string methodSignature);
-        int SwitchOffProperty(string propertyName);
-        int SwitchOffAspect(string aspect);
-        int SwitchOffMethodAspect(string methodSignature, string aspect);
-        int SwitchOffPropertyAspect(string propertyName, string aspect);
+        int Switch(SwitchStatus status);
+        int SwitchMethod(string methodSignature, SwitchStatus status);
+        int SwitchProperty(string propertyName, SwitchStatus status);
+        int SwitchAspect(string aspect, SwitchStatus status);
+        int SwitchMethodAspect(string methodSignature, string aspect, SwitchStatus status);
+        int SwitchPropertyAspect(string propertyName, string aspect, SwitchStatus status);
     }
 }

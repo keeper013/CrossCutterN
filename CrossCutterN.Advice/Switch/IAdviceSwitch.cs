@@ -8,7 +8,7 @@ namespace CrossCutterN.Advice.Switch
     using System;
     using System.Reflection;
 
-    internal interface IAdviceSwitch
+    public interface IAdviceSwitch
     {
         int Switch(Type type);
         int Switch(MethodInfo method);

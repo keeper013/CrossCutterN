@@ -11,6 +11,7 @@ namespace CrossCutterN.Weaver.AssemblyHandler
     using System.Linq;
     using Mono.Cecil;
     using Mono.Cecil.Pdb;
+    using Advice.Common;
     using Aspect;
     using Statistics;
     using Utilities;

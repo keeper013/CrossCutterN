@@ -25,6 +25,8 @@ namespace CrossCutterN.Advice.Parameter
 
         internal AttributeProperty(string name, string typeName, int sequence, object value)
         {
+#if DEBUG
+            // the code will be called in client assembly, so reducing unnecessary validations for performance consideration
             if (string.IsNullOrWhiteSpace(name))
             {
                 throw new ArgumentNullException("name");
@@ -37,6 +39,7 @@ namespace CrossCutterN.Advice.Parameter
             {
                 throw new ArgumentOutOfRangeException("sequence", "Sequence must be non-negative number.");
             }
+#endif
             Name = name;
             TypeName = typeName;
             Sequence = sequence;

@@ -3,7 +3,7 @@
  * Author: David Cui
  */
 
-namespace CrossCutterN.Weaver.Utilities
+namespace CrossCutterN.Advice.Common
 {
     using System;
     using System.Linq;
