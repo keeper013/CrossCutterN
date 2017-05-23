@@ -8,7 +8,6 @@ using System;
 namespace CrossCutterN.Weaver.AssemblyHandler
 {
     using System.Collections.Generic;
-    using System.Linq;
     using Mono.Cecil;
     using Mono.Cecil.Cil;
 
@@ -64,10 +63,6 @@ namespace CrossCutterN.Weaver.AssemblyHandler
 
         public static Instruction CreateLoadCustomAttributePropertyValueInstruction(this ILProcessor processor, CustomAttributeArgument argument)
         {
-            if (processor == null)
-            {
-                throw new ArgumentNullException("processor");
-            }
             if (argument.Type.FullName.Equals(typeof (string).FullName))
             {
                 return processor.Create(OpCodes.Ldstr, argument.Value.ToString());
@@ -112,10 +107,6 @@ namespace CrossCutterN.Weaver.AssemblyHandler
 
         public static Instruction CreateIndirectLoadInstruction(this ILProcessor processor, TypeReference type)
         {
-            if (processor == null)
-            {
-                throw new ArgumentNullException("processor");
-            }
             Instruction result;
             var referencedTypeSpec = type as TypeSpecification;
             if (referencedTypeSpec != null && IndirectLoadingOpCodeDictionary.ContainsKey(referencedTypeSpec.ElementType.MetadataType))
@@ -135,10 +126,6 @@ namespace CrossCutterN.Weaver.AssemblyHandler
 
         public static Instruction CreateBoxValueTypeInstruction(this ILProcessor processor, TypeReference type)
         {
-            if (processor == null)
-            {
-                throw new ArgumentNullException("processor");
-            }
             Instruction result;
             var referencedTypeSpec = type as TypeSpecification;
             if (referencedTypeSpec != null &&
@@ -151,6 +138,11 @@ namespace CrossCutterN.Weaver.AssemblyHandler
                 result = processor.Create(OpCodes.Box, type);
             }
             return result;
+        }
+
+        public static bool IsStaticConstructor(this MethodDefinition method)
+        {
+            return method.IsConstructor && method.IsStatic && !method.HasParameters;
         }
     }
 }

@@ -5,171 +5,79 @@
 
 namespace CrossCutterN.Weaver.Reference.Advice.Parameter
 {
-    using System;
     using System.Reflection;
     using Mono.Cecil;
-    using CrossCutterN.Advice.Common;
 
-    internal sealed class ParameterFactoryReference : IParameterFactoryReference, IParameterFactoryWriteOnlyReference
+    internal sealed class ParameterFactoryReference : ReferenceBase, IParameterFactoryReference, IParameterFactoryWriteOnlyReference
     {
-        private readonly ModuleDefinition _module;
-        private MethodReference _initializeExecution;
-        private MethodReference _initializeExecutionContext;
-        private MethodReference _initializeParameter;
-        private MethodReference _initializeCustomAttribute;
-        private MethodReference _initializeAttributeProperty;
-        private MethodReference _initializeReturn;
-
-        private readonly IrreversibleOperation _readOnly = new IrreversibleOperation();
-
-        public ParameterFactoryReference(ModuleDefinition module)
+        public ParameterFactoryReference(ModuleDefinition module) : base(module, true)
         {
-            if (module == null)
-            {
-                throw new ArgumentNullException("module");
-            }
-            _module = module;
         }
 
         MethodReference IParameterFactoryReference.InitializeExecutionMethod
         {
-            get
-            {
-                _readOnly.Assert(true);
-                return _initializeExecution;
-            }
+            get { return GetMethod("InitializeExecutionMethod"); }
         }
 
         public MethodInfo InitializeExecutionMethod
         {
-            set
-            {
-                if (value == null)
-                {
-                    throw new ArgumentNullException("value");
-                }
-                _readOnly.Assert(false);
-                _initializeExecution = _module.Import(value);
-            }
+            set { SetMethod("InitializeExecutionMethod", value); }
         }
 
         MethodReference IParameterFactoryReference.InitializeExecutionContextMethod
         {
-            get
-            {
-                _readOnly.Assert(true);
-                return _initializeExecutionContext;
-            }
+            get { return GetMethod("InitializeExecutionContextMethod"); }
         }
 
         public MethodInfo InitializeExecutionContextMethod
         {
-            set
-            {
-                if (value == null)
-                {
-                    throw new ArgumentNullException("value");
-                }
-                _readOnly.Assert(false);
-                _initializeExecutionContext = _module.Import(value);
-            }
+            set { SetMethod("InitializeExecutionContextMethod", value); }
         }
 
         MethodReference IParameterFactoryReference.InitializeParameterMethod
         {
-            get
-            {
-                _readOnly.Assert(true);
-                return _initializeParameter;
-            }
+            get { return GetMethod("InitializeParameterMethod"); }
         }
 
         public MethodInfo InitializeParameterMethod
         {
-            set
-            {
-                if (value == null)
-                {
-                    throw new ArgumentNullException("value");
-                }
-                _readOnly.Assert(false);
-                _initializeParameter = _module.Import(value);
-            }
+            set { SetMethod("InitializeParameterMethod", value); }
         }
 
         MethodReference IParameterFactoryReference.InitializeCustomAttributeMethod
         {
-            get
-            {
-                _readOnly.Assert(true);
-                return _initializeCustomAttribute;
-            }
+            get { return GetMethod("InitializeCustomAttributeMethod"); }
         }
 
         public MethodInfo InitializeCustomAttributeMethod
         {
-            set
-            {
-                if (value == null)
-                {
-                    throw new ArgumentNullException("value");
-                }
-                _readOnly.Assert(false);
-                _initializeCustomAttribute = _module.Import(value);
-            }
+            set { SetMethod("InitializeCustomAttributeMethod", value); }
         }
 
         MethodReference IParameterFactoryReference.InitializeAttributePropertyMethod
         {
-            get
-            {
-                _readOnly.Assert(true);
-                return _initializeAttributeProperty;
-            }
+            get { return GetMethod("InitializeAttributePropertyMethod"); }
         }
 
         public MethodInfo InitializeAttributePropertyMethod
         {
-            set
-            {
-                if (value == null)
-                {
-                    throw new ArgumentNullException("value");
-                }
-                _readOnly.Assert(false);
-                _initializeAttributeProperty = _module.Import(value);
-            }
+            set { SetMethod("InitializeAttributePropertyMethod", value); }
         }
 
         MethodReference IParameterFactoryReference.InitializeReturnMethod
         {
-            get
-            {
-                _readOnly.Assert(true);
-                return _initializeReturn;
-            }
+            get { return GetMethod("InitializeReturnMethod"); }
         }
 
         public MethodInfo InitializeReturnMethod
         {
-            set
-            {
-                if (value == null)
-                {
-                    throw new ArgumentNullException("value");
-                }
-                _readOnly.Assert(false);
-                _initializeReturn = _module.Import(value);
-            }
+            set { SetMethod("InitializeReturnMethod", value); }
         }
 
         public IParameterFactoryReference Convert()
         {
-            if (_initializeExecution == null || _initializeExecutionContext == null || _initializeReturn == null)
-            {
-                throw new InvalidOperationException("Necessary reference missing");
-            }
-            _readOnly.Apply();
+            ValidateConvert("InitializeExecutionMethod", "InitializeExecutionContextMethod", "InitializeParameterMethod",
+                "InitializeCustomAttributeMethod", "InitializeAttributePropertyMethod", "InitializeReturnMethod");
             return this;
         }
     }

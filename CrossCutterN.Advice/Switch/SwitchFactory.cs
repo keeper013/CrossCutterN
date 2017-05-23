@@ -9,9 +9,9 @@ namespace CrossCutterN.Advice.Switch
 
     internal static class SwitchFactory
     {
-        public static IClassAdviceSwitchBuildUp InitializeClassAdviceSwitch(IDictionary<int, bool> switchDictionary)
+        public static IClassAdviceSwitchBuildUp InitializeClassAdviceSwitch(IList<bool> switchList)
         {
-            return new ClassAdviceSwitch(switchDictionary);
+            return new ClassAdviceSwitch(switchList);
         }
 
         public static IClassAdviceSwitchOperation InitializeClassAdviceSwitchOperation(

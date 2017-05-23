@@ -19,6 +19,8 @@ namespace CrossCutterN.Weaver.AssemblyHandler
         private readonly IWeavingContext _context;
         private readonly IList<Instruction> _instructions = new List<Instruction>();
 
+        private static readonly Type VoidType = typeof(void);
+
         public IlHandler(MethodDefinition method, IWeavingContext context)
         {
             if (method == null)
@@ -38,6 +40,35 @@ namespace CrossCutterN.Weaver.AssemblyHandler
             _processor = method.Body.GetILProcessor();
             _context = context;
             _context.ResetVolatileData();
+        }
+
+        public IlHandler(TypeDefinition clazz, IWeavingContext context)
+        {
+            if(clazz == null)
+            {
+                throw new ArgumentNullException("clazz");
+            }
+            if (context == null)
+            {
+                throw new ArgumentNullException("context");
+            }
+            _context = context;
+            _context.ResetVolatileData();
+            var staticConstructor = clazz.Methods.FirstOrDefault(method => method.IsStaticConstructor());
+            if (staticConstructor == null)
+            {
+                _method = new MethodDefinition(".cctor",
+                    MethodAttributes.Static | MethodAttributes.HideBySig | MethodAttributes.SpecialName | MethodAttributes.RTSpecialName,
+                    _context.GetTypeReference(VoidType));
+                _processor = _method.Body.GetILProcessor();
+                _method.Body.Instructions.Add(_processor.Create(OpCodes.Ret));
+                clazz.Methods.Add(_method);
+            }
+            else
+            {
+                _method = staticConstructor;
+                _processor = _method.Body.GetILProcessor();
+            }
         }
 
         #region SetLocalVariables
@@ -307,6 +338,10 @@ namespace CrossCutterN.Weaver.AssemblyHandler
                 _method.Body.ExceptionHandlers.Add(handler);
             }
         }
+
+        #endregion
+
+        #region Advice Switching
 
         #endregion
 

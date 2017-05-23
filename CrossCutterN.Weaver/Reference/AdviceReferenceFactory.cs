@@ -9,18 +9,20 @@ namespace CrossCutterN.Weaver.Reference
     using Mono.Cecil;
     using CrossCutterN.Advice.Common;
     using CrossCutterN.Advice.Parameter;
+    using CrossCutterN.Advice.Switch;
     using Advice.Parameter;
+    using Advice.Switch;
 
-    internal static class AdviceParameterReferenceFactory
+    internal static class AdviceReferenceFactory
     {
-        public static IAdviceParameterReference InitializeAdviceParameterReference(ModuleDefinition module)
+        public static IAdviceReference InitializeAdviceParameterReference(ModuleDefinition module)
         {
             if (module == null)
             {
                 throw new ArgumentNullException("module");
             }
 
-            return new AdviceParameterReference
+            return new AdviceReference
                 {
                     ParameterFactory = InitializeParameterFactory(module),
                     Execution = InitializeExecution(module),
@@ -28,7 +30,10 @@ namespace CrossCutterN.Weaver.Reference
                     Parameter = InitializeParameter(module),
                     CustomAttribute = InitializeCustomAttribute(module),
                     AttributeProperty = InitializeAttributeProperty(module),
-                    Return = InitializeReturn(module)
+                    Return = InitializeReturn(module),
+                    BuildUp = InitializeBuildUp(module),
+                    Controller = InitializeController(module),
+                    LookUp = InitializeLookUp(module)
                 };
         }
 
@@ -124,6 +129,36 @@ namespace CrossCutterN.Weaver.Reference
             reference.ConvertMethod = typeof(ICanConvert<IReturn>).GetMethod(methodConvert);
             reference.TypeReference = type;
             reference.ValueSetter = type.GetProperty(propertyValue).GetSetMethod();
+            return reference.Convert();
+        }
+
+        private static IAdviceSwitchBuildUpReference InitializeBuildUp(ModuleDefinition module)
+        {
+            const string methodRegisterSwitch = "RegisterSwitch";
+            const string methodComplete = "Complete";
+            var reference = new AdviceSwitchBuildUpReference(module);
+            var type = typeof (IAdviceSwitchBuildUp);
+            reference.CompleteMethod = type.GetMethod(methodComplete);
+            reference.RegisterSwitchMethod = type.GetMethod(methodRegisterSwitch);
+            return reference.Convert();
+        }
+
+        private static IAdviceSwitchControllerReference InitializeController(ModuleDefinition module)
+        {
+            const string propertyLookUp = "LookUp";
+            const string propertyBuildUp = "BuildUp";
+            var reference = new AdviceSwitchControllerReference(module);
+            var type = typeof (AdviceSwitchController);
+            reference.BuildUpGetterReference = type.GetProperty(propertyBuildUp).GetMethod;
+            reference.LookUpGetterReference = type.GetProperty(propertyLookUp).GetMethod;
+            return reference.Convert();
+        }
+
+        private static IAdviceSwitchLookUpReference InitializeLookUp(ModuleDefinition module)
+        {
+            const string methodIsOn = "IsOn";
+            var reference = new AdviceSwitchLookUpReference(module);
+            reference.IsOnMethod = typeof (IAdviceSwitchLookUp).GetMethod(methodIsOn);
             return reference.Convert();
         }
     }

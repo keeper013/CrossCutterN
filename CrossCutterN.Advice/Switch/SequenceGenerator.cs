@@ -5,7 +5,7 @@
 
 namespace CrossCutterN.Advice.Switch
 {
-    internal class SequenceGenerator
+    internal sealed class SequenceGenerator
     {
         private int _value;
 

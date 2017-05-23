@@ -14,16 +14,16 @@ namespace CrossCutterN.Advice.Switch
         private readonly Dictionary<string, Dictionary<string, int>> _propertySwitchDictionary = new Dictionary<string, Dictionary<string, int>>();
         private readonly Dictionary<string, Dictionary<string, int>> _methodSwitchDictionary = new Dictionary<string, Dictionary<string, int>>();
         private readonly Dictionary<string, List<int>> _aspectSwitchDictionary = new Dictionary<string, List<int>>();
-        private readonly IDictionary<int, bool> _switchDictionary;
+        private readonly IList<bool> _switchList;
         private readonly IrreversibleOperation _complete = new IrreversibleOperation();
 
-        public ClassAdviceSwitch(IDictionary<int, bool> switchDictionary)
+        public ClassAdviceSwitch(IList<bool> switchList)
         {
-            if(switchDictionary == null)
+            if (switchList == null)
             {
-                throw new ArgumentNullException("switchDictionary");
+                throw new ArgumentNullException("switchList");
             }
-            _switchDictionary = switchDictionary;
+            _switchList = switchList;
         }
 
         public bool IsAspectApplied(string aspect)
@@ -45,11 +45,7 @@ namespace CrossCutterN.Advice.Switch
             var count = 0;
             while (enumerator.MoveNext())
             {
-                foreach (var id in enumerator.Current.Value)
-                {
-                    _switchDictionary[id] = Switch(!_switchDictionary[id], status);
-                }
-                count += enumerator.Current.Value.Count;
+                count += Switch(enumerator.Current.Value, status);
             }
             return count;
         }
@@ -62,20 +58,14 @@ namespace CrossCutterN.Advice.Switch
             {
                 throw new ArgumentNullException("aspect");
             }
-            _complete.Assert(true);
             if (!_aspectSwitchDictionary.ContainsKey(aspect))
             {
                 throw new ArgumentException(
                     string.Format("Aspect {0} isn't applied to any property or method", aspect), "aspect");
             }
 #endif
-            var ids = _aspectSwitchDictionary[aspect];
             _complete.Assert(true);
-            foreach (var id in ids)
-            {
-                _switchDictionary[id] = Switch(!_switchDictionary[id], status);
-            }
-            return ids.Count;
+            return Switch(_aspectSwitchDictionary[aspect], status);
         }
 
         public int SwitchMethod(string methodSignature, SwitchStatus status)
@@ -93,13 +83,7 @@ namespace CrossCutterN.Advice.Switch
             }
 #endif
             _complete.Assert(true);
-            var ids = _methodSwitchDictionary[methodSignature].Values;
-            _complete.Assert(true);
-            foreach (var id in ids)
-            {
-                _switchDictionary[id] = Switch(_switchDictionary[id], status);
-            }
-            return ids.Count;
+            return Switch(_methodSwitchDictionary[methodSignature].Values, status);
         }
 
         public int SwitchMethodAspect(string methodSignature, string aspect, SwitchStatus status)
@@ -128,10 +112,7 @@ namespace CrossCutterN.Advice.Switch
                 throw new ArgumentException(
                     string.Format("Aspect {0} is not applied to method {1}", aspect, methodSignature), "aspect");
             }
-            var id = aspectDictionary[aspect];
-            _complete.Assert(true);
-            _switchDictionary[id] = Switch(!_switchDictionary[id], status);
-            return 1;
+            return Switch(aspectDictionary[aspect], status);
         }
 
         public int SwitchProperty(string propertyName, SwitchStatus status)
@@ -149,13 +130,7 @@ namespace CrossCutterN.Advice.Switch
             }
 #endif
             _complete.Assert(true);
-            var ids = _propertySwitchDictionary[propertyName].Values;
-            _complete.Assert(true);
-            foreach (var id in ids)
-            {
-                _switchDictionary[id] = Switch(!_switchDictionary[id], status);
-            }
-            return ids.Count;
+            return Switch(_propertySwitchDictionary[propertyName].Values, status);
         }
 
         public int SwitchPropertyAspect(string propertyName, string aspect, SwitchStatus status)
@@ -184,10 +159,7 @@ namespace CrossCutterN.Advice.Switch
                 throw new ArgumentException(
                     string.Format("Aspect {0} is not applied to property {1}", aspect, propertyName), "aspect");
             }
-            var id = aspectDictionary[aspect];
-            _complete.Assert(true);
-            _switchDictionary[id] = Switch(_switchDictionary[id], status);
-            return 1;
+            return Switch(aspectDictionary[aspect], status);
         }
 
         #endregion
@@ -258,6 +230,21 @@ namespace CrossCutterN.Advice.Switch
         #endregion
 
         #region Switch Utilities
+
+        private int Switch(int id, SwitchStatus status)
+        {
+            _switchList[id] = Switch(_switchList[id], status);
+            return 1;
+        }
+
+        private int Switch(ICollection<int> ids, SwitchStatus status)
+        {
+            foreach (var id in ids)
+            {
+                _switchList[id] = Switch(!_switchList[id], status);
+            }
+            return ids.Count;
+        }
 
         private static bool Switch(bool value, SwitchStatus status)
         {

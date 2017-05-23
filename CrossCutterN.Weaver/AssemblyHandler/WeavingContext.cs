@@ -18,9 +18,9 @@ namespace CrossCutterN.Weaver.AssemblyHandler
         private readonly IDictionary<string, MethodReference> _methodReferences = new Dictionary<string, MethodReference>();
         private readonly IDictionary<string, TypeReference> _typeReferences = new Dictionary<string, TypeReference>();
         private readonly ModuleDefinition _module;
-        private readonly IAdviceParameterReference _adviceParameterReference;
+        private readonly IAdviceReference _adviceParameterReference;
 
-        public IAdviceParameterReference AdviceParameterReference
+        public IAdviceReference AdviceParameterReference
         {
             get { return _adviceParameterReference; }
         }
@@ -41,7 +41,7 @@ namespace CrossCutterN.Weaver.AssemblyHandler
                 throw new ArgumentNullException("module");
             }
             _module = module;
-            _adviceParameterReference = AdviceParameterReferenceFactory.InitializeAdviceParameterReference(module);
+            _adviceParameterReference = AdviceReferenceFactory.InitializeAdviceParameterReference(module);
         }
 
         public void AddMethodReference(MethodInfo method)

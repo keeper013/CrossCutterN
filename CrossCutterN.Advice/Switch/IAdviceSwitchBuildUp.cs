@@ -7,7 +7,7 @@ namespace CrossCutterN.Advice.Switch
 {
     public interface IAdviceSwitchBuildUp
     {
-        void RegisterSwitch(int id, string clazz, string property, string method, string aspect, bool value);
+        int RegisterSwitch(string clazz, string property, string method, string aspect, bool value);
         void Complete(string clazz);
     }
 }

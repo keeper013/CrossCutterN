@@ -8,124 +8,56 @@ namespace CrossCutterN.Weaver.Reference.Advice.Parameter
     using System;
     using System.Reflection;
     using Mono.Cecil;
-    using CrossCutterN.Advice.Common;
 
-    internal sealed class WriteOnlyExecutionReference : ICanAddParameterReference, ICanAddParameterWriteOnlyReference
+    internal sealed class WriteOnlyExecutionReference : ReferenceBase, ICanAddParameterReference, ICanAddParameterWriteOnlyReference
     {
-        private readonly ModuleDefinition _module;
-        private TypeReference _typeReference;
-        private TypeReference _readOnlyReference;
-
-        private MethodReference _addParameterMethod;
-        private MethodReference _toReadOnlyMethod;
-
-        private readonly IrreversibleOperation _readOnly = new IrreversibleOperation();
-
-        public WriteOnlyExecutionReference(ModuleDefinition module)
+        public WriteOnlyExecutionReference(ModuleDefinition module) : base(module, true)
         {
-            if (module == null)
-            {
-                throw new ArgumentNullException("module");
-            }
-            _module = module;
         }
 
         TypeReference ICanAddParameterReference.TypeReference
         {
-            get
-            {
-                _readOnly.Assert(true);
-                return _typeReference;
-            }
+            get { return GetType("TypeReference"); }
         }
 
         public Type TypeReference
         {
-            set
-            {
-                if (value == null)
-                {
-                    throw new ArgumentNullException("value");
-                }
-                _readOnly.Assert(false);
-                _typeReference = _module.Import(value);
-            }
+            set { SetType("TypeReference", value); }
         }
 
         TypeReference ICanAddParameterReference.ReadOnlyTypeReference
         {
-            get
-            {
-                _readOnly.Assert(true);
-                return _readOnlyReference;
-            }
+            get { return GetType("ReadOnlyTypeReference"); }
         }
 
         public Type ReadOnlyTypeReference
         {
-            set
-            {
-                if (value == null)
-                {
-                    throw new ArgumentNullException("value");
-                }
-                _readOnly.Assert(false);
-                _readOnlyReference = _module.Import(value);
-            }
+            set { SetType("ReadOnlyTypeReference", value); }
         }
 
         MethodReference ICanAddParameterReference.AddParameterMethod
         {
-            get
-            {
-                _readOnly.Assert(true);
-                return _addParameterMethod;
-            }
+            get { return GetMethod("AddParameterMethod"); }
         }
 
         public MethodInfo AddParameterMethod
         {
-            set
-            {
-                if (value == null)
-                {
-                    throw new ArgumentNullException("value");
-                }
-                _readOnly.Assert(false);
-                _addParameterMethod = _module.Import(value);
-            }
+            set { SetMethod("AddParameterMethod", value); }
         }
 
         MethodReference ICanAddParameterReference.ConvertMethod
         {
-            get
-            {
-                _readOnly.Assert(true);
-                return _toReadOnlyMethod;
-            }
+            get { return GetMethod("ConvertMethod"); }
         }
 
         public MethodInfo ConvertMethod
         {
-            set
-            {
-                if (value == null)
-                {
-                    throw new ArgumentNullException("value");
-                }
-                _readOnly.Assert(false);
-                _toReadOnlyMethod = _module.Import(value);
-            }
+            set { SetMethod("ConvertMethod", value); }
         }
 
         public ICanAddParameterReference Convert()
         {
-            if (_addParameterMethod == null || _typeReference == null ||
-                _readOnlyReference == null || _toReadOnlyMethod == null)
-            {
-                throw new InvalidOperationException("Necessary reference not set yet");
-            }
-            _readOnly.Apply();
+            ValidateConvert("TypeReference", "ReadOnlyTypeReference", "AddParameterMethod", "ConvertMethod");
             return this;
         }
     }

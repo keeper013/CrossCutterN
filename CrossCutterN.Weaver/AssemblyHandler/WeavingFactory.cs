@@ -18,5 +18,10 @@ namespace CrossCutterN.Weaver.AssemblyHandler
         {
             return new IlHandler(method, context);
         }
+
+        public static IlHandler InitializeStaticConstructorIlHandler(TypeDefinition type, IWeavingContext context)
+        {
+            return new IlHandler(type, context);
+        }
     }
 }

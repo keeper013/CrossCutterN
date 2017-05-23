@@ -12,7 +12,7 @@ namespace CrossCutterN.Advice.Switch
 
     internal sealed class AdviceSwitch : IAdviceSwitch, IAdviceSwitchBuildUp, IAdviceSwitchLookUp
     {
-        private readonly IDictionary<int, bool> _switchDictionary = new Dictionary<int, bool>();
+        private readonly IList<bool> _switchList = new List<bool>();
         private readonly IDictionary<string, IClassAdviceSwitchBuildUp> _buildingUps =
             new Dictionary<string, IClassAdviceSwitchBuildUp>();
         private readonly IDictionary<string, IClassAdviceSwitch> _completed =
@@ -49,15 +49,15 @@ namespace CrossCutterN.Advice.Switch
         {
 #if DEBUG
             // the code will be called in client assembly, so reducing unnecessary validations for performance consideration
-            if(!_switchDictionary.ContainsKey(id))
+            if(_switchList.Count <= id)
             {
                 throw new InvalidOperationException(string.Format("Switch for id {0} is not found", id));
             }
 #endif
-            return _switchDictionary[id];
+            return _switchList[id];
         }
 
-        public void RegisterSwitch(int id, string clazz, string property, string method, string aspect, bool value)
+        public int RegisterSwitch(string clazz, string property, string method, string aspect, bool value)
         {
 #if DEBUG
             // the code will be called in client assembly, so reducing unnecessary validations for performance consideration
@@ -69,17 +69,15 @@ namespace CrossCutterN.Advice.Switch
             {
                 throw new ArgumentException(string.Format("{0} is completed for switch registration already.", clazz));
             }
-            if (_switchDictionary.ContainsKey(id))
-            {
-                throw new ArgumentException(string.Format("Id {0} exists already", id), "id");
-            }
 #endif
-            _switchDictionary.Add(id, GetSwitchValue(value, clazz, property, method, aspect));
+            var id = _switchList.Count;
+            _switchList.Add(GetSwitchValue(value, clazz, property, method, aspect));
             if (!_buildingUps.ContainsKey(clazz))
             {
-                _buildingUps.Add(clazz, SwitchFactory.InitializeClassAdviceSwitch(_switchDictionary));
+                _buildingUps.Add(clazz, SwitchFactory.InitializeClassAdviceSwitch(_switchList));
             }
             _buildingUps[clazz].RegisterSwitch(id, property, method, aspect);
+            return id;
         }
 
         #region Switch
