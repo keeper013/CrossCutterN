@@ -16,7 +16,9 @@ namespace CrossCutterN.Weaver.Batch
 
         public AdviceParameterFlag ParameterFlag { get; private set; }
 
-        public AdviceInfo(MethodInfo advice, string builderId, AdviceParameterFlag parameterFlag)
+        public bool? Switch { get; private set; }
+
+        public AdviceInfo(MethodInfo advice, string builderId, AdviceParameterFlag parameterFlag, bool? switchValue)
         {
             if(advice == null)
             {
@@ -29,6 +31,7 @@ namespace CrossCutterN.Weaver.Batch
             Advice = advice;
             BuilderId = builderId;
             ParameterFlag = parameterFlag;
+            Switch = switchValue;
         }
     }
 }

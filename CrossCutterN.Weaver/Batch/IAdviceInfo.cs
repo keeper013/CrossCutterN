@@ -12,5 +12,6 @@ namespace CrossCutterN.Weaver.Batch
         MethodInfo Advice { get; }
         string BuilderId { get; }
         AdviceParameterFlag ParameterFlag { get; }
+        bool? Switch { get; }
     }
 }

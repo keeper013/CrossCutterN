@@ -12,7 +12,7 @@ namespace CrossCutterN.Aspect.Builder
     using Advice.Common;
     using Concern;
 
-    public abstract class AspectBuilderWithDefaultOptions : IAspectBuilder, IWriteOnlyJoinPointDefaultOptions
+    public abstract class SwitchableAspectBuilderWithDefaultOptions : IAspectBuilder, IWriteOnlyJoinPointDefaultOptions, ISwitchableAspectBuilder
     {
         private bool _concernConstructor;
         private bool _concernInstance;
@@ -24,6 +24,7 @@ namespace CrossCutterN.Aspect.Builder
         private bool _concernProtected;
         private bool _concernPublic;
         private bool _concernStatic;
+        private bool? _switch;
         
         private readonly Dictionary<JoinPoint, MethodInfo> _pointCut = new Dictionary<JoinPoint, MethodInfo>();
 
@@ -167,7 +168,17 @@ namespace CrossCutterN.Aspect.Builder
             }
         }
 
-        protected AspectBuilderWithDefaultOptions()
+        public bool? Switch
+        {
+            protected get { return _switch; }
+            set
+            {
+                ReadOnly.Assert(false);
+                _switch = value;
+            }
+        }
+
+        protected SwitchableAspectBuilderWithDefaultOptions()
         {
             // by default: concern instance, static, public, method
             ConcernInstance = true;

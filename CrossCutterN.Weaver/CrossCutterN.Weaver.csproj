@@ -59,8 +59,14 @@
   <ItemGroup>
     <Compile Include="AssemblyHandler\AdviceParameterFlagExtension.cs" />
     <Compile Include="AssemblyHandler\IlUtilities.cs" />
+    <Compile Include="Switch\DefinitionUtility.cs" />
+    <Compile Include="Switch\ISwitchHandler.cs" />
     <Compile Include="AssemblyHandler\IWeavingContext.cs" />
     <Compile Include="AssemblyHandler\IlHandler.cs" />
+    <Compile Include="Switch\IWriteOnlySwitchHandler.cs" />
+    <Compile Include="Switch\SwitchFactory.cs" />
+    <Compile Include="Switch\SwitchHandler.cs" />
+    <Compile Include="Switch\SwitchInitializingData.cs" />
     <Compile Include="AssemblyHandler\WeavingFactory.cs" />
     <Compile Include="AssemblyHandler\Processor.cs" />
     <Compile Include="AssemblyHandler\WeavingContext.cs" />

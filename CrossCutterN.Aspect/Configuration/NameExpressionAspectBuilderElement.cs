@@ -7,7 +7,7 @@ namespace CrossCutterN.Aspect.Configuration
 {
     using System.Configuration;
 
-    public class NameExpressionAspectBuilderElement : AspectBuilderElement
+    public class NameExpressionAspectBuilderElement : SwitchableAspectBuilderElement
     {
         [ConfigurationProperty("factoryMethod", IsKey = false, IsRequired = true)]
         public NameExpressionAspectBuilderConstructorElement FactoryMethod

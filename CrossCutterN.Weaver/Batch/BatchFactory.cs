@@ -9,9 +9,9 @@ namespace CrossCutterN.Weaver.Batch
 
     internal static class BatchFactory
     {
-        public static IAdviceInfo InitializeAdviceInfo(MethodInfo method, string builderId, AdviceParameterFlag parameterFlag)
+        public static IAdviceInfo InitializeAdviceInfo(MethodInfo method, string builderId, AdviceParameterFlag parameterFlag, bool? switchValue)
         {
-            return new AdviceInfo(method, builderId, parameterFlag);
+            return new AdviceInfo(method, builderId, parameterFlag, switchValue);
         }
 
         public static ICanAddJoinPoint InitializeWeavingPlan()

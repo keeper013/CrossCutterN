@@ -11,7 +11,7 @@ namespace CrossCutterN.Aspect.Builder
     using Concern;
     using Advice.Concern;
 
-    internal sealed class ConcernAttributeAspectBuilder : AspectBuilderWithDefaultOptions, IWriteOnlyConcernAttributeAspectBuilder
+    internal sealed class ConcernAttributeAspectBuilder : SwitchableAspectBuilderWithDefaultOptions, IWriteOnlyConcernAttributeAspectBuilder
     {
         private bool _pointCutAtEntry;
         private bool _pointCutAtException;
@@ -108,7 +108,7 @@ namespace CrossCutterN.Aspect.Builder
                 throw new ArgumentNullException("method");
             }
             ReadOnly.Assert(true);
-            var aspect = AspectFactory.InitializeAspect();
+            var aspect = AspectFactory.InitializeAspect(Switch);
 
             // NoConcernAttribute takes priority
             if (!NoConcern(method.CustomAttributes))
@@ -132,8 +132,8 @@ namespace CrossCutterN.Aspect.Builder
                 throw new ArgumentNullException("property");
             }
             ReadOnly.Assert(true);
-            var getterAspect = AspectFactory.InitializeAspect();
-            var setterAspect = AspectFactory.InitializeAspect();
+            var getterAspect = AspectFactory.InitializeAspect(Switch);
+            var setterAspect = AspectFactory.InitializeAspect(Switch);
             if (!NoConcern(property.CustomAttributes))
             {
                 var joinPoints = Enum.GetValues(typeof(JoinPoint)).Cast<JoinPoint>().ToList();

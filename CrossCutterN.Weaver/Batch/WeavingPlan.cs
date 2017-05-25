@@ -34,7 +34,7 @@ namespace CrossCutterN.Weaver.Batch
             ParameterFlag = AdviceParameterFlag.None;
         }
 
-        public void AddJoinPoint(JoinPoint joinPoint, string builderId, MethodInfo advice, int sequence, AdviceParameterFlag parameterFlag)
+        public void AddJoinPoint(JoinPoint joinPoint, string builderId, MethodInfo advice, int sequence, AdviceParameterFlag parameterFlag, bool? switchValue)
         {
             if(string.IsNullOrWhiteSpace(builderId))
             {
@@ -53,11 +53,11 @@ namespace CrossCutterN.Weaver.Batch
                     throw new ArgumentException(string.Format("Sequence {0} for join point {1} has been used already", sequence, joinPoint),
                         "sequence");
                 }
-                sequenceSetting.Add(sequence, BatchFactory.InitializeAdviceInfo(advice, builderId, parameterFlag));
+                sequenceSetting.Add(sequence, BatchFactory.InitializeAdviceInfo(advice, builderId, parameterFlag, switchValue));
             }
             else
             {
-                var sequenceSetting = new SortedDictionary<int, IAdviceInfo> { { sequence, BatchFactory.InitializeAdviceInfo(advice, builderId, parameterFlag) } };
+                var sequenceSetting = new SortedDictionary<int, IAdviceInfo> { { sequence, BatchFactory.InitializeAdviceInfo(advice, builderId, parameterFlag, switchValue) } };
                 _plan.Add(joinPoint, sequenceSetting);
             }
             ParameterFlag |= parameterFlag;

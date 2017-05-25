@@ -16,6 +16,7 @@ namespace CrossCutterN.Weaver.AssemblyHandler
     using Statistics;
     using Utilities;
     using Batch;
+    using Switch;
 
     internal static class Processor
     {
@@ -50,9 +51,10 @@ namespace CrossCutterN.Weaver.AssemblyHandler
                                 classCustomAttributes.Add(clazz.CustomAttributes.ElementAt(i).Convert(i));
                             }
                         }
+                        var switchHandler = SwitchFactory.InitializeSwitchHandler(clazz, context.GetTypeReference(typeof(int)));
                         foreach (var property in clazz.Properties)
                         {
-                            ProcessProperty(property, batch, classCustomAttributes, context, classStatistics);
+                            ProcessProperty(property, batch, classCustomAttributes, context, switchHandler, classStatistics);
                         }
                         foreach (var method in clazz.Methods)
                         {
@@ -62,9 +64,9 @@ namespace CrossCutterN.Weaver.AssemblyHandler
                             {
                                 continue;
                             }
-                            ProcessMethod(method, batch, classCustomAttributes, context, classStatistics);
+                            ProcessMethod(method, batch, classCustomAttributes, context, switchHandler, classStatistics);
                         }
-                        WProcessStaticConstructor(clazz, context);
+                        WProcessStaticConstructor(clazz, context, switchHandler.Convert());
                         var classStatisticsFinished = classStatistics.Convert();
                         if(classStatisticsFinished.WeavedMethodPropertyCount > 0)
                         {
@@ -92,18 +94,19 @@ namespace CrossCutterN.Weaver.AssemblyHandler
         }
 
         private static void ProcessMethod(MethodDefinition method, IWeavingBatch batch, List<Aspect.Concern.ICustomAttribute> classCustomAttributes,
-            IWeavingContext context, IWriteOnlyClassWeavingStatistics classStatistics)
+            IWeavingContext context, IWriteOnlySwitchHandler switchHandler, IWriteOnlyClassWeavingStatistics classStatistics)
         {
             var methodInfo = method.Convert(classCustomAttributes.AsReadOnly());
             var plan = batch.BuildPlan(methodInfo);
             if (!plan.IsEmpty())
             {
+                switchHandler.Property = null;
                 var methodStatistics = StatisticsFactory.InitializeMethodWeavingRecord(method.Name, method.FullName);
-                var handler = WeavingFactory.InitializeIlHandler(method, context);
-                SetLocalParameters(method, handler, plan);
-                WeaveEntryJoinPoint(handler, plan.GetAdvices(JoinPoint.Entry), methodStatistics);
-                WeaveExceptionJoinPoint(handler, plan.GetAdvices(JoinPoint.Exception), methodStatistics);
-                WeaveExitJoinPoint(handler, plan.GetAdvices(JoinPoint.Exit), methodStatistics);
+                var ilhandler = WeavingFactory.InitializeIlHandler(method, context);
+                SetLocalParameters(method, ilhandler, plan);
+                WeaveEntryJoinPoint(ilhandler, plan.GetAdvices(JoinPoint.Entry), switchHandler, methodStatistics);
+                WeaveExceptionJoinPoint(ilhandler, plan.GetAdvices(JoinPoint.Exception), switchHandler, methodStatistics);
+                WeaveExitJoinPoint(ilhandler, plan.GetAdvices(JoinPoint.Exit), switchHandler, methodStatistics);
                 var methodStatisticsFinished = methodStatistics.Convert();
                 if (methodStatisticsFinished.JoinPointCount > 0)
                 {
@@ -113,32 +116,33 @@ namespace CrossCutterN.Weaver.AssemblyHandler
         }
 
         private static void ProcessProperty(PropertyDefinition property, IWeavingBatch batch, List<Aspect.Concern.ICustomAttribute> classCustomAttributes,
-            IWeavingContext context, IWriteOnlyClassWeavingStatistics classStatistics)
+            IWeavingContext context, IWriteOnlySwitchHandler switchHandler, IWriteOnlyClassWeavingStatistics classStatistics)
         {
             var propertyInfo = property.Convert(classCustomAttributes.AsReadOnly());
             var plan = batch.BuildPlan(propertyInfo);
             if (!plan.IsEmpty())
             {
+                switchHandler.Property = property.Name;
                 var propertyStatistics = StatisticsFactory.InitializePropertyWeavingRecord(property.Name, property.FullName);
                 var getterPlan = plan.GetterPlan;
                 var getter = property.GetMethod;
                 if (!getterPlan.IsEmpty() && getter != null)
                 {
-                    var handler = WeavingFactory.InitializeIlHandler(getter, context);
-                    SetLocalParameters(getter, handler, getterPlan);
-                    WeaveEntryJoinPoint(handler, getterPlan.GetAdvices(JoinPoint.Entry), propertyStatistics.GetterContainer);
-                    WeaveExceptionJoinPoint(handler, getterPlan.GetAdvices(JoinPoint.Exception), propertyStatistics.GetterContainer);
-                    WeaveExitJoinPoint(handler, getterPlan.GetAdvices(JoinPoint.Exit), propertyStatistics.GetterContainer);
+                    var ilhandler = WeavingFactory.InitializeIlHandler(getter, context);
+                    SetLocalParameters(getter, ilhandler, getterPlan);
+                    WeaveEntryJoinPoint(ilhandler, getterPlan.GetAdvices(JoinPoint.Entry), switchHandler, propertyStatistics.GetterContainer);
+                    WeaveExceptionJoinPoint(ilhandler, getterPlan.GetAdvices(JoinPoint.Exception), switchHandler, propertyStatistics.GetterContainer);
+                    WeaveExitJoinPoint(ilhandler, getterPlan.GetAdvices(JoinPoint.Exit), switchHandler, propertyStatistics.GetterContainer);
                 }
                 var setterPlan = plan.SetterPlan;
                 var setter = property.SetMethod;
                 if (!setterPlan.IsEmpty() && setter != null)
                 {
-                    var handler = WeavingFactory.InitializeIlHandler(setter, context);
-                    SetLocalParameters(setter, handler, setterPlan);
-                    WeaveEntryJoinPoint(handler, setterPlan.GetAdvices(JoinPoint.Entry), propertyStatistics.SetterContainer);
-                    WeaveExceptionJoinPoint(handler, setterPlan.GetAdvices(JoinPoint.Exception), propertyStatistics.SetterContainer);
-                    WeaveExitJoinPoint(handler, setterPlan.GetAdvices(JoinPoint.Exit), propertyStatistics.SetterContainer);
+                    var ilhandler = WeavingFactory.InitializeIlHandler(setter, context);
+                    SetLocalParameters(setter, ilhandler, setterPlan);
+                    WeaveEntryJoinPoint(ilhandler, setterPlan.GetAdvices(JoinPoint.Entry), switchHandler, propertyStatistics.SetterContainer);
+                    WeaveExceptionJoinPoint(ilhandler, setterPlan.GetAdvices(JoinPoint.Exception), switchHandler, propertyStatistics.SetterContainer);
+                    WeaveExitJoinPoint(ilhandler, setterPlan.GetAdvices(JoinPoint.Exit), switchHandler, propertyStatistics.SetterContainer);
                 }
                 var propertyStatisticsFinished = propertyStatistics.Convert();
                 if (propertyStatisticsFinished.JoinPointCount > 0)
@@ -148,9 +152,9 @@ namespace CrossCutterN.Weaver.AssemblyHandler
             }
         }
 
-        private static void WProcessStaticConstructor(TypeDefinition type, IWeavingContext context)
+        private static void WProcessStaticConstructor(TypeDefinition type, IWeavingContext context, ISwitchHandler switchHandler)
         {
-            var handler = WeavingFactory.InitializeStaticConstructorIlHandler(type, context);
+            var ilhandler = WeavingFactory.InitializeStaticConstructorIlHandler(type, context);
         }
 
         private static void SetLocalParameters(MethodDefinition method, IlHandler handler, IWeavingPlan plan)
@@ -179,14 +183,14 @@ namespace CrossCutterN.Weaver.AssemblyHandler
         }
 
         private static void WeaveEntryJoinPoint(IlHandler handler, IReadOnlyCollection<IAdviceInfo> advices,
-            ICanAddMethodWeavingRecord statistics)
+            IWriteOnlySwitchHandler switchHandler, ICanAddMethodWeavingRecord statistics)
         {
             if (advices != null && advices.Any())
             {
                 for (var i = 0; i < advices.Count; i++)
                 {
                     var advice = advices.ElementAt(i);
-                    handler.CallAdvice(advice);
+                    handler.CallAdvice(advice, switchHandler);
                     var record = StatisticsFactory.InitializeWeavingRecord(
                         JoinPoint.Entry, advice.BuilderId, advice.Advice.GetFullName(), advice.Advice.GetSignatureWithTypeFullName(), i);
                     statistics.AddWeavingRecord(record);
@@ -196,7 +200,7 @@ namespace CrossCutterN.Weaver.AssemblyHandler
         }
 
         private static void WeaveExceptionJoinPoint(IlHandler handler, IReadOnlyCollection<IAdviceInfo> advices,
-            ICanAddMethodWeavingRecord statistics)
+            IWriteOnlySwitchHandler switchHandler, ICanAddMethodWeavingRecord statistics)
         {
             handler.UpdateLocalVariablesOnException();
             if (advices != null && advices.Any())
@@ -204,7 +208,7 @@ namespace CrossCutterN.Weaver.AssemblyHandler
                 for (var i = 0; i < advices.Count; i++)
                 {
                     var advice = advices.ElementAt(i);
-                    handler.CallAdvice(advice);
+                    handler.CallAdvice(advice, switchHandler);
                     var record = StatisticsFactory.InitializeWeavingRecord(
                         JoinPoint.Exception, advice.BuilderId, advice.Advice.GetFullName(), advice.Advice.GetSignatureWithTypeFullName(), i);
                     statistics.AddWeavingRecord(record);
@@ -214,7 +218,7 @@ namespace CrossCutterN.Weaver.AssemblyHandler
         }
 
         private static void WeaveExitJoinPoint(IlHandler handler, IReadOnlyCollection<IAdviceInfo> advices,
-            ICanAddMethodWeavingRecord statistics)
+            IWriteOnlySwitchHandler switchHandler, ICanAddMethodWeavingRecord statistics)
         {
             if (advices != null && advices.Any())
             {
@@ -223,7 +227,7 @@ namespace CrossCutterN.Weaver.AssemblyHandler
                 for (var i = 0; i < advices.Count; i++)
                 {
                     var advice = advices.ElementAt(i);
-                    handler.CallAdvice(advice);
+                    handler.CallAdvice(advice, switchHandler);
                     var record = StatisticsFactory.InitializeWeavingRecord(
                         JoinPoint.Exit, advice.BuilderId, advice.Advice.GetFullName(), advice.Advice.GetSignatureWithTypeFullName(), i);
                     statistics.AddWeavingRecord(record);

@@ -13,7 +13,7 @@ namespace CrossCutterN.Weaver.AssemblyHandler
 
     internal interface IWeavingContext
     {
-        IAdviceReference AdviceParameterReference { get; }
+        IAdviceReference AdviceReference { get; }
         int ExecutionContextVariableIndex { get; set; }
         int ExecutionVariableIndex { get; set; }
         int ExceptionVariableIndex { get; set; }
@@ -22,6 +22,7 @@ namespace CrossCutterN.Weaver.AssemblyHandler
         int ReturnValueVariableIndex { get; set; }
         Instruction TryStartInstruction { get; set; }
         Instruction EndingInstruction { get; set; }
+        int PendingSwitchIndex { get; set; }
         void AddMethodReference(MethodInfo method);
         void AddTypeReference(Type type);
         MethodReference GetMethodReference(MethodInfo info);

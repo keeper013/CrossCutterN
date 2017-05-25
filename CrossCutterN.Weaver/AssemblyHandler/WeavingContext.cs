@@ -20,7 +20,7 @@ namespace CrossCutterN.Weaver.AssemblyHandler
         private readonly ModuleDefinition _module;
         private readonly IAdviceReference _adviceParameterReference;
 
-        public IAdviceReference AdviceParameterReference
+        public IAdviceReference AdviceReference
         {
             get { return _adviceParameterReference; }
         }
@@ -33,6 +33,8 @@ namespace CrossCutterN.Weaver.AssemblyHandler
 
         public Instruction TryStartInstruction { get; set; }
         public Instruction EndingInstruction { get; set; }
+
+        public int PendingSwitchIndex { get; set; }
 
         public WeavingContext(ModuleDefinition module)
         {
@@ -108,6 +110,7 @@ namespace CrossCutterN.Weaver.AssemblyHandler
             ReturnVariableIndex = -1;
             TryStartInstruction = null;
             EndingInstruction = null;
+            PendingSwitchIndex = -1;
         }
     }
 }
