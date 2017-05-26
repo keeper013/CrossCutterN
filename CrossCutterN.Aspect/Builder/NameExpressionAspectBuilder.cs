@@ -63,7 +63,7 @@ namespace CrossCutterN.Aspect.Builder
                 throw new ArgumentNullException("method");
             }
             ReadOnly.Assert(true);
-            var aspect = AspectFactory.InitializeAspect(Switch);
+            var aspect = AspectFactory.InitializeAspect(SwitchStatus);
             var fullName = string.Format("{0}.{1}", method.ClassFullName, method.MethodName);
             var joinPoints = Enum.GetValues(typeof (JoinPoint)).Cast<JoinPoint>().ToList();
             var match = PatternMatch(fullName);
@@ -88,8 +88,8 @@ namespace CrossCutterN.Aspect.Builder
                 throw new ArgumentNullException("property");
             }
             ReadOnly.Assert(true);
-            var getterAspect = AspectFactory.InitializeAspect(Switch);
-            var setterAspect = AspectFactory.InitializeAspect(Switch);
+            var getterAspect = AspectFactory.InitializeAspect(SwitchStatus);
+            var setterAspect = AspectFactory.InitializeAspect(SwitchStatus);
             var fullName = string.Format("{0}.{1}", property.ClassFullName, property.PropertyName);
             var joinPoints = Enum.GetValues(typeof (JoinPoint)).Cast<JoinPoint>().ToList();
             var match = PatternMatch(fullName);

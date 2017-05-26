@@ -14,11 +14,11 @@ namespace CrossCutterN.Aspect
     {
         private readonly Dictionary<JoinPoint, MethodInfo> _pointCut = new Dictionary<JoinPoint, MethodInfo>();
         private readonly IrreversibleOperation _readOnly = new IrreversibleOperation();
-        private readonly bool? _switch;
+        private readonly SwitchStatus _switchStatus;
 
-        public bool? Switch
+        public SwitchStatus SwitchStatus
         {
-            get { return _switch; }
+            get { return _switchStatus; }
         }
 
         public IReadOnlyDictionary<JoinPoint, MethodInfo> PointCut
@@ -30,9 +30,9 @@ namespace CrossCutterN.Aspect
             }
         }
 
-        public Aspect(bool? switchValue)
+        public Aspect(SwitchStatus switchStatus)
         {
-            _switch = switchValue;
+            _switchStatus = switchStatus;
         }
 
         public void SetJoinPointAdvice(JoinPoint joinPoint, MethodInfo advice)

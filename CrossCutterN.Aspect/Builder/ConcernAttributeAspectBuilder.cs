@@ -108,7 +108,7 @@ namespace CrossCutterN.Aspect.Builder
                 throw new ArgumentNullException("method");
             }
             ReadOnly.Assert(true);
-            var aspect = AspectFactory.InitializeAspect(Switch);
+            var aspect = AspectFactory.InitializeAspect(SwitchStatus);
 
             // NoConcernAttribute takes priority
             if (!NoConcern(method.CustomAttributes))
@@ -132,8 +132,8 @@ namespace CrossCutterN.Aspect.Builder
                 throw new ArgumentNullException("property");
             }
             ReadOnly.Assert(true);
-            var getterAspect = AspectFactory.InitializeAspect(Switch);
-            var setterAspect = AspectFactory.InitializeAspect(Switch);
+            var getterAspect = AspectFactory.InitializeAspect(SwitchStatus);
+            var setterAspect = AspectFactory.InitializeAspect(SwitchStatus);
             if (!NoConcern(property.CustomAttributes))
             {
                 var joinPoints = Enum.GetValues(typeof(JoinPoint)).Cast<JoinPoint>().ToList();

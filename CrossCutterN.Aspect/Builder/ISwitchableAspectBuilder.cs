@@ -7,6 +7,6 @@ namespace CrossCutterN.Aspect.Builder
 {
     public interface ISwitchableAspectBuilder
     {
-        bool? Switch { set; }
+        SwitchStatus SwitchStatus { set; }
     }
 }

@@ -3,10 +3,9 @@
  * Author: David Cui
  */
 
-using System;
-
 namespace CrossCutterN.Weaver.AssemblyHandler
 {
+    using System;
     using System.Collections.Generic;
     using Mono.Cecil;
     using Mono.Cecil.Cil;

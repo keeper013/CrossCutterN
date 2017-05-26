@@ -34,5 +34,10 @@ namespace CrossCutterN.Weaver.Switch
             buffer.Append(")");
             return buffer.ToString();
         }
+
+        public static string GetFullName(this TypeDefinition type)
+        {
+            return string.Format("{0}.{1}", type.Namespace, type.Name);
+        }
     }
 }

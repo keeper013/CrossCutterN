@@ -11,5 +11,6 @@ namespace CrossCutterN.Weaver.Statistics
     {
         void AddMethodWeavingStatistics(IMethodWeavingStatistics statistics);
         void AddPropertyWeavingStatistics(IPropertyWeavingStatistics statistics);
+        void AddSwitchWeavingRecord(ISwitchWeavingRecord record);
     }
 }

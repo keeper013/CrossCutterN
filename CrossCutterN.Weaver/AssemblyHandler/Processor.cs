@@ -66,7 +66,7 @@ namespace CrossCutterN.Weaver.AssemblyHandler
                             }
                             ProcessMethod(method, batch, classCustomAttributes, context, switchHandler, classStatistics);
                         }
-                        WProcessStaticConstructor(clazz, context, switchHandler.Convert());
+                        WProcessStaticConstructor(clazz, context, switchHandler.Convert(), classStatistics);
                         var classStatisticsFinished = classStatistics.Convert();
                         if(classStatisticsFinished.WeavedMethodPropertyCount > 0)
                         {
@@ -152,9 +152,21 @@ namespace CrossCutterN.Weaver.AssemblyHandler
             }
         }
 
-        private static void WProcessStaticConstructor(TypeDefinition type, IWeavingContext context, ISwitchHandler switchHandler)
+        private static void WProcessStaticConstructor(TypeDefinition type, IWeavingContext context, ISwitchHandler switchHandler, 
+            IWriteOnlyClassWeavingStatistics statistics)
         {
-            var ilhandler = WeavingFactory.InitializeStaticConstructorIlHandler(type, context);
+            var switchData = switchHandler.GetData().ToList();
+            if (switchData.Any())
+            {
+                var clazz = type.GetFullName();
+                var ilhandler = WeavingFactory.InitializeStaticConstructorIlHandler(type, context);
+                foreach (var data in switchData)
+                {
+                    ilhandler.RegisterSwitch(data.Field, clazz, data.Property, data.Method, data.Aspect, data.Value);
+                    statistics.AddSwitchWeavingRecord(StatisticsFactory.InitializeSwitchWeavingRecord(clazz, data.Property, data.Method, data.Aspect, data.Field.Name, data.Value));
+                }
+                ilhandler.FinalizeSwitchRegistration(clazz);
+            }
         }
 
         private static void SetLocalParameters(MethodDefinition method, IlHandler handler, IWeavingPlan plan)

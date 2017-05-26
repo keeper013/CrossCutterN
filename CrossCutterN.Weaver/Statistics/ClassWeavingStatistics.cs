@@ -14,6 +14,7 @@ namespace CrossCutterN.Weaver.Statistics
     {
         private readonly List<IMethodWeavingStatistics> _methodStatistics = new List<IMethodWeavingStatistics>();
         private readonly List<IPropertyWeavingStatistics> _propertyStatistics = new List<IPropertyWeavingStatistics>();
+        private readonly List<ISwitchWeavingRecord> _switchWeavingRecords = new List<ISwitchWeavingRecord>(); 
         private readonly IrreversibleOperation _readOnly = new IrreversibleOperation();
 
         public string FullName { get; private set; }
@@ -35,6 +36,15 @@ namespace CrossCutterN.Weaver.Statistics
             {
                 _readOnly.Assert(true);
                 return _propertyStatistics.AsReadOnly();
+            }
+        }
+
+        public IReadOnlyCollection<ISwitchWeavingRecord> SwitchWeavingRecords
+        {
+            get
+            {
+                _readOnly.Assert(true);
+                return _switchWeavingRecords.AsReadOnly();
             }
         }
 
@@ -101,6 +111,15 @@ namespace CrossCutterN.Weaver.Statistics
             }
         }
 
+        public int WeavedSwitchCount
+        {
+            get
+            {
+                _readOnly.Assert(true);
+                return _switchWeavingRecords.Count;
+            }
+        }
+
         public ClassWeavingStatistics(string name, string fullName, string nameSpace)
         {
             if (string.IsNullOrWhiteSpace(name))
@@ -138,6 +157,16 @@ namespace CrossCutterN.Weaver.Statistics
             }
             _readOnly.Assert(false);
             _propertyStatistics.Add(statistics);
+        }
+
+        public void AddSwitchWeavingRecord(ISwitchWeavingRecord record)
+        {
+            if (record == null)
+            {
+                throw new ArgumentNullException("record");
+            }
+            _readOnly.Assert(false);
+            _switchWeavingRecords.Add(record);
         }
 
         public IClassWeavingStatistics Convert()

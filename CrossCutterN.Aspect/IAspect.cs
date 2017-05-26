@@ -10,6 +10,6 @@ namespace CrossCutterN.Aspect
     public interface IAspect
     {
         IReadOnlyDictionary<JoinPoint, MethodInfo> PointCut { get; }
-        bool? Switch { get; }
+        SwitchStatus SwitchStatus { get; }
     }
 }

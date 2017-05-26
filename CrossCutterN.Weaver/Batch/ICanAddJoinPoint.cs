@@ -11,6 +11,6 @@ namespace CrossCutterN.Weaver.Batch
 
     internal interface ICanAddJoinPoint : ICanConvert<IWeavingPlan>
     {
-        void AddJoinPoint(JoinPoint joinPoint, string builderId, MethodInfo advice, int sequence, AdviceParameterFlag flag, bool? switchValue);
+        void AddJoinPoint(JoinPoint joinPoint, string builderId, MethodInfo advice, int sequence, AdviceParameterFlag flag, SwitchStatus switchStatus);
     }
 }

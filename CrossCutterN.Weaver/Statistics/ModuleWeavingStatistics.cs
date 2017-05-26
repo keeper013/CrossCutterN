@@ -98,6 +98,15 @@ namespace CrossCutterN.Weaver.Statistics
             }
         }
 
+        public int WeavedSwitchCount
+        {
+            get
+            {
+                _readOnly.Assert(true);
+                return _statistics.Sum(statistics => statistics.WeavedSwitchCount);
+            }
+        }
+
         public ModuleWeavingStatistics(string name)
         {
             if (string.IsNullOrWhiteSpace(name))

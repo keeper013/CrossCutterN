@@ -3,6 +3,8 @@
  * Author: David Cui
  */
 
+using CrossCutterN.Aspect;
+
 namespace CrossCutterN.Weaver.AssemblyHandler
 {
     using System;
@@ -374,6 +376,26 @@ namespace CrossCutterN.Weaver.AssemblyHandler
 
         #region Advice Switching
 
+        public void RegisterSwitch(FieldReference field, string clazz, string property, string method, string aspect, bool value)
+        {
+            _instructions.Add(_processor.Create(OpCodes.Call, _context.AdviceReference.Controller.BuildUpGetterReference));
+            _instructions.Add(_processor.Create(OpCodes.Ldstr, clazz));
+            _instructions.Add(_processor.Create(OpCodes.Ldstr, property??string.Empty));
+            _instructions.Add(_processor.Create(OpCodes.Ldstr, method));
+            _instructions.Add(_processor.Create(OpCodes.Ldstr, aspect));
+            _instructions.Add(_processor.Create(value ? OpCodes.Ldc_I4_1 : OpCodes.Ldc_I4_0));
+            _instructions.Add(_processor.Create(OpCodes.Callvirt, _context.AdviceReference.BuildUp.RegisterSwitchMethod));
+            _instructions.Add(_processor.Create(OpCodes.Stsfld, field));
+        }
+
+        public void FinalizeSwitchRegistration(string clazz)
+        {
+            _instructions.Add(_processor.Create(OpCodes.Call, _context.AdviceReference.Controller.BuildUpGetterReference));
+            _instructions.Add(_processor.Create(OpCodes.Ldstr, clazz));
+            _instructions.Add(_processor.Create(OpCodes.Callvirt, _context.AdviceReference.BuildUp.CompleteMethod));
+            PersistentInstructions(_method.Body.Instructions.First());
+        }
+
         #endregion
 
         private void FixReturnInstructions()
@@ -422,11 +444,12 @@ namespace CrossCutterN.Weaver.AssemblyHandler
             }
             var pendingSwitchIndex = _context.PendingSwitchIndex;
             var firstIndex = _instructions.Count;
-            if (advice.Switch.HasValue)
+            if (advice.SwitchStatus.IsSwitchable())
             {
-                var field = switchHandler.GetSwitchField(MethodSignature, advice.BuilderId, advice.Switch.Value);
+                _instructions.Add(_processor.Create(OpCodes.Call, _context.AdviceReference.Controller.LookUpGetterReference));
+                var field = switchHandler.GetSwitchField(MethodSignature, advice.BuilderId, advice.SwitchStatus == SwitchStatus.On);
                 _instructions.Add(_processor.Create(OpCodes.Ldsfld, field));
-                _instructions.Add(_processor.Create(OpCodes.Call, _context.AdviceReference.LookUp.IsOnMethod));
+                _instructions.Add(_processor.Create(OpCodes.Callvirt, _context.AdviceReference.LookUp.IsOnMethod));
                 // the null instruction is to be filled in later
                 _context.PendingSwitchIndex = _instructions.Count;
                 _instructions.Add(null);
@@ -454,7 +477,7 @@ namespace CrossCutterN.Weaver.AssemblyHandler
             {
                 _instructions[pendingSwitchIndex] = _processor.Create(OpCodes.Brfalse_S, _instructions[firstIndex]);
                 // reset pending switch index if no switch this time
-                if (!advice.Switch.HasValue)
+                if (!advice.SwitchStatus.IsSwitchable())
                 {
                     _context.PendingSwitchIndex = -1;
                 }

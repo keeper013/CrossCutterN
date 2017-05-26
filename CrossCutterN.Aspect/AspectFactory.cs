@@ -7,9 +7,9 @@ namespace CrossCutterN.Aspect
 {
     public static class AspectFactory
     {
-        public static ICanSetJoinPointAdvice InitializeAspect(bool? switchValue)
+        public static ICanSetJoinPointAdvice InitializeAspect(SwitchStatus switchStatus)
         {
-            return new Aspect(switchValue);
+            return new Aspect(switchStatus);
         }
 
         public static IPropertyAspect InitializePropertyAspect(IAspect getterAspect, IAspect setterAspect)

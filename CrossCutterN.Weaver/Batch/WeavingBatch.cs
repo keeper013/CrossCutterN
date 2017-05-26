@@ -88,7 +88,7 @@ namespace CrossCutterN.Weaver.Batch
                     var advice = jp.Value;
                     var id = builder.Key;
                     var info = _joinPoints[joinPoint][id];
-                    plan.AddJoinPoint(joinPoint, id, advice, info.Sequence, info.ParameterFlag, aspect.Switch);
+                    plan.AddJoinPoint(joinPoint, id, advice, info.Sequence, info.ParameterFlag, aspect.SwitchStatus);
                 }
             }
             return plan.Convert();
@@ -108,7 +108,7 @@ namespace CrossCutterN.Weaver.Batch
                     var advice = jp.Value;
                     var id = builder.Key;
                     var info = _joinPoints[joinPoint][id];
-                    getterPlan.AddJoinPoint(joinPoint, id, advice, info.Sequence, info.ParameterFlag, aspect.GetterAspect.Switch);
+                    getterPlan.AddJoinPoint(joinPoint, id, advice, info.Sequence, info.ParameterFlag, aspect.GetterAspect.SwitchStatus);
                 }
                 foreach (var jp in aspect.SetterAspect.PointCut)
                 {
@@ -116,7 +116,7 @@ namespace CrossCutterN.Weaver.Batch
                     var advice = jp.Value;
                     var id = builder.Key;
                     var info = _joinPoints[joinPoint][id];
-                    setterPlan.AddJoinPoint(joinPoint, id, advice, info.Sequence, info.ParameterFlag, aspect.SetterAspect.Switch);
+                    setterPlan.AddJoinPoint(joinPoint, id, advice, info.Sequence, info.ParameterFlag, aspect.SetterAspect.SwitchStatus);
                 }
             }
             return BatchFactory.InitializePropertyWeavingPlan(getterPlan.Convert(), setterPlan.Convert());

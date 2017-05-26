@@ -19,7 +19,9 @@ namespace CrossCutterN.Weaver.Statistics
         int PropertyGetterJoinPointCount { get; }
         int PropertySetterJoinPointCount { get; }
         int PropertyJoinPointCount { get; }
+        int WeavedSwitchCount { get; }
         IReadOnlyCollection<IMethodWeavingStatistics> MethodWeavingStatistics { get; }
         IReadOnlyCollection<IPropertyWeavingStatistics> PropertyWeavingStatistics { get; }
+        IReadOnlyCollection<ISwitchWeavingRecord> SwitchWeavingRecords { get; } 
     }
 }

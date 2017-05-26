@@ -87,6 +87,7 @@
     <Compile Include="Configuration\NameExpressionElement.cs" />
     <Compile Include="Configuration\SwitchableAspectBuilderElement.cs" />
     <Compile Include="Configuration\SwitchElement.cs" />
+    <Compile Include="SwitchStatus.cs" />
     <Compile Include="IAspect.cs" />
     <Compile Include="Aspect.cs" />
     <Compile Include="AspectFactory.cs" />

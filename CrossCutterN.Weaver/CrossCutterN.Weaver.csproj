@@ -59,6 +59,8 @@
   <ItemGroup>
     <Compile Include="AssemblyHandler\AdviceParameterFlagExtension.cs" />
     <Compile Include="AssemblyHandler\IlUtilities.cs" />
+    <Compile Include="Statistics\ISwitchWeavingRecord.cs" />
+    <Compile Include="Statistics\SwitchWeavingRecord.cs" />
     <Compile Include="Switch\DefinitionUtility.cs" />
     <Compile Include="Switch\ISwitchHandler.cs" />
     <Compile Include="AssemblyHandler\IWeavingContext.cs" />

@@ -7,6 +7,7 @@ namespace CrossCutterN.Weaver.Batch
 {
     using System;
     using System.Reflection;
+    using Aspect;
 
     internal sealed class AdviceInfo : IAdviceInfo
     {
@@ -16,9 +17,9 @@ namespace CrossCutterN.Weaver.Batch
 
         public AdviceParameterFlag ParameterFlag { get; private set; }
 
-        public bool? Switch { get; private set; }
+        public SwitchStatus SwitchStatus { get; private set; }
 
-        public AdviceInfo(MethodInfo advice, string builderId, AdviceParameterFlag parameterFlag, bool? switchValue)
+        public AdviceInfo(MethodInfo advice, string builderId, AdviceParameterFlag parameterFlag, SwitchStatus switchStatus)
         {
             if(advice == null)
             {
@@ -31,7 +32,7 @@ namespace CrossCutterN.Weaver.Batch
             Advice = advice;
             BuilderId = builderId;
             ParameterFlag = parameterFlag;
-            Switch = switchValue;
+            SwitchStatus = switchStatus;
         }
     }
 }

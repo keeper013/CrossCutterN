@@ -20,8 +20,8 @@ namespace CrossCutterN.Command
                 writer.WriteLine();
             }
             writer.WriteLine("Assembly Name: {0}", statistics.AssemblyName);
-            writer.WriteLine("Weaved: {0} modules, {1} classes, {2} methods, {3} properties.",
-                statistics.WeavedModuleCount, statistics.WeavedClassCount, statistics.WeavedMethodCount, statistics.WeavedPropertyCount);
+            writer.WriteLine("Weaved: {0} modules, {1} classes, {2} methods, {3} properties, {4} switches.",
+                statistics.WeavedModuleCount, statistics.WeavedClassCount, statistics.WeavedMethodCount, statistics.WeavedPropertyCount, statistics.WeavedSwitchCount);
             writer.WriteLine();
             const string moduleIndentation = "\t";
             const string classIndentation = "\t\t";
@@ -30,14 +30,14 @@ namespace CrossCutterN.Command
             foreach (var mStatistics in statistics.ModuleWeavingStatistics)
             {
                 writer.WriteLine("{0}Module: {1}", moduleIndentation, mStatistics.Name);
-                writer.WriteLine("{0}Weaved {1} classes, {2} methods, {3} properties.",
-                    moduleIndentation, mStatistics.WeavedClassCount, mStatistics.WeavedMethodCount, mStatistics.WeavedPropertyCount);
+                writer.WriteLine("{0}Weaved {1} classes, {2} methods, {3} properties, {4} switches.",
+                    moduleIndentation, mStatistics.WeavedClassCount, mStatistics.WeavedMethodCount, mStatistics.WeavedPropertyCount, mStatistics.WeavedSwitchCount);
                 writer.WriteLine();
                 foreach (var cStatistics in mStatistics.ClassWeavingStatistics)
                 {
                     writer.WriteLine("{0}Class: {1}", classIndentation, cStatistics.FullName);
-                    writer.WriteLine("{0}Weaved {1} methods, {2} properties",
-                        classIndentation, cStatistics.WeavedMethodCount, cStatistics.WeavedPropertyCount);
+                    writer.WriteLine("{0}Weaved {1} methods, {2} properties, {3} switches",
+                        classIndentation, cStatistics.WeavedMethodCount, cStatistics.WeavedPropertyCount, cStatistics.WeavedSwitchCount);
                     writer.WriteLine();
                     foreach (var meStatistics in cStatistics.MethodWeavingStatistics)
                     {
@@ -69,6 +69,16 @@ namespace CrossCutterN.Command
                         }
                         writer.WriteLine();
                     }
+                    if (cStatistics.SwitchWeavingRecords.Count > 0)
+                    {
+                        writer.WriteLine("{0}Switches:", methodPropertyIndentation);
+                        foreach (var record in cStatistics.SwitchWeavingRecords)
+                        {
+                            writer.WriteLine("{0}{1}: {2} {3} {4} {5} {6}", adviceIndentation, record.StaticVariableName, record.Class, record.Property, record.Method, record.Aspect, record.Value);
+                        }
+                        writer.WriteLine();
+                    }
+                    
                 }
             }
         }

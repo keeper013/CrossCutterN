@@ -24,7 +24,7 @@ namespace CrossCutterN.Aspect.Builder
         private bool _concernProtected;
         private bool _concernPublic;
         private bool _concernStatic;
-        private bool? _switch;
+        private SwitchStatus _switchStatus;
         
         private readonly Dictionary<JoinPoint, MethodInfo> _pointCut = new Dictionary<JoinPoint, MethodInfo>();
 
@@ -168,13 +168,13 @@ namespace CrossCutterN.Aspect.Builder
             }
         }
 
-        public bool? Switch
+        public SwitchStatus SwitchStatus
         {
-            protected get { return _switch; }
+            protected get { return _switchStatus; }
             set
             {
                 ReadOnly.Assert(false);
-                _switch = value;
+                _switchStatus = value;
             }
         }
 

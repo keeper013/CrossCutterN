@@ -106,7 +106,7 @@ namespace CrossCutterN.Weaver.Utilities
 
         private static void SetBuilderSwitchable(this ISwitchableAspectBuilder builder, SwitchElement element)
         {
-            builder.Switch = element != null ? (bool?)element.DefaultStatus : null;
+            builder.SwitchStatus = element.Status;
         }
 
         private static void SetBuilderOptions(this IWriteOnlyNameExpressionAspectBuilder builder, AspectBuilderOptionsElement options)
