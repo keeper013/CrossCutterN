@@ -23,6 +23,7 @@ namespace CrossCutterN.Advice.Switch
         private readonly Dictionary<string, SwitchOperation> _aspectOperations = 
             new Dictionary<string, SwitchOperation>();
         private readonly SequenceGenerator _sequenceGenerator = new SequenceGenerator();
+        private readonly object _resourceKey = new object();
 
         public void Complete(string clazz)
         {
@@ -238,17 +239,20 @@ namespace CrossCutterN.Advice.Switch
                 throw new ArgumentException(string.Format("Property {0} doesn't have declaring type.", property.Name));
             }
             var clazz = property.DeclaringType.FullName;
-            if (_completed.ContainsKey(clazz))
+            lock(_resourceKey)
             {
-                // the class is completed
-                return _completed[clazz].SwitchProperty(property.Name, status);
+                if (_completed.ContainsKey(clazz))
+                {
+                    // the class is completed
+                    return _completed[clazz].SwitchProperty(property.Name, status);
+                }
+                if (!_classOperations.ContainsKey(clazz))
+                {
+                    // the class is not loaded yet
+                    _classOperations.Add(clazz, SwitchFactory.InitializeClassAdviceSwitchOperation(_aspectOperations, _sequenceGenerator));
+                }
+                _classOperations[clazz].SwitchProperty(property.Name, status);
             }
-            if (!_classOperations.ContainsKey(clazz))
-            {
-                // the class is not loaded yet
-                _classOperations.Add(clazz, SwitchFactory.InitializeClassAdviceSwitchOperation(_aspectOperations, _sequenceGenerator));
-            }
-            _classOperations[clazz].SwitchProperty(property.Name, status);
             return -1;
         }
 
@@ -258,17 +262,20 @@ namespace CrossCutterN.Advice.Switch
             {
                 throw new ArgumentNullException("aspect");
             }
-            if (_aspectOperations.ContainsKey(aspect))
+            lock (_resourceKey)
             {
-                var neutralized = _aspectOperations[aspect].Switch(status);
-                if (neutralized)
+                if (_aspectOperations.ContainsKey(aspect))
                 {
-                    _aspectOperations.Remove(aspect);
+                    var neutralized = _aspectOperations[aspect].Switch(status);
+                    if (neutralized)
+                    {
+                        _aspectOperations.Remove(aspect);
+                    }
                 }
-            }
-            else
-            {
-                _aspectOperations.Add(aspect, SwitchFactory.InitializeSwitchOperation(_sequenceGenerator, status));
+                else
+                {
+                    _aspectOperations.Add(aspect, SwitchFactory.InitializeSwitchOperation(_sequenceGenerator, status));
+                }
             }
             return 1;
         }
@@ -285,17 +292,20 @@ namespace CrossCutterN.Advice.Switch
                 throw new ArgumentException(string.Format("Method {0} doesn't have declaring type.", signature));
             }
             var clazz = method.DeclaringType.FullName;
-            if (_completed.ContainsKey(clazz))
+            lock (_resourceKey)
             {
-                // the class is completed
-                return _completed[clazz].SwitchMethod(signature, status);
-            }
-            if (!_classOperations.ContainsKey(clazz))
-            {
-                // the class is not loaded yet
-                _classOperations.Add(clazz, SwitchFactory.InitializeClassAdviceSwitchOperation(_aspectOperations, _sequenceGenerator));
-            }
-            _classOperations[clazz].SwitchMethod(signature, status);
+                if (_completed.ContainsKey(clazz))
+                {
+                    // the class is completed
+                    return _completed[clazz].SwitchMethod(signature, status);
+                }
+                if (!_classOperations.ContainsKey(clazz))
+                {
+                    // the class is not loaded yet
+                    _classOperations.Add(clazz, SwitchFactory.InitializeClassAdviceSwitchOperation(_aspectOperations, _sequenceGenerator));
+                }
+                _classOperations[clazz].SwitchMethod(signature, status);
+            } 
             return -1;
         }
 
@@ -306,17 +316,20 @@ namespace CrossCutterN.Advice.Switch
                 throw new ArgumentNullException("type");
             }
             var clazz = type.FullName;
-            if (_completed.ContainsKey(clazz))
+            lock (_resourceKey)
             {
-                // the class is completed
-                return _completed[clazz].Switch(status);
+                if (_completed.ContainsKey(clazz))
+                {
+                    // the class is completed
+                    return _completed[clazz].Switch(status);
+                }
+                if (!_classOperations.ContainsKey(clazz))
+                {
+                    // the class is not loaded yet
+                    _classOperations.Add(clazz, SwitchFactory.InitializeClassAdviceSwitchOperation(_aspectOperations, _sequenceGenerator));
+                }
+                _classOperations[clazz].Switch(status);
             }
-            if (!_classOperations.ContainsKey(clazz))
-            {
-                // the class is not loaded yet
-                _classOperations.Add(clazz, SwitchFactory.InitializeClassAdviceSwitchOperation(_aspectOperations, _sequenceGenerator));
-            }
-            _classOperations[clazz].Switch(status);
             return -1;
         }
 
@@ -335,17 +348,20 @@ namespace CrossCutterN.Advice.Switch
                 throw new ArgumentNullException("aspect");
             }
             var clazz = property.DeclaringType.FullName;
-            if (_completed.ContainsKey(clazz))
+            lock (_resourceKey)
             {
-                // the class is completed
-                return _completed[clazz].SwitchPropertyAspect(property.Name, aspect, status);
+                if (_completed.ContainsKey(clazz))
+                {
+                    // the class is completed
+                    return _completed[clazz].SwitchPropertyAspect(property.Name, aspect, status);
+                }
+                if (!_classOperations.ContainsKey(clazz))
+                {
+                    // the class is not loaded yet
+                    _classOperations.Add(clazz, SwitchFactory.InitializeClassAdviceSwitchOperation(_aspectOperations, _sequenceGenerator));
+                }
+                _classOperations[clazz].SwitchPropertyAspect(property.Name, aspect, status);
             }
-            if (!_classOperations.ContainsKey(clazz))
-            {
-                // the class is not loaded yet
-                _classOperations.Add(clazz, SwitchFactory.InitializeClassAdviceSwitchOperation(_aspectOperations, _sequenceGenerator));
-            }
-            _classOperations[clazz].SwitchPropertyAspect(property.Name, aspect, status);
             return -1;
         }
 
@@ -364,17 +380,20 @@ namespace CrossCutterN.Advice.Switch
                 throw new ArgumentNullException("aspect");
             }
             var clazz = method.DeclaringType.FullName;
-            if (_completed.ContainsKey(clazz))
+            lock (_resourceKey)
             {
-                // the class is completed
-                return _completed[clazz].SwitchMethodAspect(method.GetSignature(), aspect, status);
+                if (_completed.ContainsKey(clazz))
+                {
+                    // the class is completed
+                    return _completed[clazz].SwitchMethodAspect(method.GetSignature(), aspect, status);
+                }
+                if (!_classOperations.ContainsKey(clazz))
+                {
+                    // the class is not loaded yet
+                    _classOperations.Add(clazz, SwitchFactory.InitializeClassAdviceSwitchOperation(_aspectOperations, _sequenceGenerator));
+                }
+                _classOperations[clazz].SwitchMethodAspect(method.GetSignature(), aspect, status);
             }
-            if (!_classOperations.ContainsKey(clazz))
-            {
-                // the class is not loaded yet
-                _classOperations.Add(clazz, SwitchFactory.InitializeClassAdviceSwitchOperation(_aspectOperations, _sequenceGenerator));
-            }
-            _classOperations[clazz].SwitchMethodAspect(method.GetSignature(), aspect, status);
             return -1;
         }
 
@@ -389,17 +408,20 @@ namespace CrossCutterN.Advice.Switch
                 throw new ArgumentNullException("aspect");
             }
             var clazz = type.FullName;
-            if (_completed.ContainsKey(clazz))
+            lock (_resourceKey)
             {
-                // the class is completed
-                return _completed[clazz].SwitchAspect(aspect, status);
+                if (_completed.ContainsKey(clazz))
+                {
+                    // the class is completed
+                    return _completed[clazz].SwitchAspect(aspect, status);
+                }
+                if (!_classOperations.ContainsKey(clazz))
+                {
+                    // the class is not loaded yet
+                    _classOperations.Add(clazz, SwitchFactory.InitializeClassAdviceSwitchOperation(_aspectOperations, _sequenceGenerator));
+                }
+                _classOperations[clazz].SwitchAspect(aspect, status);
             }
-            if (!_classOperations.ContainsKey(clazz))
-            {
-                // the class is not loaded yet
-                _classOperations.Add(clazz, SwitchFactory.InitializeClassAdviceSwitchOperation(_aspectOperations, _sequenceGenerator));
-            }
-            _classOperations[clazz].SwitchAspect(aspect, status);
             return -1;
         }
 
