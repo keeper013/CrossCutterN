@@ -201,7 +201,30 @@ namespace CrossCutterN.Advice.Switch
 
         private bool GetSwitchValue(bool value, string clazz, string propertyName, string methodSignature, string aspect)
         {
-            return _classOperations.ContainsKey(clazz) ? _classOperations[clazz].GetSwitchValue(value, propertyName, methodSignature, aspect) : value;
+            if (_classOperations.ContainsKey(clazz))
+            {
+                return _classOperations[clazz].GetSwitchValue(value, propertyName, methodSignature, aspect);
+            }
+            else return GetSwitchValue(value, aspect);
+        }
+
+        private bool GetSwitchValue(bool value, string aspect)
+        {
+            if(_aspectOperations.ContainsKey(aspect))
+            {
+                switch(_aspectOperations[aspect].Status)
+                {
+                    case SwitchStatus.Switched:
+                        return !value;
+                    case SwitchStatus.On:
+                        return true;
+                    case SwitchStatus.Off:
+                        return false;
+                }
+                throw new Exception(
+                    string.Format("Invalid status {0} for aspect {1} detected", _aspectOperations[aspect].Status, aspect));
+            }
+            return value;
         }
 
         private int Switch(PropertyInfo property, SwitchStatus status)

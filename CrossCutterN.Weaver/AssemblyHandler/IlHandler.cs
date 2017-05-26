@@ -345,12 +345,13 @@ namespace CrossCutterN.Weaver.AssemblyHandler
             if (_instructions.Any())
             {
                 // must add end finally instruction at the end
-                _instructions.Add(_processor.Create(OpCodes.Endfinally));
+                var endFinally = _processor.Create(OpCodes.Endfinally);
+                _instructions.Add(endFinally);
                 FixReturnInstructions();
                 // apply switch from last advice call
                 if (_context.PendingSwitchIndex >= 0)
                 {
-                    _instructions[_context.PendingSwitchIndex] = _processor.Create(OpCodes.Brfalse_S, _context.EndingInstruction);
+                    _instructions[_context.PendingSwitchIndex] = _processor.Create(OpCodes.Brfalse_S, endFinally);
                     _context.PendingSwitchIndex = -1;
                 }
                 var tryEndInstruction = _instructions.First();
