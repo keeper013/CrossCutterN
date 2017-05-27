@@ -8,13 +8,13 @@ namespace CrossCutterN.Weaver.Reference.Advice.Switch
     using System.Reflection;
     using Mono.Cecil;
     
-    internal sealed class AdviceSwitchControllerReference : ReferenceBase, IAdviceSwitchControllerReference, IAdviceSwitchControllerWriteOnlyReference
+    internal sealed class SwitchBackStageReference : ReferenceBase, ISwitchBackStageReference, ISwitchBackStageWriteOnlyReference
     {
-        public AdviceSwitchControllerReference(ModuleDefinition module) : base(module, true)
+        public SwitchBackStageReference(ModuleDefinition module) : base(module, true)
         {
         }
 
-        MethodReference IAdviceSwitchControllerReference.LookUpGetterReference
+        MethodReference ISwitchBackStageReference.LookUpGetterReference
         {
             get { return GetMethod("LookUpGetterReference"); }
         }
@@ -24,7 +24,7 @@ namespace CrossCutterN.Weaver.Reference.Advice.Switch
             set { SetMethod("LookUpGetterReference", value); }
         }
 
-        MethodReference IAdviceSwitchControllerReference.BuildUpGetterReference
+        MethodReference ISwitchBackStageReference.BuildUpGetterReference
         {
             get { return GetMethod("BuildUpGetterReference"); }
         }
@@ -34,7 +34,7 @@ namespace CrossCutterN.Weaver.Reference.Advice.Switch
             set { SetMethod("BuildUpGetterReference", value); }
         }
 
-        public IAdviceSwitchControllerReference Convert()
+        public ISwitchBackStageReference Convert()
         {
             ValidateConvert("LookUpGetterReference", "BuildUpGetterReference");
             return this;

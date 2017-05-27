@@ -7,7 +7,7 @@ namespace CrossCutterN.Weaver.Reference.Advice.Switch
 {
     using Mono.Cecil;
 
-    internal interface IAdviceSwitchControllerReference
+    internal interface ISwitchBackStageReference
     {
         MethodReference LookUpGetterReference { get; }
         MethodReference BuildUpGetterReference { get; }

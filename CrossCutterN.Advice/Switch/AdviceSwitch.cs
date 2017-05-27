@@ -22,7 +22,9 @@ namespace CrossCutterN.Advice.Switch
         // we never know when will all class be loaded, so this aspect operation dictionary is necessary
         private readonly Dictionary<string, SwitchOperation> _aspectOperations = 
             new Dictionary<string, SwitchOperation>();
+        private readonly Dictionary<string, ISet<int>> _aspectSwitches = new Dictionary<string, ISet<int>>();
         private readonly SequenceGenerator _sequenceGenerator = new SequenceGenerator();
+        // TODO: directly lock on member containers to increase throughput for critical sections
         private readonly object _resourceKey = new object();
 
         public void Complete(string clazz)
@@ -41,9 +43,12 @@ namespace CrossCutterN.Advice.Switch
                 throw new ArgumentException(string.Format("{0} is not built up at all.", clazz));
             }
 #endif
-            _completed.Add(clazz, _buildingUps[clazz].Convert());
-            _buildingUps.Remove(clazz);
-            _classOperations.Remove(clazz);
+            lock(_resourceKey)
+            {
+                _completed.Add(clazz, _buildingUps[clazz].Convert());
+                _buildingUps.Remove(clazz);
+                _classOperations.Remove(clazz);
+            }
         }
 
         public bool IsOn(int id)
@@ -71,14 +76,17 @@ namespace CrossCutterN.Advice.Switch
                 throw new ArgumentException(string.Format("{0} is completed for switch registration already.", clazz));
             }
 #endif
-            var id = _switchList.Count;
-            _switchList.Add(GetSwitchValue(value, clazz, property, method, aspect));
-            if (!_buildingUps.ContainsKey(clazz))
+            lock(_resourceKey)
             {
-                _buildingUps.Add(clazz, SwitchFactory.InitializeClassAdviceSwitch(_switchList));
+                var id = _switchList.Count;
+                _switchList.Add(GetSwitchValue(value, clazz, property, method, aspect));
+                if (!_buildingUps.ContainsKey(clazz))
+                {
+                    _buildingUps.Add(clazz, SwitchFactory.InitializeClassAdviceSwitch(_switchList));
+                }
+                _buildingUps[clazz].RegisterSwitch(id, property, method, aspect);
+                return id;
             }
-            _buildingUps[clazz].RegisterSwitch(id, property, method, aspect);
-            return id;
         }
 
         #region Switch
@@ -262,8 +270,16 @@ namespace CrossCutterN.Advice.Switch
             {
                 throw new ArgumentNullException("aspect");
             }
+            var switched = 0;
             lock (_resourceKey)
             {
+                foreach(var completed in _completed.Values)
+                {
+                    if (completed.IsAspectApplied(aspect))
+                    {
+                        switched += completed.SwitchAspect(aspect, status);
+                    }
+                }
                 if (_aspectOperations.ContainsKey(aspect))
                 {
                     var neutralized = _aspectOperations[aspect].Switch(status);
@@ -277,7 +293,7 @@ namespace CrossCutterN.Advice.Switch
                     _aspectOperations.Add(aspect, SwitchFactory.InitializeSwitchOperation(_sequenceGenerator, status));
                 }
             }
-            return 1;
+            return switched;
         }
 
         private int Switch(MethodInfo method, SwitchStatus status)

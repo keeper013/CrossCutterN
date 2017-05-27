@@ -18,7 +18,7 @@ namespace CrossCutterN.Weaver.Reference
         ICanAddAttributePropertyReference CustomAttribute { get; }
         IAttributePropertyReference AttributeProperty { get; }
         IAdviceSwitchBuildUpReference BuildUp { get; }
-        IAdviceSwitchControllerReference Controller { get; }
+        ISwitchBackStageReference Controller { get; }
         IAdviceSwitchLookUpReference LookUp { get; }
     }
 }

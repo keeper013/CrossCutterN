@@ -8,7 +8,7 @@ namespace CrossCutterN.Weaver.Reference.Advice.Switch
     using System.Reflection;
     using CrossCutterN.Advice.Common;
 
-    internal interface IAdviceSwitchControllerWriteOnlyReference : ICanConvert<IAdviceSwitchControllerReference>
+    internal interface ISwitchBackStageWriteOnlyReference : ICanConvert<ISwitchBackStageReference>
     {
         MethodInfo LookUpGetterReference { set; }
         MethodInfo BuildUpGetterReference { set; }

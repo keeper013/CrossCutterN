@@ -449,6 +449,7 @@ namespace CrossCutterN.Weaver.AssemblyHandler
             {
                 _instructions.Add(_processor.Create(OpCodes.Call, _context.AdviceReference.Controller.LookUpGetterReference));
                 var field = switchHandler.GetSwitchField(MethodSignature, advice.BuilderId, advice.SwitchStatus == SwitchStatus.On);
+                //TODO: use local variable to replace calling of static field, to avoid switch status change during same aspect advices in same method
                 _instructions.Add(_processor.Create(OpCodes.Ldsfld, field));
                 _instructions.Add(_processor.Create(OpCodes.Callvirt, _context.AdviceReference.LookUp.IsOnMethod));
                 // the null instruction is to be filled in later

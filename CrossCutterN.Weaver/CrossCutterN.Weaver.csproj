@@ -91,12 +91,12 @@
     <Compile Include="Reference\AdviceReferenceFactory.cs" />
     <Compile Include="Reference\Advice\Parameter\IExecutionContextWriteOnlyReference.cs" />
     <Compile Include="Reference\Advice\Switch\AdviceSwitchBuildUpReference.cs" />
-    <Compile Include="Reference\Advice\Switch\AdviceSwitchControllerReference.cs" />
+    <Compile Include="Reference\Advice\Switch\SwitchBackStageReference.cs" />
     <Compile Include="Reference\Advice\Switch\AdviceSwitchLookUpReference.cs" />
     <Compile Include="Reference\Advice\Switch\IAdviceSwitchBuildUpReference.cs" />
     <Compile Include="Reference\Advice\Switch\IAdviceSwitchBuildUpWriteOnlyReference.cs" />
-    <Compile Include="Reference\Advice\Switch\IAdviceSwitchControllerReference.cs" />
-    <Compile Include="Reference\Advice\Switch\IAdviceSwitchControllerWriteOnlyReference.cs" />
+    <Compile Include="Reference\Advice\Switch\ISwitchBackStageReference.cs" />
+    <Compile Include="Reference\Advice\Switch\ISwitchBackStageWriteOnlyReference.cs" />
     <Compile Include="Reference\Advice\Switch\IAdviceSwitchLookUpReference.cs" />
     <Compile Include="Reference\Advice\Switch\IAdviceSwitchLookUpWriteOnlyReference.cs" />
     <Compile Include="Reference\IAdviceReference.cs" />

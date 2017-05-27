@@ -143,12 +143,12 @@ namespace CrossCutterN.Weaver.Reference
             return reference.Convert();
         }
 
-        private static IAdviceSwitchControllerReference InitializeController(ModuleDefinition module)
+        private static ISwitchBackStageReference InitializeController(ModuleDefinition module)
         {
             const string propertyLookUp = "LookUp";
             const string propertyBuildUp = "BuildUp";
-            var reference = new AdviceSwitchControllerReference(module);
-            var type = typeof (AdviceSwitchController);
+            var reference = new SwitchBackStageReference(module);
+            var type = typeof (SwitchBackStage);
             reference.BuildUpGetterReference = type.GetProperty(propertyBuildUp).GetMethod;
             reference.LookUpGetterReference = type.GetProperty(propertyLookUp).GetMethod;
             return reference.Convert();

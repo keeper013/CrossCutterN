@@ -1,15 +1,19 @@
 ﻿/**
-* Description: Static user interface for advice switch
+* Description: Back stage of advice switch
 * Author: David Cui
 */
 
 namespace CrossCutterN.Advice.Switch
 {
-    public static class AdviceSwitchController
+    public static class SwitchBackStage
     {
         private static readonly AdviceSwitch Instance = SwitchFactory.InitializeAdviceSwitch();
 
-        public static IAdviceSwitch Controller { get { return Instance; } }
+        internal static AdviceSwitch Switch
+        {
+            get { return Instance; }
+        }
+
         public static IAdviceSwitchLookUp LookUp { get { return Instance; } }
         public static IAdviceSwitchBuildUp BuildUp { get { return Instance; } }
     }

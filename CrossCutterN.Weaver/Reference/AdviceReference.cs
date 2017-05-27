@@ -18,7 +18,7 @@ namespace CrossCutterN.Weaver.Reference
         public IParameterFactoryReference ParameterFactory { get; set; }
         public IWriteOnlyReturnReference Return { get; set; }
         public IAdviceSwitchBuildUpReference BuildUp { get; set; }
-        public IAdviceSwitchControllerReference Controller { get; set; }
+        public ISwitchBackStageReference Controller { get; set; }
         public IAdviceSwitchLookUpReference LookUp { get; set; }
     }
 }
