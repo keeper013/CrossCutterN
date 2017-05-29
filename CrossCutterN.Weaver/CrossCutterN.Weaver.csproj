@@ -67,6 +67,7 @@
     <Compile Include="AssemblyHandler\IlHandler.cs" />
     <Compile Include="Switch\IWriteOnlySwitchHandler.cs" />
     <Compile Include="Switch\SwitchFactory.cs" />
+    <Compile Include="Utilities\FieldReferenceComparer.cs" />
     <Compile Include="Switch\SwitchHandler.cs" />
     <Compile Include="Switch\SwitchInitializingData.cs" />
     <Compile Include="AssemblyHandler\WeavingFactory.cs" />

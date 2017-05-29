@@ -10,6 +10,9 @@ namespace CrossCutterN.Advice.Switch
     using System.Reflection;
     using Common;
 
+    /// <summary>
+    /// Considering this advice switching isn't supposed to happen often, crude lock(this) is used to cater for multithreading 
+    /// </summary>
     internal sealed class AdviceSwitch : IAdviceSwitch, IAdviceSwitchBuildUp, IAdviceSwitchLookUp
     {
         private readonly IList<bool> _switchList = new List<bool>();
@@ -22,10 +25,7 @@ namespace CrossCutterN.Advice.Switch
         // we never know when will all class be loaded, so this aspect operation dictionary is necessary
         private readonly Dictionary<string, SwitchOperation> _aspectOperations = 
             new Dictionary<string, SwitchOperation>();
-        private readonly Dictionary<string, ISet<int>> _aspectSwitches = new Dictionary<string, ISet<int>>();
         private readonly SequenceGenerator _sequenceGenerator = new SequenceGenerator();
-        // TODO: directly lock on member containers to increase throughput for critical sections
-        private readonly object _resourceKey = new object();
 
         public void Complete(string clazz)
         {
@@ -43,7 +43,7 @@ namespace CrossCutterN.Advice.Switch
                 throw new ArgumentException(string.Format("{0} is not built up at all.", clazz));
             }
 #endif
-            lock(_resourceKey)
+            lock (this)
             {
                 _completed.Add(clazz, _buildingUps[clazz].Convert());
                 _buildingUps.Remove(clazz);
@@ -60,6 +60,12 @@ namespace CrossCutterN.Advice.Switch
                 throw new InvalidOperationException(string.Format("Switch for id {0} is not found", id));
             }
 #endif
+            // a significant delay may be expected if we lock this part, so no locking is applied here.
+            // the drawback is that when updating multiple switches belong to one aspect or class or method,
+            // some switches may be retrieved before all related switches are updated, 
+            // so behavior of switches expected to be changed in one switching operation may differ.
+            // The assumption is that switching during application shouldn't happen a lot
+            // Note that the atomicity of one aspect within one method is still guaranteed by the weaving algorithm 
             return _switchList[id];
         }
 
@@ -76,7 +82,7 @@ namespace CrossCutterN.Advice.Switch
                 throw new ArgumentException(string.Format("{0} is completed for switch registration already.", clazz));
             }
 #endif
-            lock(_resourceKey)
+            lock(this)
             {
                 var id = _switchList.Count;
                 _switchList.Add(GetSwitchValue(value, clazz, property, method, aspect));
@@ -214,7 +220,7 @@ namespace CrossCutterN.Advice.Switch
             {
                 return _classOperations[clazz].GetSwitchValue(value, propertyName, methodSignature, aspect);
             }
-            else return GetSwitchValue(value, aspect);
+            return GetSwitchValue(value, aspect);
         }
 
         private bool GetSwitchValue(bool value, string aspect)
@@ -247,7 +253,7 @@ namespace CrossCutterN.Advice.Switch
                 throw new ArgumentException(string.Format("Property {0} doesn't have declaring type.", property.Name));
             }
             var clazz = property.DeclaringType.FullName;
-            lock(_resourceKey)
+            lock(this)
             {
                 if (_completed.ContainsKey(clazz))
                 {
@@ -271,7 +277,7 @@ namespace CrossCutterN.Advice.Switch
                 throw new ArgumentNullException("aspect");
             }
             var switched = 0;
-            lock (_resourceKey)
+            lock (this)
             {
                 foreach(var completed in _completed.Values)
                 {
@@ -308,7 +314,7 @@ namespace CrossCutterN.Advice.Switch
                 throw new ArgumentException(string.Format("Method {0} doesn't have declaring type.", signature));
             }
             var clazz = method.DeclaringType.FullName;
-            lock (_resourceKey)
+            lock (this)
             {
                 if (_completed.ContainsKey(clazz))
                 {
@@ -332,7 +338,7 @@ namespace CrossCutterN.Advice.Switch
                 throw new ArgumentNullException("type");
             }
             var clazz = type.FullName;
-            lock (_resourceKey)
+            lock (this)
             {
                 if (_completed.ContainsKey(clazz))
                 {
@@ -364,7 +370,7 @@ namespace CrossCutterN.Advice.Switch
                 throw new ArgumentNullException("aspect");
             }
             var clazz = property.DeclaringType.FullName;
-            lock (_resourceKey)
+            lock (this)
             {
                 if (_completed.ContainsKey(clazz))
                 {
@@ -396,7 +402,7 @@ namespace CrossCutterN.Advice.Switch
                 throw new ArgumentNullException("aspect");
             }
             var clazz = method.DeclaringType.FullName;
-            lock (_resourceKey)
+            lock (this)
             {
                 if (_completed.ContainsKey(clazz))
                 {
@@ -424,7 +430,7 @@ namespace CrossCutterN.Advice.Switch
                 throw new ArgumentNullException("aspect");
             }
             var clazz = type.FullName;
-            lock (_resourceKey)
+            lock (this)
             {
                 if (_completed.ContainsKey(clazz))
                 {

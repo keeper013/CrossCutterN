@@ -397,6 +397,22 @@ namespace CrossCutterN.Weaver.AssemblyHandler
             PersistentInstructions(_method.Body.Instructions.First());
         }
 
+        public void WeaveSwitchInitialization()
+        {
+            var dict = _context.FieldLocalVariableDictionary;
+            if (dict.Any())
+            {
+                foreach (var fieldVariable in dict)
+                {
+                    _instructions.Add(_processor.Create(OpCodes.Call, _context.AdviceReference.Controller.LookUpGetterReference));
+                    _instructions.Add(_processor.Create(OpCodes.Ldsfld, fieldVariable.Key));
+                    _instructions.Add(_processor.Create(OpCodes.Callvirt, _context.AdviceReference.LookUp.IsOnMethod));
+                    _instructions.Add(_processor.Create(OpCodes.Stloc, fieldVariable.Value));
+                }
+                PersistentInstructions(_context.TryStartInstruction);
+            }
+        }
+
         #endregion
 
         private void FixReturnInstructions()
@@ -447,11 +463,15 @@ namespace CrossCutterN.Weaver.AssemblyHandler
             var firstIndex = _instructions.Count;
             if (advice.SwitchStatus.IsSwitchable())
             {
-                _instructions.Add(_processor.Create(OpCodes.Call, _context.AdviceReference.Controller.LookUpGetterReference));
                 var field = switchHandler.GetSwitchField(MethodSignature, advice.BuilderId, advice.SwitchStatus == SwitchStatus.On);
-                //TODO: use local variable to replace calling of static field, to avoid switch status change during same aspect advices in same method
-                _instructions.Add(_processor.Create(OpCodes.Ldsfld, field));
-                _instructions.Add(_processor.Create(OpCodes.Callvirt, _context.AdviceReference.LookUp.IsOnMethod));
+                var index = _context.GetLocalVariableForField(field);
+                if (index < 0)
+                {
+                    index = _method.Body.Variables.Count;
+                    _method.Body.Variables.Add(new VariableDefinition(_context.GetTypeReference(typeof(bool))));
+                    _context.RecordLocalVariableForField(field, index);
+                }
+                _instructions.Add(_processor.Create(OpCodes.Ldloc, index));
                 // the null instruction is to be filled in later
                 _context.PendingSwitchIndex = _instructions.Count;
                 _instructions.Add(null);

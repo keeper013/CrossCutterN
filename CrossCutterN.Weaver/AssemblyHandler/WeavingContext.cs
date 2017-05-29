@@ -6,19 +6,22 @@
 namespace CrossCutterN.Weaver.AssemblyHandler
 {
     using System;
-    using System.Reflection;
     using System.Collections.Generic;
+    using System.Reflection;
     using Mono.Cecil;
     using Mono.Cecil.Cil;
     using Advice.Common;
     using Reference;
+    using Utilities;
 
     internal class WeavingContext : IWeavingContext
     {
+        private static readonly FieldReferenceComparer FieldReferenceComparer = new FieldReferenceComparer();
         private readonly IDictionary<string, MethodReference> _methodReferences = new Dictionary<string, MethodReference>();
         private readonly IDictionary<string, TypeReference> _typeReferences = new Dictionary<string, TypeReference>();
         private readonly ModuleDefinition _module;
         private readonly IAdviceReference _adviceParameterReference;
+        private readonly Dictionary<FieldReference, int> _switchFieldVariableDictionary = new Dictionary<FieldReference, int>(FieldReferenceComparer);
 
         public IAdviceReference AdviceReference
         {
@@ -35,6 +38,11 @@ namespace CrossCutterN.Weaver.AssemblyHandler
         public Instruction EndingInstruction { get; set; }
 
         public int PendingSwitchIndex { get; set; }
+
+        public IReadOnlyDictionary<FieldReference, int> FieldLocalVariableDictionary
+        {
+            get { return _switchFieldVariableDictionary; }
+        }
 
         public WeavingContext(ModuleDefinition module)
         {
@@ -100,6 +108,37 @@ namespace CrossCutterN.Weaver.AssemblyHandler
             return _typeReferences[key];
         }
 
+
+        public int GetLocalVariableForField(FieldReference field)
+        {
+            if (field == null)
+            {
+                throw new ArgumentNullException("field");
+            }
+            if (_switchFieldVariableDictionary.ContainsKey(field))
+            {
+                return _switchFieldVariableDictionary[field];
+            }
+            return -1;
+        }
+
+        public void RecordLocalVariableForField(FieldReference field, int variableIndex)
+        {
+            if (field == null)
+            {
+                throw new ArgumentNullException("field");
+            }
+            if (variableIndex < 0)
+            {
+                throw new ArgumentOutOfRangeException("variableIndex");
+            }
+            if (_switchFieldVariableDictionary.ContainsKey(field))
+            {
+                throw new ArgumentException(string.Format("Local variable for field {0} has been added already", field.Name));
+            }
+            _switchFieldVariableDictionary.Add(field, variableIndex);
+        }
+
         public virtual void ResetVolatileData()
         {
             ExecutionContextVariableIndex = -1;
@@ -111,6 +150,7 @@ namespace CrossCutterN.Weaver.AssemblyHandler
             TryStartInstruction = null;
             EndingInstruction = null;
             PendingSwitchIndex = -1;
+            _switchFieldVariableDictionary.Clear();
         }
     }
 }

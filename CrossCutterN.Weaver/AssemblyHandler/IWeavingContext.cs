@@ -6,6 +6,7 @@
 namespace CrossCutterN.Weaver.AssemblyHandler
 {
     using System;
+    using System.Collections.Generic;
     using System.Reflection;
     using Mono.Cecil;
     using Mono.Cecil.Cil;
@@ -23,10 +24,13 @@ namespace CrossCutterN.Weaver.AssemblyHandler
         Instruction TryStartInstruction { get; set; }
         Instruction EndingInstruction { get; set; }
         int PendingSwitchIndex { get; set; }
+        IReadOnlyDictionary<FieldReference, int> FieldLocalVariableDictionary { get; }
         void AddMethodReference(MethodInfo method);
         void AddTypeReference(Type type);
         MethodReference GetMethodReference(MethodInfo info);
         TypeReference GetTypeReference(Type type);
+        int GetLocalVariableForField(FieldReference field);
+        void RecordLocalVariableForField(FieldReference field, int variableIndex);
         void ResetVolatileData();
     }
 }

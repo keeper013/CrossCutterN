@@ -216,6 +216,11 @@ namespace CrossCutterN.Advice.Switch
                 var operation = _aspectOperations[aspect];
                 operations.Add(operation.Sequence, operation.Status);
             }
+            if (_aspectSwitchDictionary.ContainsKey(aspect))
+            {
+                var operation = _aspectSwitchDictionary[aspect];
+                operations.Add(operation.Sequence, operation.Status);
+            }
             if (_methodSwitchDictionary.ContainsKey(methodSignature))
             {
                 var operation = _methodSwitchDictionary[methodSignature];
@@ -227,6 +232,7 @@ namespace CrossCutterN.Advice.Switch
                 var operation = _methodAspectSwitchDictionary[methodSignature][aspect];
                 operations.Add(operation.Sequence, operation.Status);
             }
+
             if (!string.IsNullOrWhiteSpace(propertyName))
             {
                 if (_propertySwitchDictionary.ContainsKey(propertyName))

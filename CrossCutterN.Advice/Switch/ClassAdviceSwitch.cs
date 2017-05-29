@@ -11,7 +11,7 @@ namespace CrossCutterN.Advice.Switch
 
     internal sealed class ClassAdviceSwitch : IClassAdviceSwitch, IClassAdviceSwitchBuildUp
     {
-        private readonly Dictionary<string, Dictionary<string, int>> _propertySwitchDictionary = new Dictionary<string, Dictionary<string, int>>();
+        private readonly Dictionary<string, Dictionary<string, PropertySwitches>> _propertySwitchDictionary = new Dictionary<string, Dictionary<string, PropertySwitches>>();
         private readonly Dictionary<string, Dictionary<string, int>> _methodSwitchDictionary = new Dictionary<string, Dictionary<string, int>>();
         private readonly Dictionary<string, List<int>> _aspectSwitchDictionary = new Dictionary<string, List<int>>();
         private readonly IList<bool> _switchList;
@@ -189,15 +189,28 @@ namespace CrossCutterN.Advice.Switch
             }
 #endif
             _complete.Assert(false);
+            
             if (!string.IsNullOrWhiteSpace(propertyName))
             {
                 if (_propertySwitchDictionary.ContainsKey(propertyName))
                 {
-                    _propertySwitchDictionary[propertyName].Add(aspect, id);
+                    var aspectDictionary = _propertySwitchDictionary[propertyName];
+                    if (aspectDictionary.ContainsKey(aspect))
+                    {
+                        SetPropertySwitches(aspectDictionary[aspect], methodSignature, id);
+                    }
+                    else
+                    {
+                        var propertySwitches = new PropertySwitches();
+                        SetPropertySwitches(propertySwitches, methodSignature, id);
+                        aspectDictionary.Add(aspect, propertySwitches);
+                    }
                 }
                 else
                 {
-                    _propertySwitchDictionary.Add(propertyName, new Dictionary<string, int> { { aspect, id } });
+                    var propertySwitches = new PropertySwitches();
+                    SetPropertySwitches(propertySwitches, methodSignature, id);
+                    _propertySwitchDictionary.Add(propertyName, new Dictionary<string, PropertySwitches> { { aspect, propertySwitches } });
                 }
             }
             if (!string.IsNullOrWhiteSpace(methodSignature))
@@ -237,6 +250,24 @@ namespace CrossCutterN.Advice.Switch
             return 1;
         }
 
+        private int Switch(PropertySwitches propertySwitches, SwitchStatus status)
+        {
+            var result = 0;
+            var getter = propertySwitches.Getter;
+            if (getter >= 0)
+            {
+                _switchList[getter] = Switch(!_switchList[getter], status);
+                result++;
+            }
+            var setter = propertySwitches.Setter;
+            if (setter >= 0)
+            {
+                _switchList[setter] = Switch(!_switchList[getter], status);
+                result++;
+            }
+            return result;
+        }
+
         private int Switch(ICollection<int> ids, SwitchStatus status)
         {
             foreach (var id in ids)
@@ -244,6 +275,16 @@ namespace CrossCutterN.Advice.Switch
                 _switchList[id] = Switch(!_switchList[id], status);
             }
             return ids.Count;
+        }
+
+        private int Switch(IEnumerable<PropertySwitches> switches, SwitchStatus status)
+        {
+            var result = 0;
+            foreach (var propertySwitches in switches)
+            {
+                result += Switch(propertySwitches, status);
+            }
+            return result;
         }
 
         private static bool Switch(bool value, SwitchStatus status)
@@ -260,6 +301,44 @@ namespace CrossCutterN.Advice.Switch
             throw new InvalidOperationException(string.Format("Unexpected switch status: {0}", status));
         }
 
+        private static void SetPropertySwitches(PropertySwitches switches, string method, int id)
+        {
+            const string getterPrefix = "get_";
+            const string setterPrefix = "set_";
+            if (method.StartsWith(getterPrefix))
+            {
+                if (switches.Getter >= 0)
+                {
+                    throw new ArgumentException(string.Format("Getter method {0} has been set", method));
+                }
+                switches.Getter = id;
+            }
+            else if (method.StartsWith(setterPrefix))
+            {
+                if (switches.Setter >= 0)
+                {
+                    throw new ArgumentException(string.Format("Setter method {0} has been set", method));
+                }
+                switches.Setter = id;
+            }
+            else
+            {
+                throw new ArgumentException("Invalid getter or setter method name: {0}", method);
+            }
+        }
+
         #endregion
+
+        private class PropertySwitches
+        {
+            public PropertySwitches()
+            {
+                Getter = -1;
+                Setter = -1;
+            }
+
+            public int Getter { get; set; }
+            public int Setter { get; set; }
+        }
     }
 }
