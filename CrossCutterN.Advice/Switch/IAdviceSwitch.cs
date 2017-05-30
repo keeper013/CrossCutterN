@@ -33,5 +33,11 @@ namespace CrossCutterN.Advice.Switch
         int SwitchOff(Type type, string aspect);
         int SwitchOff(MethodInfo method, string aspect);
         int SwitchOff(PropertyInfo property, string aspect);
+
+        /// <summary>
+        /// Without clear requirements, this version doesn't support massive switch status lookup
+        /// This is the only lookup interface for user to check switch status for an aspect in a method
+        /// </summary>
+        bool? GetSwitchStatus(MethodInfo method, string aspect);
     }
 }

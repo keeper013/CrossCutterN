@@ -212,6 +212,29 @@ namespace CrossCutterN.Advice.Switch
 
         #endregion
 
+        #region lookup
+
+        public bool? GetSwitchStatus(MethodInfo method, string aspect)
+        {
+            if (method == null)
+            {
+                throw new ArgumentNullException("method");
+            }
+            if (string.IsNullOrWhiteSpace(aspect))
+            {
+                throw new ArgumentNullException("aspect");
+            }
+            if (method.DeclaringType == null)
+            {
+                throw new ArgumentException("Method doesn't have a declaring type", "method");
+            }
+            // for single switch look up, no locking applied
+            var clazz = method.DeclaringType.FullName;
+            return _completed.ContainsKey(clazz) ? _completed[clazz].LookUp(method.GetSignature(), aspect) : null;
+        }
+
+        #endregion
+
         #region Utilities
 
         private bool GetSwitchValue(bool value, string clazz, string propertyName, string methodSignature, string aspect)
@@ -227,17 +250,7 @@ namespace CrossCutterN.Advice.Switch
         {
             if(_aspectOperations.ContainsKey(aspect))
             {
-                switch(_aspectOperations[aspect].Status)
-                {
-                    case SwitchStatus.Switched:
-                        return !value;
-                    case SwitchStatus.On:
-                        return true;
-                    case SwitchStatus.Off:
-                        return false;
-                }
-                throw new Exception(
-                    string.Format("Invalid status {0} for aspect {1} detected", _aspectOperations[aspect].Status, aspect));
+                return _aspectOperations[aspect].Switch(value);
             }
             return value;
         }

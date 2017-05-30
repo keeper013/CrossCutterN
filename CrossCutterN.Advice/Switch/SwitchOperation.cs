@@ -60,5 +60,19 @@ namespace CrossCutterN.Advice.Switch
             }
             return false;
         }
+
+        public bool Switch(bool value)
+        {
+            switch (Status)
+            {
+                case SwitchStatus.Switched:
+                    return !value;
+                case SwitchStatus.On:
+                    return true;
+                case SwitchStatus.Off:
+                    return false;
+            }
+            throw new Exception(string.Format("Invalid status {0} detected", Status));
+        }
     }
 }

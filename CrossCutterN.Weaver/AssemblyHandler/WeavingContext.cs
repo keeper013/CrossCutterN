@@ -7,6 +7,7 @@ namespace CrossCutterN.Weaver.AssemblyHandler
 {
     using System;
     using System.Collections.Generic;
+    using System.Linq;
     using System.Reflection;
     using Mono.Cecil;
     using Mono.Cecil.Cil;
@@ -22,6 +23,10 @@ namespace CrossCutterN.Weaver.AssemblyHandler
         private readonly ModuleDefinition _module;
         private readonly IAdviceReference _adviceParameterReference;
         private readonly Dictionary<FieldReference, int> _switchFieldVariableDictionary = new Dictionary<FieldReference, int>(FieldReferenceComparer);
+        private bool _executionParameterSwitchable;
+        private readonly HashSet<int> _needExecutionParameterSwitches = new HashSet<int>();
+        private bool _returnParameterSwitchable;
+        private readonly HashSet<int> _needReturnParameterSwitches = new HashSet<int>(); 
 
         public IAdviceReference AdviceReference
         {
@@ -38,10 +43,26 @@ namespace CrossCutterN.Weaver.AssemblyHandler
         public Instruction EndingInstruction { get; set; }
 
         public int PendingSwitchIndex { get; set; }
+        public Instruction ExecutionParameterStartInstruction { get; set; }
+        public int ExecutionParameterEndInstructionIndex { get; set; }
+        public Instruction ExecutionParameterEndInstruction { get; set; }
+        public Instruction ReturnParameterStartInstruction { get; set; }
+        public int ReturnParameterEndInstructionIndex { get; set; }
+        public Instruction ReturnParameterEndInstruction { get; set; }
 
         public IReadOnlyDictionary<FieldReference, int> FieldLocalVariableDictionary
         {
             get { return _switchFieldVariableDictionary; }
+        }
+
+        public IReadOnlyList<int> NeedExecutionParameterSwitches
+        {
+            get { return _executionParameterSwitchable ? _needExecutionParameterSwitches.ToList().AsReadOnly() : null; }
+        }
+
+        public IReadOnlyList<int> NeedReturnParameterSwitches
+        {
+            get { return _returnParameterSwitchable ? _needReturnParameterSwitches.ToList().AsReadOnly() : null; }
         }
 
         public WeavingContext(ModuleDefinition module)
@@ -139,6 +160,28 @@ namespace CrossCutterN.Weaver.AssemblyHandler
             _switchFieldVariableDictionary.Add(field, variableIndex);
         }
 
+        public bool RegisterNeedExecutionParameterSwitch(int variableIndex)
+        {
+            return _executionParameterSwitchable && _needExecutionParameterSwitches.Add(variableIndex);
+        }
+
+        public void SetExecutionParameterUnSwitchable()
+        {
+            _executionParameterSwitchable = false;
+            _needExecutionParameterSwitches.Clear();
+        }
+
+        public bool RegisterNeedReturnParameterSwitch(int variableIndex)
+        {
+            return _returnParameterSwitchable && _needReturnParameterSwitches.Add(variableIndex);
+        }
+
+        public void SetReturnParameterUnSwitchable()
+        {
+            _returnParameterSwitchable = false;
+            _needReturnParameterSwitches.Clear();
+        }
+
         public virtual void ResetVolatileData()
         {
             ExecutionContextVariableIndex = -1;
@@ -147,10 +190,22 @@ namespace CrossCutterN.Weaver.AssemblyHandler
             ExceptionHandlerIndex = -1;
             ReturnValueVariableIndex = -1;
             ReturnVariableIndex = -1;
+
             TryStartInstruction = null;
             EndingInstruction = null;
+
             PendingSwitchIndex = -1;
+            ExecutionParameterStartInstruction = null;
+            ExecutionParameterEndInstruction = null;
+            ExecutionParameterEndInstructionIndex = -1;
+            ReturnParameterStartInstruction = null;
+            ReturnParameterEndInstruction = null;
+            ReturnParameterEndInstructionIndex = -1;
             _switchFieldVariableDictionary.Clear();
+            _executionParameterSwitchable = true;
+            _returnParameterSwitchable = true;
+            _needExecutionParameterSwitches.Clear();
+            _needReturnParameterSwitches.Clear();
         }
     }
 }

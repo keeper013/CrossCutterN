@@ -15,5 +15,7 @@ namespace CrossCutterN.Advice.Switch
         int SwitchAspect(string aspect, SwitchStatus status);
         int SwitchMethodAspect(string methodSignature, string aspect, SwitchStatus status);
         int SwitchPropertyAspect(string propertyName, string aspect, SwitchStatus status);
+
+        bool? LookUp(string methodSignature, string aspect);
     }
 }

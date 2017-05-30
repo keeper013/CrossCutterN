@@ -27,7 +27,13 @@ namespace CrossCutterN.Command
                 Console.Out.WriteLine("Example: {0} C:\test.dll C:\test_weaved.dll Y");
                 return;
             }
-            bool includeSymbol = (args.Length == 3) && args[2].Equals("Y");
+            var inputAssembly = args[0];
+            var outputAssembly = args[1];
+            if (string.Equals(inputAssembly, outputAssembly))
+            {
+                throw new ArgumentException("It's not encouraged to directly overwrite input assembly with output assembly.");
+            }
+            var includeSymbol = (args.Length == 3) && args[2].Equals("Y");
 
             var config = (CrossCutterNSection)ConfigurationManager.GetSection("crossCutterN");
             var weaverToBuild = WeaverFactory.InitializeWeaver();
@@ -42,8 +48,6 @@ namespace CrossCutterN.Command
                 weaverToBuild.AddBuilder(config.NameExpressionAspectBuilders[i]);
             }
             var weaver = weaverToBuild.Convert();
-            var inputAssembly = args[0];
-            var outputAssembly = args[1];
             Console.Out.WriteLine("Starting to load {0}, weaving into {1}", inputAssembly, outputAssembly);
             var statistics = weaver.Weave(inputAssembly, outputAssembly, includeSymbol);
             var fileName = string.Format(LogFileName, DateTime.Now.ToString("yyyy_MM_dd_HH_mm_ss_fff"));

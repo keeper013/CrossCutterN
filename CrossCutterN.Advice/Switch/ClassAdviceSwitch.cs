@@ -242,6 +242,31 @@ namespace CrossCutterN.Advice.Switch
 
         #endregion
 
+        #region Lookup
+
+        public bool? LookUp(string methodSignature, string aspect)
+        {
+            if (string.IsNullOrWhiteSpace(methodSignature))
+            {
+                throw new ArgumentNullException("methodSignature");
+            }
+            if (string.IsNullOrWhiteSpace(aspect))
+            {
+                throw new ArgumentNullException("aspect");
+            }
+            if (_methodSwitchDictionary.ContainsKey(methodSignature))
+            {
+                var aspectDictionary = _methodSwitchDictionary[methodSignature];
+                if (aspectDictionary.ContainsKey(aspect))
+                {
+                    return _switchList[aspectDictionary[aspect]];
+                }
+            }
+            return null;
+        }
+
+        #endregion
+
         #region Switch Utilities
 
         private int Switch(int id, SwitchStatus status)
@@ -256,13 +281,13 @@ namespace CrossCutterN.Advice.Switch
             var getter = propertySwitches.Getter;
             if (getter >= 0)
             {
-                _switchList[getter] = Switch(!_switchList[getter], status);
+                _switchList[getter] = Switch(_switchList[getter], status);
                 result++;
             }
             var setter = propertySwitches.Setter;
             if (setter >= 0)
             {
-                _switchList[setter] = Switch(!_switchList[getter], status);
+                _switchList[setter] = Switch(_switchList[setter], status);
                 result++;
             }
             return result;
@@ -272,7 +297,7 @@ namespace CrossCutterN.Advice.Switch
         {
             foreach (var id in ids)
             {
-                _switchList[id] = Switch(!_switchList[id], status);
+                _switchList[id] = Switch(_switchList[id], status);
             }
             return ids.Count;
         }

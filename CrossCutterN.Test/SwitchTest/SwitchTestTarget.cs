@@ -82,4 +82,14 @@ namespace CrossCutterN.Test.SwitchTest
             return x * x;
         }
     }
+
+    internal class SwitchLookUpTestTarget
+    {
+        public static int Test1(int x)
+        {
+            return x * x;
+        }
+
+        public static int Value1 { get; set; }
+    }
 }
