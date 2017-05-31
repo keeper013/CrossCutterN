@@ -6,24 +6,15 @@
 namespace CrossCutterN.SampleTarget
 {
     using System;
-    using SampleAdvice;
 
     class Target
     {
-        [SampleConcernMethod]
-        public static int Add1(int x, int y)
+        [SampleAdvice.SampleConcernMethod]
+        public static int Add(int x, int y)
         {
-            Console.Out.WriteLine("Inside Add1, starting");
+            Console.Out.WriteLine("Add starting");
             var z = x + y;
-            Console.Out.WriteLine("Inside Add1, ending");
-            return z;
-        }
-
-        public static int Add2(int x, int y)
-        {
-            Console.Out.WriteLine("Inside Add2, starting");
-            var z = x + y;
-            Console.Out.WriteLine("Inside Add2, ending");
+            Console.Out.WriteLine("Add ending");
             return z;
         }
     }
@@ -32,8 +23,9 @@ namespace CrossCutterN.SampleTarget
     {
         static void Main(string[] args)
         {
-            Target.Add1(1, 2);
-            Target.Add2(1, 2);
+            //CrossCutterN.Advice.Switch.SwitchFacade.Controller.SwitchOn(
+            //  "AspectInjectedByAttributeExample");
+            Target.Add(1, 2);
         }
     }
 }

@@ -16,7 +16,31 @@ namespace CrossCutterN.SampleAdvice
 
     public static class Advices
     {
-        public static void OnEntry(IExecution execution)
+        public static void InjectByAttributeOnEntry(IExecution execution)
+        {
+            Console.Out.WriteLine("{0} Injected by attribute on entry: {1}",
+                DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss.fff tt"), GetMethodInfo(execution));
+        }
+
+        public static void InjectByAttributeOnExit(IReturn rReturn)
+        {
+            Console.Out.WriteLine("{0} Injected by attribute on exit: {1}",
+                DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss.fff tt"), GetReturnInfo(rReturn));
+        }
+
+        public static void InjectByMethodNameOnEntry(IExecution execution)
+        {
+            Console.Out.WriteLine("{0} Injected by method name on entry: {1}",
+                DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss.fff tt"), GetMethodInfo(execution));
+        }
+
+        public static void InjectByMethodNameOnExit(IReturn rReturn)
+        {
+            Console.Out.WriteLine("{0} Injected by method name on exit: {1}",
+                DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss.fff tt"), GetReturnInfo(rReturn));
+        }
+
+        private static string GetMethodInfo(IExecution execution)
         {
             var strb = new StringBuilder(execution.Name);
             strb.Append("(");
@@ -29,19 +53,12 @@ namespace CrossCutterN.SampleAdvice
                 strb.Remove(strb.Length - 1, 1);
             }
             strb.Append(")");
-            Console.Out.WriteLine("Entry at {0}: {1}", DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss.fff tt"), strb);
+            return strb.ToString();
         }
 
-        public static void OnExit(IReturn rReturn)
+        private static string GetReturnInfo(IReturn rReturn)
         {
-            if (rReturn.HasReturn)
-            {
-                Console.Out.WriteLine("Exit at {0}: returns {1}", DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss.fff tt"), rReturn.Value);
-            }
-            else
-            {
-                Console.Out.WriteLine("Exit at {0}: no return", DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss.fff tt"));
-            }
+            return rReturn.HasReturn ? string.Format("returns {0}", rReturn.Value) : "no return";
         }
     }
 }
