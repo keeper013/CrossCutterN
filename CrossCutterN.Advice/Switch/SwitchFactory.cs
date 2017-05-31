@@ -15,14 +15,19 @@ namespace CrossCutterN.Advice.Switch
         }
 
         public static IClassAdviceSwitchOperation InitializeClassAdviceSwitchOperation(
-            IReadOnlyDictionary<string, SwitchOperation> aspectOperations, SequenceGenerator sequenceGenerator)
+            SequenceGenerator sequenceGenerator, IReadOnlyDictionary<string, SwitchOperationStatus> aspectOperations)
         {
-            return new ClassAdviceSwitchOperation(aspectOperations, sequenceGenerator);
+            return new ClassAdviceSwitchOperation(sequenceGenerator, aspectOperations);
         }
 
-        public static SwitchOperation InitializeSwitchOperation(SequenceGenerator sequenceGenerator, SwitchStatus status)
+        public static SwitchOperationStatus InitializeSwitchOperationStatus(SequenceGenerator sequenceGenerator, SwitchOperationStatus operation)
         {
-            return new SwitchOperation(sequenceGenerator, status);
+            return new SwitchOperationStatus(sequenceGenerator, operation);
+        }
+
+        public static SwitchOperationStatus InitializeSwitchOperationStatus(SequenceGenerator sequenceGenerator, SwitchOperation operation)
+        {
+            return new SwitchOperationStatus(sequenceGenerator, operation);
         }
 
         public static AdviceSwitch InitializeAdviceSwitch()

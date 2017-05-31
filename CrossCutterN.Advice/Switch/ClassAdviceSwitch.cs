@@ -38,19 +38,19 @@ namespace CrossCutterN.Advice.Switch
 
         #region Switch
 
-        public int Switch(SwitchStatus status)
+        public int Switch(SwitchOperation operation)
         {
             _complete.Assert(true);
             var enumerator = _aspectSwitchDictionary.GetEnumerator();
             var count = 0;
             while (enumerator.MoveNext())
             {
-                count += Switch(enumerator.Current.Value, status);
+                count += Switch(enumerator.Current.Value, operation);
             }
             return count;
         }
 
-        public int SwitchAspect(string aspect, SwitchStatus status)
+        public int SwitchAspect(string aspect, SwitchOperation operation)
         {
 #if DEBUG
             // the code will be called in client assembly, so reducing unnecessary validations for performance consideration
@@ -65,10 +65,10 @@ namespace CrossCutterN.Advice.Switch
             }
 #endif
             _complete.Assert(true);
-            return Switch(_aspectSwitchDictionary[aspect], status);
+            return Switch(_aspectSwitchDictionary[aspect], operation);
         }
 
-        public int SwitchMethod(string methodSignature, SwitchStatus status)
+        public int SwitchMethod(string methodSignature, SwitchOperation operation)
         {
 #if DEBUG
             // the code will be called in client assembly, so reducing unnecessary validations for performance consideration
@@ -83,10 +83,10 @@ namespace CrossCutterN.Advice.Switch
             }
 #endif
             _complete.Assert(true);
-            return Switch(_methodSwitchDictionary[methodSignature].Values, status);
+            return Switch(_methodSwitchDictionary[methodSignature].Values, operation);
         }
 
-        public int SwitchMethodAspect(string methodSignature, string aspect, SwitchStatus status)
+        public int SwitchMethodAspect(string methodSignature, string aspect, SwitchOperation operation)
         {
 #if DEBUG
             // the code will be called in client assembly, so reducing unnecessary validations for performance consideration
@@ -112,10 +112,10 @@ namespace CrossCutterN.Advice.Switch
                 throw new ArgumentException(
                     string.Format("Aspect {0} is not applied to method {1}", aspect, methodSignature), "aspect");
             }
-            return Switch(aspectDictionary[aspect], status);
+            return Switch(aspectDictionary[aspect], operation);
         }
 
-        public int SwitchProperty(string propertyName, SwitchStatus status)
+        public int SwitchProperty(string propertyName, SwitchOperation operation)
         {
 #if DEBUG
             // the code will be called in client assembly, so reducing unnecessary validations for performance consideration
@@ -130,10 +130,10 @@ namespace CrossCutterN.Advice.Switch
             }
 #endif
             _complete.Assert(true);
-            return Switch(_propertySwitchDictionary[propertyName].Values, status);
+            return Switch(_propertySwitchDictionary[propertyName].Values, operation);
         }
 
-        public int SwitchPropertyAspect(string propertyName, string aspect, SwitchStatus status)
+        public int SwitchPropertyAspect(string propertyName, string aspect, SwitchOperation operation)
         {
 #if DEBUG
             // the code will be called in client assembly, so reducing unnecessary validations for performance consideration
@@ -159,7 +159,7 @@ namespace CrossCutterN.Advice.Switch
                 throw new ArgumentException(
                     string.Format("Aspect {0} is not applied to property {1}", aspect, propertyName), "aspect");
             }
-            return Switch(aspectDictionary[aspect], status);
+            return Switch(aspectDictionary[aspect], operation);
         }
 
         #endregion
@@ -269,61 +269,61 @@ namespace CrossCutterN.Advice.Switch
 
         #region Switch Utilities
 
-        private int Switch(int id, SwitchStatus status)
+        private int Switch(int id, SwitchOperation operation)
         {
-            _switchList[id] = Switch(_switchList[id], status);
+            _switchList[id] = Switch(_switchList[id], operation);
             return 1;
         }
 
-        private int Switch(PropertySwitches propertySwitches, SwitchStatus status)
+        private int Switch(PropertySwitches propertySwitches, SwitchOperation operation)
         {
             var result = 0;
             var getter = propertySwitches.Getter;
             if (getter >= 0)
             {
-                _switchList[getter] = Switch(_switchList[getter], status);
+                _switchList[getter] = Switch(_switchList[getter], operation);
                 result++;
             }
             var setter = propertySwitches.Setter;
             if (setter >= 0)
             {
-                _switchList[setter] = Switch(_switchList[setter], status);
+                _switchList[setter] = Switch(_switchList[setter], operation);
                 result++;
             }
             return result;
         }
 
-        private int Switch(ICollection<int> ids, SwitchStatus status)
+        private int Switch(ICollection<int> ids, SwitchOperation operation)
         {
             foreach (var id in ids)
             {
-                _switchList[id] = Switch(_switchList[id], status);
+                _switchList[id] = Switch(_switchList[id], operation);
             }
             return ids.Count;
         }
 
-        private int Switch(IEnumerable<PropertySwitches> switches, SwitchStatus status)
+        private int Switch(IEnumerable<PropertySwitches> switches, SwitchOperation operation)
         {
             var result = 0;
             foreach (var propertySwitches in switches)
             {
-                result += Switch(propertySwitches, status);
+                result += Switch(propertySwitches, operation);
             }
             return result;
         }
 
-        private static bool Switch(bool value, SwitchStatus status)
+        private static bool Switch(bool value, SwitchOperation operation)
         {
-            switch (status)
+            switch (operation)
             {
-                case SwitchStatus.On:
+                case SwitchOperation.On:
                     return true;
-                case SwitchStatus.Off:
+                case SwitchOperation.Off:
                     return false;
-                case SwitchStatus.Switched:
+                case SwitchOperation.Switch:
                     return !value;
             }
-            throw new InvalidOperationException(string.Format("Unexpected switch status: {0}", status));
+            throw new InvalidOperationException(string.Format("Unexpected switch operation: {0}", operation));
         }
 
         private static void SetPropertySwitches(PropertySwitches switches, string method, int id)

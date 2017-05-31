@@ -23,8 +23,8 @@ namespace CrossCutterN.Advice.Switch
         private readonly Dictionary<string, IClassAdviceSwitchOperation> _classOperations =
             new Dictionary<string, IClassAdviceSwitchOperation>(); 
         // we never know when will all class be loaded, so this aspect operation dictionary is necessary
-        private readonly Dictionary<string, SwitchOperation> _aspectOperations = 
-            new Dictionary<string, SwitchOperation>();
+        private readonly Dictionary<string, SwitchOperationStatus> _aspectOperations = 
+            new Dictionary<string, SwitchOperationStatus>();
         private readonly SequenceGenerator _sequenceGenerator = new SequenceGenerator();
 
         public void Complete(string clazz)
@@ -85,7 +85,7 @@ namespace CrossCutterN.Advice.Switch
             lock(this)
             {
                 var id = _switchList.Count;
-                _switchList.Add(GetSwitchValue(value, clazz, property, method, aspect));
+                _switchList.Add(GetSwitchValue(value, clazz, method, aspect));
                 if (!_buildingUps.ContainsKey(clazz))
                 {
                     _buildingUps.Add(clazz, SwitchFactory.InitializeClassAdviceSwitch(_switchList));
@@ -99,37 +99,37 @@ namespace CrossCutterN.Advice.Switch
 
         public int Switch(PropertyInfo property)
         {
-            return Switch(property, SwitchStatus.Switched);
+            return Switch(property, SwitchOperation.Switch);
         }
 
         public int Switch(string aspect)
         {
-            return Switch(aspect, SwitchStatus.Switched);
+            return Switch(aspect, SwitchOperation.Switch);
         }
 
         public int Switch(MethodInfo method)
         {
-            return Switch(method, SwitchStatus.Switched);
+            return Switch(method, SwitchOperation.Switch);
         }
 
         public int Switch(Type type)
         {
-            return Switch(type, SwitchStatus.Switched);
+            return Switch(type, SwitchOperation.Switch);
         }
 
         public int Switch(PropertyInfo property, string aspect)
         {
-            return Switch(property, aspect, SwitchStatus.Switched);
+            return Switch(property, aspect, SwitchOperation.Switch);
         }
 
         public int Switch(MethodInfo method, string aspect)
         {
-            return Switch(method, aspect, SwitchStatus.Switched);
+            return Switch(method, aspect, SwitchOperation.Switch);
         }
 
         public int Switch(Type type, string aspect)
         {
-            return Switch(type, aspect, SwitchStatus.Switched);
+            return Switch(type, aspect, SwitchOperation.Switch);
         }
 
         #endregion
@@ -138,37 +138,37 @@ namespace CrossCutterN.Advice.Switch
 
         public int SwitchOff(PropertyInfo property)
         {
-            return Switch(property, SwitchStatus.Off);
+            return Switch(property, SwitchOperation.Off);
         }
 
         public int SwitchOff(string aspect)
         {
-            return Switch(aspect, SwitchStatus.Off);
+            return Switch(aspect, SwitchOperation.Off);
         }
 
         public int SwitchOff(MethodInfo method)
         {
-            return Switch(method, SwitchStatus.Off);
+            return Switch(method, SwitchOperation.Off);
         }
 
         public int SwitchOff(Type type)
         {
-            return Switch(type, SwitchStatus.Off);
+            return Switch(type, SwitchOperation.Off);
         }
 
         public int SwitchOff(PropertyInfo property, string aspect)
         {
-            return Switch(property, aspect, SwitchStatus.Off);
+            return Switch(property, aspect, SwitchOperation.Off);
         }
 
         public int SwitchOff(MethodInfo method, string aspect)
         {
-            return Switch(method, aspect, SwitchStatus.Off);
+            return Switch(method, aspect, SwitchOperation.Off);
         }
 
         public int SwitchOff(Type type, string aspect)
         {
-            return Switch(type, aspect, SwitchStatus.Off);
+            return Switch(type, aspect, SwitchOperation.Off);
         }
 
         #endregion
@@ -177,37 +177,37 @@ namespace CrossCutterN.Advice.Switch
 
         public int SwitchOn(PropertyInfo property)
         {
-            return Switch(property, SwitchStatus.On);
+            return Switch(property, SwitchOperation.On);
         }
 
         public int SwitchOn(string aspect)
         {
-            return Switch(aspect, SwitchStatus.On);
+            return Switch(aspect, SwitchOperation.On);
         }
 
         public int SwitchOn(MethodInfo method)
         {
-            return Switch(method, SwitchStatus.On);
+            return Switch(method, SwitchOperation.On);
         }
 
         public int SwitchOn(Type type)
         {
-            return Switch(type, SwitchStatus.On);
+            return Switch(type, SwitchOperation.On);
         }
 
         public int SwitchOn(PropertyInfo property, string aspect)
         {
-            return Switch(property, aspect, SwitchStatus.On);
+            return Switch(property, aspect, SwitchOperation.On);
         }
 
         public int SwitchOn(MethodInfo method, string aspect)
         {
-            return Switch(method, aspect, SwitchStatus.On);
+            return Switch(method, aspect, SwitchOperation.On);
         }
 
         public int SwitchOn(Type type, string aspect)
         {
-            return Switch(type, aspect, SwitchStatus.On);
+            return Switch(type, aspect, SwitchOperation.On);
         }
 
         #endregion
@@ -237,25 +237,16 @@ namespace CrossCutterN.Advice.Switch
 
         #region Utilities
 
-        private bool GetSwitchValue(bool value, string clazz, string propertyName, string methodSignature, string aspect)
+        private bool GetSwitchValue(bool value, string clazz, string methodSignature, string aspect)
         {
             if (_classOperations.ContainsKey(clazz))
             {
-                return _classOperations[clazz].GetSwitchValue(value, propertyName, methodSignature, aspect);
+                return _classOperations[clazz].GetSwitchValue(value, methodSignature, aspect);
             }
-            return GetSwitchValue(value, aspect);
+            return _aspectOperations.ContainsKey(aspect) ? _aspectOperations[aspect].Switch(value) : value;
         }
 
-        private bool GetSwitchValue(bool value, string aspect)
-        {
-            if(_aspectOperations.ContainsKey(aspect))
-            {
-                return _aspectOperations[aspect].Switch(value);
-            }
-            return value;
-        }
-
-        private int Switch(PropertyInfo property, SwitchStatus status)
+        private int Switch(PropertyInfo property, SwitchOperation operation)
         {
             if (property == null)
             {
@@ -271,19 +262,22 @@ namespace CrossCutterN.Advice.Switch
                 if (_completed.ContainsKey(clazz))
                 {
                     // the class is completed
-                    return _completed[clazz].SwitchProperty(property.Name, status);
+                    return _completed[clazz].SwitchProperty(property.Name, operation);
                 }
                 if (!_classOperations.ContainsKey(clazz))
                 {
                     // the class is not loaded yet
-                    _classOperations.Add(clazz, SwitchFactory.InitializeClassAdviceSwitchOperation(_aspectOperations, _sequenceGenerator));
+                    _classOperations.Add(clazz, SwitchFactory.InitializeClassAdviceSwitchOperation(_sequenceGenerator, _aspectOperations));
                 }
-                _classOperations[clazz].SwitchProperty(property.Name, status);
+                _classOperations[clazz].SwitchProperty(
+                    property.GetMethod == null ? null : property.GetMethod.GetSignature(), 
+                    property.SetMethod == null ? null : property.SetMethod.GetSignature(), 
+                    operation);
             }
             return -1;
         }
 
-        private int Switch(string aspect, SwitchStatus status)
+        private int Switch(string aspect, SwitchOperation operation)
         {
             if (string.IsNullOrWhiteSpace(aspect))
             {
@@ -292,30 +286,34 @@ namespace CrossCutterN.Advice.Switch
             var switched = 0;
             lock (this)
             {
+                SwitchOperationStatus operationStatus;
+                if (_aspectOperations.ContainsKey(aspect))
+                {
+                    operationStatus = _aspectOperations[aspect];
+                    operationStatus.Switch(operation);
+                }
+                else
+                {
+                    operationStatus = SwitchFactory.InitializeSwitchOperationStatus(_sequenceGenerator, operation);
+                    _aspectOperations.Add(aspect, operationStatus);
+                }
                 foreach(var completed in _completed.Values)
                 {
                     if (completed.IsAspectApplied(aspect))
                     {
-                        switched += completed.SwitchAspect(aspect, status);
+                        switched += completed.SwitchAspect(aspect, operation);
                     }
                 }
-                if (_aspectOperations.ContainsKey(aspect))
+                foreach (var classOperation in _classOperations.Values)
                 {
-                    var neutralized = _aspectOperations[aspect].Switch(status);
-                    if (neutralized)
-                    {
-                        _aspectOperations.Remove(aspect);
-                    }
+                    classOperation.SwitchAspect(aspect, operation);
                 }
-                else
-                {
-                    _aspectOperations.Add(aspect, SwitchFactory.InitializeSwitchOperation(_sequenceGenerator, status));
-                }
+                
             }
             return switched;
         }
 
-        private int Switch(MethodInfo method, SwitchStatus status)
+        private int Switch(MethodInfo method, SwitchOperation operation)
         {
             if (method == null)
             {
@@ -332,19 +330,19 @@ namespace CrossCutterN.Advice.Switch
                 if (_completed.ContainsKey(clazz))
                 {
                     // the class is completed
-                    return _completed[clazz].SwitchMethod(signature, status);
+                    return _completed[clazz].SwitchMethod(signature, operation);
                 }
                 if (!_classOperations.ContainsKey(clazz))
                 {
                     // the class is not loaded yet
-                    _classOperations.Add(clazz, SwitchFactory.InitializeClassAdviceSwitchOperation(_aspectOperations, _sequenceGenerator));
+                    _classOperations.Add(clazz, SwitchFactory.InitializeClassAdviceSwitchOperation(_sequenceGenerator, _aspectOperations));
                 }
-                _classOperations[clazz].SwitchMethod(signature, status);
+                _classOperations[clazz].SwitchMethod(signature, operation);
             } 
             return -1;
         }
 
-        private int Switch(Type type, SwitchStatus status)
+        private int Switch(Type type, SwitchOperation operation)
         {
             if (type == null)
             {
@@ -356,19 +354,19 @@ namespace CrossCutterN.Advice.Switch
                 if (_completed.ContainsKey(clazz))
                 {
                     // the class is completed
-                    return _completed[clazz].Switch(status);
+                    return _completed[clazz].Switch(operation);
                 }
                 if (!_classOperations.ContainsKey(clazz))
                 {
                     // the class is not loaded yet
-                    _classOperations.Add(clazz, SwitchFactory.InitializeClassAdviceSwitchOperation(_aspectOperations, _sequenceGenerator));
+                    _classOperations.Add(clazz, SwitchFactory.InitializeClassAdviceSwitchOperation(_sequenceGenerator, _aspectOperations));
                 }
-                _classOperations[clazz].Switch(status);
+                _classOperations[clazz].Switch(operation);
             }
             return -1;
         }
 
-        private int Switch(PropertyInfo property, string aspect, SwitchStatus status)
+        private int Switch(PropertyInfo property, string aspect, SwitchOperation operation)
         {
             if (property == null)
             {
@@ -388,19 +386,23 @@ namespace CrossCutterN.Advice.Switch
                 if (_completed.ContainsKey(clazz))
                 {
                     // the class is completed
-                    return _completed[clazz].SwitchPropertyAspect(property.Name, aspect, status);
+                    return _completed[clazz].SwitchPropertyAspect(property.Name, aspect, operation);
                 }
                 if (!_classOperations.ContainsKey(clazz))
                 {
                     // the class is not loaded yet
-                    _classOperations.Add(clazz, SwitchFactory.InitializeClassAdviceSwitchOperation(_aspectOperations, _sequenceGenerator));
+                    _classOperations.Add(clazz, SwitchFactory.InitializeClassAdviceSwitchOperation(_sequenceGenerator, _aspectOperations));
                 }
-                _classOperations[clazz].SwitchPropertyAspect(property.Name, aspect, status);
+                _classOperations[clazz].SwitchPropertyAspect(
+                    property.GetMethod == null ? null : property.GetMethod.GetSignature(), 
+                    property.SetMethod == null ? null : property.SetMethod.GetSignature(), 
+                    aspect, 
+                    operation);
             }
             return -1;
         }
 
-        private int Switch(MethodInfo method, string aspect, SwitchStatus status)
+        private int Switch(MethodInfo method, string aspect, SwitchOperation operation)
         {
             if (method == null)
             {
@@ -420,19 +422,19 @@ namespace CrossCutterN.Advice.Switch
                 if (_completed.ContainsKey(clazz))
                 {
                     // the class is completed
-                    return _completed[clazz].SwitchMethodAspect(method.GetSignature(), aspect, status);
+                    return _completed[clazz].SwitchMethodAspect(method.GetSignature(), aspect, operation);
                 }
                 if (!_classOperations.ContainsKey(clazz))
                 {
                     // the class is not loaded yet
-                    _classOperations.Add(clazz, SwitchFactory.InitializeClassAdviceSwitchOperation(_aspectOperations, _sequenceGenerator));
+                    _classOperations.Add(clazz, SwitchFactory.InitializeClassAdviceSwitchOperation(_sequenceGenerator, _aspectOperations));
                 }
-                _classOperations[clazz].SwitchMethodAspect(method.GetSignature(), aspect, status);
+                _classOperations[clazz].SwitchMethodAspect(method.GetSignature(), aspect, operation);
             }
             return -1;
         }
 
-        private int Switch(Type type, string aspect, SwitchStatus status)
+        private int Switch(Type type, string aspect, SwitchOperation operation)
         {
             if (type == null)
             {
@@ -448,14 +450,14 @@ namespace CrossCutterN.Advice.Switch
                 if (_completed.ContainsKey(clazz))
                 {
                     // the class is completed
-                    return _completed[clazz].SwitchAspect(aspect, status);
+                    return _completed[clazz].SwitchAspect(aspect, operation);
                 }
                 if (!_classOperations.ContainsKey(clazz))
                 {
                     // the class is not loaded yet
-                    _classOperations.Add(clazz, SwitchFactory.InitializeClassAdviceSwitchOperation(_aspectOperations, _sequenceGenerator));
+                    _classOperations.Add(clazz, SwitchFactory.InitializeClassAdviceSwitchOperation(_sequenceGenerator, _aspectOperations));
                 }
-                _classOperations[clazz].SwitchAspect(aspect, status);
+                _classOperations[clazz].SwitchAspect(aspect, operation);
             }
             return -1;
         }

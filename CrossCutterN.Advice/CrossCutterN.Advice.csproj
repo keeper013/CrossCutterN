@@ -82,7 +82,7 @@
     <Compile Include="Switch\SequenceGenerator.cs" />
     <Compile Include="Switch\SwitchBackStage.cs" />
     <Compile Include="Switch\SwitchFactory.cs" />
-    <Compile Include="Switch\SwitchOperation.cs" />
+    <Compile Include="Switch\SwitchOperationStatus.cs" />
   </ItemGroup>
   <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

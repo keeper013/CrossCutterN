@@ -331,73 +331,82 @@ namespace CrossCutterN.Test.SwitchTest
             var method = clazz.GetMethod("Test1");
             var property = clazz.GetProperty("Value1");
             var getter = property.GetMethod;
-            const string aspect = "NameExpressionSwitch4";
-            Assert.IsFalse(Advice.Switch.SwitchFacade.Controller.GetSwitchStatus(method, aspect).HasValue);
+            const string aspect4 = "NameExpressionSwitch4";
+            const string aspect5 = "NameExpressionSwitch5";
+            Assert.IsFalse(Advice.Switch.SwitchFacade.Controller.GetSwitchStatus(method, aspect4).HasValue);
 
-            Advice.Switch.SwitchFacade.Controller.Switch(aspect);
+            Advice.Switch.SwitchFacade.Controller.Switch(aspect4);
             Advice.Switch.SwitchFacade.Controller.Switch(method);
             Advice.Switch.SwitchFacade.Controller.SwitchOff(clazz);
-            Advice.Switch.SwitchFacade.Controller.Switch(method, aspect);
-            Advice.Switch.SwitchFacade.Controller.Switch(aspect);
-            Advice.Switch.SwitchFacade.Controller.Switch(clazz, aspect);
-            Assert.IsFalse(Advice.Switch.SwitchFacade.Controller.GetSwitchStatus(method, aspect).HasValue);
+            Advice.Switch.SwitchFacade.Controller.Switch(method, aspect4);
+            Advice.Switch.SwitchFacade.Controller.Switch(aspect4);
+            Advice.Switch.SwitchFacade.Controller.Switch(clazz, aspect4);
+            Advice.Switch.SwitchFacade.Controller.Switch(property, aspect5);
+            Advice.Switch.SwitchFacade.Controller.Switch(aspect5);
+            Assert.IsFalse(Advice.Switch.SwitchFacade.Controller.GetSwitchStatus(method, aspect4).HasValue);
 
             SwitchLookUpTestTarget.Test1(1);
-            var value = Advice.Switch.SwitchFacade.Controller.GetSwitchStatus(method, aspect);
+            var value = Advice.Switch.SwitchFacade.Controller.GetSwitchStatus(method, aspect4);
+            Assert.IsTrue(value.HasValue);
+            Assert.IsTrue(value.Value);
+            //value = Advice.Switch.SwitchFacade.Controller.GetSwitchStatus(getter, aspect5);
+            //Assert.IsTrue(value.HasValue);
+            //Assert.IsFalse(value.Value);
+            value = Advice.Switch.SwitchFacade.Controller.GetSwitchStatus(method, aspect5);
             Assert.IsTrue(value.HasValue);
             Assert.IsTrue(value.Value);
 
-            Advice.Switch.SwitchFacade.Controller.Switch(aspect);
-            value = Advice.Switch.SwitchFacade.Controller.GetSwitchStatus(getter, aspect);
+            Advice.Switch.SwitchFacade.Controller.Switch(aspect4);
+            value = Advice.Switch.SwitchFacade.Controller.GetSwitchStatus(getter, aspect4);
             Assert.IsTrue(value.HasValue);
-            Assert.IsFalse(value.Value);
+            Assert.IsTrue(value.Value);
 
             Advice.Switch.SwitchFacade.Controller.Switch(clazz);
-            value = Advice.Switch.SwitchFacade.Controller.GetSwitchStatus(method, aspect);
+            value = Advice.Switch.SwitchFacade.Controller.GetSwitchStatus(method, aspect4);
             Assert.IsTrue(value.HasValue);
             Assert.IsTrue(value.Value);
 
             Advice.Switch.SwitchFacade.Controller.Switch(method);
-            value = Advice.Switch.SwitchFacade.Controller.GetSwitchStatus(method, aspect);
+            value = Advice.Switch.SwitchFacade.Controller.GetSwitchStatus(method, aspect4);
             Assert.IsTrue(value.HasValue);
             Assert.IsFalse(value.Value);
 
             Advice.Switch.SwitchFacade.Controller.Switch(property);
-            value = Advice.Switch.SwitchFacade.Controller.GetSwitchStatus(getter, aspect);
-            Assert.IsTrue(value.HasValue);
-            Assert.IsFalse(value.Value);
-
-            Advice.Switch.SwitchFacade.Controller.Switch(method, aspect);
-            value = Advice.Switch.SwitchFacade.Controller.GetSwitchStatus(method, aspect);
+            value = Advice.Switch.SwitchFacade.Controller.GetSwitchStatus(getter, aspect4);
             Assert.IsTrue(value.HasValue);
             Assert.IsTrue(value.Value);
 
-            Advice.Switch.SwitchFacade.Controller.Switch(property, aspect);
-            value = Advice.Switch.SwitchFacade.Controller.GetSwitchStatus(getter, aspect);
+            Advice.Switch.SwitchFacade.Controller.Switch(method, aspect4);
+            value = Advice.Switch.SwitchFacade.Controller.GetSwitchStatus(method, aspect4);
             Assert.IsTrue(value.HasValue);
             Assert.IsTrue(value.Value);
 
-            Advice.Switch.SwitchFacade.Controller.Switch(clazz, aspect);
-            value = Advice.Switch.SwitchFacade.Controller.GetSwitchStatus(method, aspect);
-            Assert.IsTrue(value.HasValue);
-            Assert.IsFalse(value.Value);
-            value = Advice.Switch.SwitchFacade.Controller.GetSwitchStatus(getter, aspect);
+            Advice.Switch.SwitchFacade.Controller.Switch(property, aspect4);
+            value = Advice.Switch.SwitchFacade.Controller.GetSwitchStatus(getter, aspect4);
             Assert.IsTrue(value.HasValue);
             Assert.IsFalse(value.Value);
 
-            Advice.Switch.SwitchFacade.Controller.SwitchOn(aspect);
-            value = Advice.Switch.SwitchFacade.Controller.GetSwitchStatus(method, aspect);
+            Advice.Switch.SwitchFacade.Controller.Switch(clazz, aspect4);
+            value = Advice.Switch.SwitchFacade.Controller.GetSwitchStatus(method, aspect4);
+            Assert.IsTrue(value.HasValue);
+            Assert.IsFalse(value.Value);
+            value = Advice.Switch.SwitchFacade.Controller.GetSwitchStatus(getter, aspect4);
             Assert.IsTrue(value.HasValue);
             Assert.IsTrue(value.Value);
-            value = Advice.Switch.SwitchFacade.Controller.GetSwitchStatus(getter, aspect);
+
+            Advice.Switch.SwitchFacade.Controller.SwitchOn(aspect4);
+            value = Advice.Switch.SwitchFacade.Controller.GetSwitchStatus(method, aspect4);
+            Assert.IsTrue(value.HasValue);
+            Assert.IsTrue(value.Value);
+            value = Advice.Switch.SwitchFacade.Controller.GetSwitchStatus(getter, aspect4);
             Assert.IsTrue(value.HasValue);
             Assert.IsTrue(value.Value);
 
             Advice.Switch.SwitchFacade.Controller.SwitchOff(clazz);
-            value = Advice.Switch.SwitchFacade.Controller.GetSwitchStatus(method, aspect);
+            value = Advice.Switch.SwitchFacade.Controller.GetSwitchStatus(method, aspect4);
             Assert.IsTrue(value.HasValue);
             Assert.IsFalse(value.Value);
-            value = Advice.Switch.SwitchFacade.Controller.GetSwitchStatus(getter, aspect);
+            value = Advice.Switch.SwitchFacade.Controller.GetSwitchStatus(getter, aspect4);
             Assert.IsTrue(value.HasValue);
             Assert.IsFalse(value.Value);
         }

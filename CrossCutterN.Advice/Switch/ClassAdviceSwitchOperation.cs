@@ -11,118 +11,128 @@ namespace CrossCutterN.Advice.Switch
 
     internal sealed class ClassAdviceSwitchOperation : IClassAdviceSwitchOperation
     {
-        private readonly Dictionary<string, Dictionary<string, SwitchOperation>> _propertyAspectSwitchDictionary = new Dictionary<string, Dictionary<string, SwitchOperation>>();
-        private readonly Dictionary<string, Dictionary<string, SwitchOperation>> _methodAspectSwitchDictionary = new Dictionary<string, Dictionary<string, SwitchOperation>>();
-        private readonly Dictionary<string, SwitchOperation> _aspectSwitchDictionary = new Dictionary<string, SwitchOperation>();
-        private readonly Dictionary<string, SwitchOperation> _methodSwitchDictionary = new Dictionary<string, SwitchOperation>();
-        private readonly Dictionary<string, SwitchOperation> _propertySwitchDictionary = new Dictionary<string, SwitchOperation>();
-        private readonly IReadOnlyDictionary<string, SwitchOperation> _aspectOperations;
+        private const int UseGeneratedSequence = -1;
+        private readonly Dictionary<string, Dictionary<string, SwitchOperationStatus>> _propertyAspectSwitchDictionary = new Dictionary<string, Dictionary<string, SwitchOperationStatus>>();
+        private readonly Dictionary<string, Dictionary<string, SwitchOperationStatus>> _methodAspectSwitchDictionary = new Dictionary<string, Dictionary<string, SwitchOperationStatus>>();
+        private readonly Dictionary<string, SwitchOperationStatus> _aspectSwitchDictionary = new Dictionary<string, SwitchOperationStatus>();
+        private readonly Dictionary<string, SwitchOperationStatus> _methodSwitchDictionary = new Dictionary<string, SwitchOperationStatus>();
         private readonly SequenceGenerator _sequenceGenerator;
 
-        private SwitchOperation Operation { get; set; }
+        private SwitchOperationStatus Operation { get; set; }
 
-        public ClassAdviceSwitchOperation(IReadOnlyDictionary<string, SwitchOperation> aspectOperations, SequenceGenerator sequenceGenerator)
+        public ClassAdviceSwitchOperation(SequenceGenerator sequenceGenerator, IReadOnlyDictionary<string, SwitchOperationStatus> aspectOperations)
         {
-            if (aspectOperations == null)
-            {
-                throw new ArgumentNullException("aspectOperations");
-            }
             if (sequenceGenerator == null)
             {
                 throw new ArgumentNullException("sequenceGenerator");
             }
-            _aspectOperations = aspectOperations;
+            if (aspectOperations == null)
+            {
+                throw new ArgumentNullException("aspectOperations");
+            }
             _sequenceGenerator = sequenceGenerator;
+            InitializeAspectSwitches(aspectOperations);
         }
 
         #region Switch
 
-        public void Switch(SwitchStatus status)
+        public void Switch(SwitchOperation operation)
         {
+            int sequence;
             if (Operation == null)
             {
-                Operation = SwitchFactory.InitializeSwitchOperation(_sequenceGenerator, status);
+                Operation = SwitchFactory.InitializeSwitchOperationStatus(_sequenceGenerator, operation);
+                sequence = Operation.Sequence;
             }
             else
             {
-                var neutralized = Operation.Switch(status);
-                if (neutralized)
-                {
-                    Operation = null;
-                }
+                sequence = SwitchExistingClass(operation);
             }
+            SwitchAll(operation, sequence);
         }
 
-        public void SwitchMethod(string methodSignature, SwitchStatus status)
-        {
-#if DEBUG
-            // the code will be called in client assembly, so reducing unnecessary validations for performance consideration
-            if (string.IsNullOrEmpty(methodSignature))
-            {
-                throw new ArgumentNullException("methodSignature");
-            }
-#endif
-            if (_methodSwitchDictionary.ContainsKey(methodSignature))
-            {
-                var neutralized = _methodSwitchDictionary[methodSignature].Switch(status);
-                if (neutralized)
-                {
-                    _methodSwitchDictionary.Remove(methodSignature);
-                }
-            }
-            else
-            {
-                _methodSwitchDictionary.Add(methodSignature, SwitchFactory.InitializeSwitchOperation(_sequenceGenerator, status));
-            }
-        }
-
-        public void SwitchProperty(string propertyName, SwitchStatus status)
-        {
-#if DEBUG
-            // the code will be called in client assembly, so reducing unnecessary validations for performance consideration
-            if (string.IsNullOrEmpty(propertyName))
-            {
-                throw new ArgumentNullException("propertyName");
-            }
-#endif
-            if (_propertySwitchDictionary.ContainsKey(propertyName))
-            {
-                var neutralized = _propertySwitchDictionary[propertyName].Switch(status);
-                if (neutralized)
-                {
-                    _propertySwitchDictionary.Remove(propertyName);
-                }
-            }
-            else
-            {
-                _propertySwitchDictionary.Add(propertyName, SwitchFactory.InitializeSwitchOperation(_sequenceGenerator, status));
-            }
-        }
-
-        public void SwitchAspect(string aspect, SwitchStatus status)
+        public void SwitchAspect(string aspect, SwitchOperation operation)
         {
 #if DEBUG
             // the code will be called in client assembly, so reducing unnecessary validations for performance consideration
             if (string.IsNullOrEmpty(aspect))
             {
                 throw new ArgumentNullException("aspect");
+            }
+#endif
+            int sequence;
+            if (_aspectSwitchDictionary.ContainsKey(aspect))
+            {
+                sequence = SwitchExistingAspect(aspect, operation);
+            }
+            else
+            {
+                var operationStatus = SwitchFactory.InitializeSwitchOperationStatus(_sequenceGenerator, operation);
+                sequence = operationStatus.Sequence;
+                _aspectSwitchDictionary.Add(aspect, operationStatus);
+            }
+            SwitchAllAspect(aspect, operation, sequence);
+        }
+
+        public void SwitchAspect(string aspect, SwitchOperation operation, int sequence)
+        {
+#if DEBUG
+            // the code will be called in client assembly, so reducing unnecessary validations for performance consideration
+            if (string.IsNullOrEmpty(aspect))
+            {
+                throw new ArgumentNullException("aspect");
+            }
+            if (sequence < 0)
+            {
+                throw new ArgumentOutOfRangeException("sequence");
             }
 #endif
             if (_aspectSwitchDictionary.ContainsKey(aspect))
             {
-                var neutralized = _aspectSwitchDictionary[aspect].Switch(status);
-                if (neutralized)
-                {
-                    _aspectSwitchDictionary.Remove(aspect);
-                }
+                SwitchExistingAspect(aspect, operation, sequence);
             }
             else
             {
-                _aspectSwitchDictionary.Add(aspect, SwitchFactory.InitializeSwitchOperation(_sequenceGenerator, status));
+                var duplicate = SwitchFactory.InitializeSwitchOperationStatus(_sequenceGenerator, operation);
+                _aspectSwitchDictionary.Add(aspect, duplicate);
             }
+            SwitchAllAspect(aspect, operation, sequence);
         }
 
-        public void SwitchMethodAspect(string methodSignature, string aspect, SwitchStatus status)
+        public void SwitchMethod(string methodSignature, SwitchOperation operation)
+        {
+#if DEBUG
+            // the code will be called in client assembly, so reducing unnecessary validations for performance consideration
+            if (string.IsNullOrEmpty(methodSignature))
+            {
+                throw new ArgumentNullException("methodSignature");
+            }
+#endif
+            SwitchMethodInternal(methodSignature, operation, UseGeneratedSequence);
+        }
+
+        public void SwitchProperty(string getterSignature, string setterSignature, SwitchOperation operation)
+        {
+#if DEBUG
+            // the code will be called in client assembly, so reducing unnecessary validations for performance consideration
+            if (string.IsNullOrEmpty(getterSignature) && string.IsNullOrWhiteSpace(setterSignature))
+            {
+                throw new ArgumentException("Getter and setter can't both be empty");
+            }
+#endif
+            var sequence = UseGeneratedSequence;
+            if (!string.IsNullOrWhiteSpace(getterSignature))
+            {
+                sequence = SwitchMethodInternal(getterSignature, operation, sequence);
+            }
+            if (!string.IsNullOrWhiteSpace(setterSignature))
+            {
+                SwitchMethodInternal(setterSignature, operation, sequence);
+            }
+            
+        }
+
+        public void SwitchMethodAspect(string methodSignature, string aspect, SwitchOperation operation)
         {
 #if DEBUG
             // the code will be called in client assembly, so reducing unnecessary validations for performance consideration
@@ -135,68 +145,175 @@ namespace CrossCutterN.Advice.Switch
                 throw new ArgumentNullException("aspect");
             }
 #endif
-            if (_methodAspectSwitchDictionary.ContainsKey(methodSignature))
-            {
-                if (_methodAspectSwitchDictionary[methodSignature].ContainsKey(aspect))
-                {
-                    var neutralized = _methodAspectSwitchDictionary[methodSignature][aspect].Switch(status);
-                    if (neutralized)
-                    {
-                        _methodAspectSwitchDictionary[methodSignature].Remove(aspect);
-                        if (_methodAspectSwitchDictionary[methodSignature].Count == 0)
-                        {
-                            _methodAspectSwitchDictionary.Remove(methodSignature);
-                        }
-                    }
-                }
-                else
-                {
-                    _methodAspectSwitchDictionary[methodSignature].Add(aspect, SwitchFactory.InitializeSwitchOperation(_sequenceGenerator, status));
-                }
-            }
-            else
-            {
-                _methodAspectSwitchDictionary.Add(methodSignature,
-                    new Dictionary<string, SwitchOperation> { { aspect, SwitchFactory.InitializeSwitchOperation(_sequenceGenerator, status) } });
-            }
+            SwitchMethodAspectInternal(methodSignature, aspect, operation, UseGeneratedSequence);
         }
 
-        public void SwitchPropertyAspect(string propertyName, string aspect, SwitchStatus status)
+        public void SwitchPropertyAspect(string getterSignature, string setterSignature, string aspect, SwitchOperation operation)
         {
 #if DEBUG
             // the code will be called in client assembly, so reducing unnecessary validations for performance consideration
-            if (string.IsNullOrEmpty(propertyName))
+            if (string.IsNullOrEmpty(getterSignature) && string.IsNullOrWhiteSpace(setterSignature))
             {
-                throw new ArgumentNullException("propertyName");
+                throw new ArgumentException("Getter and setter can't both be empty");
             }
             if (string.IsNullOrEmpty(aspect))
             {
                 throw new ArgumentNullException("aspect");
             }
 #endif
-            if (_propertyAspectSwitchDictionary.ContainsKey(propertyName))
+            var sequence = UseGeneratedSequence;
+            if (!string.IsNullOrWhiteSpace(getterSignature))
             {
-                if (_propertyAspectSwitchDictionary[propertyName].ContainsKey(aspect))
+                sequence = SwitchMethodAspectInternal(getterSignature, aspect, operation, sequence);
+            }
+            if (!string.IsNullOrWhiteSpace(setterSignature))
+            {
+                SwitchMethodAspectInternal(setterSignature, aspect, operation, sequence);
+            }
+        }
+
+        #endregion
+
+        #region Utilities
+
+        private int SwitchMethodInternal(string methodSignature, SwitchOperation operation, int sequence)
+        {
+            if (_methodSwitchDictionary.ContainsKey(methodSignature))
+            {
+                if (sequence == UseGeneratedSequence)
                 {
-                    var neutralized = _propertyAspectSwitchDictionary[propertyName][aspect].Switch(status);
-                    if (neutralized)
+                    _methodSwitchDictionary[methodSignature].Switch(operation);
+                }
+                else
+                {
+                    _methodSwitchDictionary[methodSignature].Switch(operation, sequence);
+                }
+                sequence = _methodSwitchDictionary[methodSignature].Sequence;
+            }
+            else
+            {
+                var operationStatus = SwitchFactory.InitializeSwitchOperationStatus(_sequenceGenerator, operation);
+                sequence = operationStatus.Sequence;
+                _methodSwitchDictionary.Add(methodSignature, operationStatus);
+            }
+            SwitchAllExistingMethodAspect(methodSignature, operation, sequence);
+            return sequence;
+        }
+
+        private int SwitchMethodAspectInternal(string methodSignature, string aspect, SwitchOperation operation, int sequence)
+        {
+            if (_methodAspectSwitchDictionary.ContainsKey(methodSignature))
+            {
+                if (_methodAspectSwitchDictionary[methodSignature].ContainsKey(aspect))
+                {
+                    if (sequence == UseGeneratedSequence)
                     {
-                        _propertyAspectSwitchDictionary[propertyName].Remove(aspect);
-                        if (_propertyAspectSwitchDictionary[propertyName].Count == 0)
-                        {
-                            _propertyAspectSwitchDictionary.Remove(propertyName);
-                        }
+                        var operationStatus = _methodAspectSwitchDictionary[methodSignature][aspect];
+                        operationStatus.Switch(operation);
+                        sequence = operationStatus.Sequence;
+                    }
+                    else
+                    {
+                        _methodAspectSwitchDictionary[methodSignature][aspect].Switch(operation, sequence);
                     }
                 }
                 else
                 {
-                    _propertyAspectSwitchDictionary[propertyName].Add(aspect, SwitchFactory.InitializeSwitchOperation(_sequenceGenerator, status));
+                    var operationStatus = SwitchFactory.InitializeSwitchOperationStatus(_sequenceGenerator, operation);
+                    sequence = operationStatus.Sequence;
+                    _methodAspectSwitchDictionary[methodSignature].Add(aspect, operationStatus);
                 }
             }
             else
             {
-                _propertyAspectSwitchDictionary.Add(propertyName,
-                    new Dictionary<string, SwitchOperation> { { aspect, SwitchFactory.InitializeSwitchOperation(_sequenceGenerator, status) } });
+                var operationStatus = SwitchFactory.InitializeSwitchOperationStatus(_sequenceGenerator, operation);
+                sequence = operationStatus.Sequence;
+                _methodAspectSwitchDictionary.Add(methodSignature,
+                    new Dictionary<string, SwitchOperationStatus> { { aspect, operationStatus } });
+            }
+            return sequence;
+        }
+
+        private void SwitchAllExistingMethodAspect(string methodSignature, SwitchOperation operation, int sequence)
+        {
+            if (_methodAspectSwitchDictionary.ContainsKey(methodSignature))
+            {
+                foreach (var aspectSwitch in _methodAspectSwitchDictionary[methodSignature].Values)
+                {
+                    aspectSwitch.Switch(operation, sequence);
+                }
+            }
+        }
+
+        private int SwitchExistingAspect(string aspect, SwitchOperation operation)
+        {
+            _aspectSwitchDictionary[aspect].Switch(operation);
+            return _aspectSwitchDictionary[aspect].Sequence;
+        }
+
+        private void SwitchExistingAspect(string aspect, SwitchOperation operation, int sequence)
+        {
+            _aspectSwitchDictionary[aspect].Switch(operation, sequence);
+        }
+
+        private void SwitchAllAspect(string aspect, SwitchOperation operation, int sequence)
+        {
+            foreach (var method in _methodAspectSwitchDictionary.Keys)
+            {
+                var aspectSwitch = _methodAspectSwitchDictionary[method];
+                if (aspectSwitch.ContainsKey(aspect))
+                {
+                    aspectSwitch[aspect].Switch(operation, sequence);
+                }
+            }
+            foreach (var property in _propertyAspectSwitchDictionary.Keys)
+            {
+                var aspectSwitch = _propertyAspectSwitchDictionary[property];
+                if (aspectSwitch.ContainsKey(aspect))
+                {
+                    aspectSwitch[aspect].Switch(operation, sequence);
+                }
+            }
+        }
+
+        private int SwitchExistingClass(SwitchOperation operation)
+        {
+            Operation.Switch(operation);
+            return Operation.Sequence;
+        }
+
+        private void SwitchAll(SwitchOperation operation, int sequence)
+        {
+            foreach (var methodSwitch in _methodSwitchDictionary.Values)
+            {
+                methodSwitch.Switch(operation, sequence);
+            }
+            foreach (var aspectSwitch in _aspectSwitchDictionary.Values)
+            {
+                aspectSwitch.Switch(operation, sequence);
+            }
+            foreach (var methodAspectSwitch in _methodAspectSwitchDictionary.Values)
+            {
+                foreach (var aspectSwitch in methodAspectSwitch.Values)
+                {
+                    aspectSwitch.Switch(operation, sequence);
+                }
+            }
+            foreach (var propertyAspectSwitch in _propertyAspectSwitchDictionary.Values)
+            {
+                foreach (var aspectSwitch in propertyAspectSwitch.Values)
+                {
+                    aspectSwitch.Switch(operation, sequence);
+                }
+            }
+        }
+
+        private void InitializeAspectSwitches(IReadOnlyDictionary<string, SwitchOperationStatus> aspectOperations)
+        {
+            foreach (var aspectOperation in aspectOperations)
+            {
+                var operation = SwitchFactory.InitializeSwitchOperationStatus(_sequenceGenerator, aspectOperation.Value);
+                _aspectSwitchDictionary.Add(aspectOperation.Key, operation);
             }
         }
 
@@ -204,62 +321,54 @@ namespace CrossCutterN.Advice.Switch
 
         #region GetSwitchValue
 
-        public bool GetSwitchValue(bool value, string propertyName, string methodSignature, string aspect)
+        public bool GetSwitchValue(bool value, string methodSignature, string aspect)
         {
             var operations = new SortedDictionary<int, SwitchStatus>();
             if (Operation != null)
             {
-                operations.Add(Operation.Sequence, Operation.Status);
+                operations[Operation.Sequence] = Operation.Status;
             }
-            if (_aspectOperations.ContainsKey(aspect))
-            {
-                var operation = _aspectOperations[aspect];
-                operations.Add(operation.Sequence, operation.Status);
-            }
+
             if (_aspectSwitchDictionary.ContainsKey(aspect))
             {
                 var operation = _aspectSwitchDictionary[aspect];
-                operations.Add(operation.Sequence, operation.Status);
+                operations[operation.Sequence] = operation.Status;
             }
+
             if (_methodSwitchDictionary.ContainsKey(methodSignature))
             {
                 var operation = _methodSwitchDictionary[methodSignature];
-                operations.Add(operation.Sequence, operation.Status);
+                operations[operation.Sequence] = operation.Status;
             }
+
             if (_methodAspectSwitchDictionary.ContainsKey(methodSignature) &&
                 _methodAspectSwitchDictionary[methodSignature].ContainsKey(aspect))
             {
                 var operation = _methodAspectSwitchDictionary[methodSignature][aspect];
-                operations.Add(operation.Sequence, operation.Status);
+                operations[operation.Sequence] = operation.Status;
             }
 
-            if (!string.IsNullOrWhiteSpace(propertyName))
+            var switchCount = 0;
+            var operationList = operations.Values.ToList();
+            for (var i = operationList.Count - 1; i >= 0; i--)
             {
-                if (_propertySwitchDictionary.ContainsKey(propertyName))
+                var operation = operationList[i];
+                if (operation == SwitchStatus.Switched)
                 {
-                    var operation = _propertySwitchDictionary[propertyName];
-                    operations.Add(operation.Sequence, operation.Status);
+                    switchCount++;
                 }
-                if (_propertyAspectSwitchDictionary.ContainsKey(propertyName) &&
-                    _propertyAspectSwitchDictionary[propertyName].ContainsKey(aspect))
+                else if (operation == SwitchStatus.On)
                 {
-                    var operation = _propertyAspectSwitchDictionary[propertyName][aspect];
-                    operations.Add(operation.Sequence, operation.Status);
+                    value = true;
+                    break;
                 }
-            }
-            
-            var statusList = operations.Values.ToList();
-            var switchCount = statusList.Count;
-            for (var i = statusList.Count - 1; i >= 0; i--)
-            {
-                if (statusList[i] != SwitchStatus.Switched)
+                else if (operation == SwitchStatus.Off)
                 {
-                    value = (statusList[i] == SwitchStatus.On);
-                    switchCount = switchCount - i - 1;
+                    value = false;
                     break;
                 }
             }
-            value ^= switchCount % 2 == 1;
+            value ^= switchCount%2 == 1;
             return value;
         }
 
