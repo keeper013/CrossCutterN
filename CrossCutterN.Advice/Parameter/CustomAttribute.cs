@@ -28,6 +28,8 @@ namespace CrossCutterN.Advice.Parameter
 
         internal CustomAttribute(string typeName, int sequence)
         {
+#if DEBUG
+            // the code will be called in client assembly, so reducing unnecessary validations for performance consideration
             if (string.IsNullOrWhiteSpace(typeName))
             {
                 throw new ArgumentNullException("typeName");
@@ -36,6 +38,7 @@ namespace CrossCutterN.Advice.Parameter
             {
                 throw new ArgumentOutOfRangeException("sequence", "Sequence must be non-negative number.");
             }
+#endif
             TypeName = typeName;
             Sequence = sequence;
         }
@@ -56,7 +59,7 @@ namespace CrossCutterN.Advice.Parameter
             _properties.Add(property);
         }
 
-        public ICustomAttribute ToReadOnly()
+        public ICustomAttribute Convert()
         {
             _readOnly.Apply();
             return this;

@@ -5,7 +5,7 @@
 
 namespace CrossCutterN.Aspect.Builder
 {
-    public interface IWriteOnlyConcernAttributeAspectBuilder : IWriteOnlyAspectBuilder, IWriteOnlyJoinPointDefaultOptions
+    public interface IWriteOnlyConcernAttributeAspectBuilder : IWriteOnlyAspectBuilder, IWriteOnlyJoinPointDefaultOptions, ISwitchableAspectBuilder
     {
         bool PointCutAtEntry { set; }
         bool PointCutAtException { set; }

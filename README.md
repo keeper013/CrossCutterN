@@ -182,6 +182,17 @@ The configuration tells _CrossCutterN.Command.exe_ tool to inject OnEntry and On
 
 _CrossCutterN.Command.exe_ tool is highly flexible and configurable. For more complete usage examples, please refer to content in _CrossCutterN.Test_ project.
 
+### Write pdb files
+
+To make injected assemblies debuggable, pdb files needs to be overwritten while injecting to the assemblies. To overwrite pdb files, add a "Y" parameter after input and output file paths. so the command looks like the following:
+
+```batchfile
+CrossCutterN.Command.exe <input assembly path> <output assembly path> Y
+```
+To make sure the above command can be successful, the pdb file should be at the same directory with the assembly to be injected, and their names except extension should be the same (e.g. _CrossCutterN.SampleTarget.exe_ and _CrossCutterN.SampleTarget.pdb_).
+
+Any other value than "Y" or no value for the 3rd command line parameter will cause the pdb file not overwritten. Of course, for some cases that there is no pdb file to overwrite, leaving to be empty or putting other values than "Y" is the only choice.
+
 ### Join Point
 
 _CrossCutterN_ allows to inject AOP code at 3 points of methods/property getters and setters:

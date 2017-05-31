@@ -10,7 +10,7 @@ namespace CrossCutterN.Weaver
     using Aspect;
     using Aspect.Builder;
 
-    public interface ICanAddAspectBuilder : ICanConvertToReadOnly<IWeaver>
+    public interface ICanAddAspectBuilder : ICanConvert<IWeaver>
     {
         void AddAspectBuilder(string id, IAspectBuilder builder, IReadOnlyDictionary<JoinPoint, int> sequenceDict);
     }

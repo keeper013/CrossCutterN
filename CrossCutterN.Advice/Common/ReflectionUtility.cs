@@ -3,14 +3,14 @@
  * Author: David Cui
  */
 
-namespace CrossCutterN.Weaver.Utilities
+namespace CrossCutterN.Advice.Common
 {
     using System;
     using System.Linq;
     using System.Reflection;
     using System.Text;
 
-    internal static class ReflectionUtility
+    public static class ReflectionUtility
     {
         public static string GetFullName(this Type type)
         {
@@ -21,6 +21,15 @@ namespace CrossCutterN.Weaver.Utilities
             return type.FullName;
         }
 
+        public static string GetSignatureWithTypeFullName(this MethodInfo method)
+        {
+            if (method == null)
+            {
+                throw new ArgumentNullException("method");
+            }
+            return string.Format("{0}.{1}", method.DeclaringType.GetFullName(), method.GetSignature());
+        }
+
         public static string GetSignature(this MethodInfo method)
         {
             if (method == null)
@@ -28,8 +37,6 @@ namespace CrossCutterN.Weaver.Utilities
                 throw new ArgumentNullException("method");
             }
             var buffer = new StringBuilder();
-            buffer.Append(GetFullName(method.DeclaringType));
-            buffer.Append('.');
             buffer.Append(method.Name);
             buffer.Append('(');
             var parameters = method.GetParameters();

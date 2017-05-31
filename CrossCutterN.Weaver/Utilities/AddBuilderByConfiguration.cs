@@ -32,6 +32,7 @@ namespace CrossCutterN.Weaver.Utilities
             var builder = (IWriteOnlyConcernAttributeAspectBuilder)factoryType.GetMethod(methodName).Invoke(null,
                 new object[] { classConcernAttributeType, methodConcernAttributeType, propertyConcernAttributeType, noConcernAttributeType });
             SetBuilderOptions(builder, element.Options);
+            SetBuilderSwitchable(builder, element.Switch);
             SetAndAddBuilder(weaver, builder, element);
         }
 
@@ -65,6 +66,7 @@ namespace CrossCutterN.Weaver.Utilities
             }
             var builder = (IWriteOnlyNameExpressionAspectBuilder)factoryType.GetMethod(methodName).Invoke(null, new object[] { includes, excludes });
             SetBuilderOptions(builder, element.Options);
+            SetBuilderSwitchable(builder, element.Switch);
             SetAndAddBuilder(weaver, builder, element);
         }
 
@@ -79,7 +81,7 @@ namespace CrossCutterN.Weaver.Utilities
                 builder.SetAdvice(settings.JoinPoint, settings.ToMethodInfo());
                 sequenceDict[settings.JoinPoint] = settings.Sequence;
             }
-            weaver.AddAspectBuilder(element.Id, builder.ToReadOnly(), sequenceDict);
+            weaver.AddAspectBuilder(element.Id, builder.Convert(), sequenceDict);
         }
 
         private static void SetBuilderOptions(this IWriteOnlyConcernAttributeAspectBuilder builder, ConcernAttributeAspectBuilderOptionsElement options)
@@ -100,6 +102,11 @@ namespace CrossCutterN.Weaver.Utilities
                 builder.PointCutAtException = options.PointCutAtException;
                 builder.PointCutAtExit = options.PointCutAtExit;
             }
+        }
+
+        private static void SetBuilderSwitchable(this ISwitchableAspectBuilder builder, SwitchElement element)
+        {
+            builder.SwitchStatus = element.Status;
         }
 
         private static void SetBuilderOptions(this IWriteOnlyNameExpressionAspectBuilder builder, AspectBuilderOptionsElement options)

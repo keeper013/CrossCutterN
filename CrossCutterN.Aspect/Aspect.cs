@@ -14,6 +14,12 @@ namespace CrossCutterN.Aspect
     {
         private readonly Dictionary<JoinPoint, MethodInfo> _pointCut = new Dictionary<JoinPoint, MethodInfo>();
         private readonly IrreversibleOperation _readOnly = new IrreversibleOperation();
+        private readonly SwitchStatus _switchStatus;
+
+        public SwitchStatus SwitchStatus
+        {
+            get { return _switchStatus; }
+        }
 
         public IReadOnlyDictionary<JoinPoint, MethodInfo> PointCut
         {
@@ -22,6 +28,11 @@ namespace CrossCutterN.Aspect
                 _readOnly.Assert(true);
                 return _pointCut;
             }
+        }
+
+        public Aspect(SwitchStatus switchStatus)
+        {
+            _switchStatus = switchStatus;
         }
 
         public void SetJoinPointAdvice(JoinPoint joinPoint, MethodInfo advice)
@@ -38,7 +49,7 @@ namespace CrossCutterN.Aspect
             _pointCut.Add(joinPoint, advice);
         }
 
-        public IAspect ToReadOnly()
+        public IAspect Convert()
         {
             // Considering aspect generation is extendable, empty aspect is possible by customized aspect builders
             // So no empty aspect checking performed here, only readonly operation

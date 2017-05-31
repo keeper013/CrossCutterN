@@ -112,11 +112,11 @@ namespace CrossCutterN.Weaver.Statistics
             }
         }
 
-        public IPropertyWeavingStatistics ToReadOnly()
+        public IPropertyWeavingStatistics Convert()
         {
-            _getterRecords = _getterRecordsWriteOnly.ToReadOnly();
+            _getterRecords = _getterRecordsWriteOnly.Convert();
             _getterRecordsWriteOnly = null;
-            _setterRecords = _setterRecordsWriteOnly.ToReadOnly();
+            _setterRecords = _setterRecordsWriteOnly.Convert();
             _setterRecordsWriteOnly = null;
             return this;
         }

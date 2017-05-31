@@ -7,7 +7,7 @@ namespace CrossCutterN.Weaver.Statistics
 {
     using Advice.Common;
 
-    internal interface ICanAddPropertyWeavingRecord : ICanConvertToReadOnly<IPropertyWeavingStatistics>
+    internal interface ICanAddPropertyWeavingRecord : ICanConvert<IPropertyWeavingStatistics>
     {
         ICanAddMethodWeavingRecord<IPropertyMethodWeavingRecords> GetterContainer { get; }
         ICanAddMethodWeavingRecord<IPropertyMethodWeavingRecords> SetterContainer { get; }

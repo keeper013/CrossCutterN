@@ -59,7 +59,7 @@ namespace CrossCutterN.Weaver.Statistics
             _records.Add(record);
         }
 
-        public IMethodWeavingStatistics ToReadOnly()
+        public IMethodWeavingStatistics Convert()
         {
             _readOnly.Apply();
             return this;

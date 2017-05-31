@@ -5,7 +5,7 @@
 
 namespace CrossCutterN.Aspect.Builder
 {
-    public interface IWriteOnlyNameExpressionAspectBuilder : IWriteOnlyAspectBuilder, IWriteOnlyJoinPointDefaultOptions
+    public interface IWriteOnlyNameExpressionAspectBuilder : IWriteOnlyAspectBuilder, IWriteOnlyJoinPointDefaultOptions, ISwitchableAspectBuilder
     {
     }
 }

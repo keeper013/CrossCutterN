@@ -7,7 +7,7 @@ namespace CrossCutterN.Aspect.Configuration
 {
     using System.Configuration;
 
-    public class ConcernAttributeAspectBuilderElement : AspectBuilderElement
+    public class ConcernAttributeAspectBuilderElement : SwitchableAspectBuilderElement
     {
         [ConfigurationProperty("factoryMethod", IsKey = false, IsRequired = true)]
         public ConcernAttributeAspectBuilderConstructorElement FactoryMethod

@@ -39,5 +39,11 @@ namespace CrossCutterN.Weaver.Statistics
         {
             return new AssemblyWeavingStatistics(assemblyName);
         }
+
+        public static ISwitchWeavingRecord InitializeSwitchWeavingRecord(
+            string clazz, string property, string method, string aspect, string variable, bool value)
+        {
+            return new SwitchWeavingRecord(clazz, property, method, aspect, variable, value);
+        }
     }
 }

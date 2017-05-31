@@ -14,6 +14,7 @@ namespace CrossCutterN.Weaver.Statistics
         int WeavedMethodCount { get; }
         int WeavedPropertyCount { get; }
         int WeavedMethodPropertyCount { get; }
+        int WeavedSwitchCount { get; }
         int MethodJoinPointCount { get; }
         int PropertyGetterJoinPointCount { get; }
         int PropertySetterJoinPointCount { get; }

@@ -8,7 +8,7 @@ namespace CrossCutterN.Aspect.Builder
     using System.Reflection;
     using Advice.Common;
 
-    public interface IWriteOnlyAspectBuilder : ICanConvertToReadOnly<IAspectBuilder>
+    public interface IWriteOnlyAspectBuilder : ICanConvert<IAspectBuilder>
     {
         /// <summary>
         /// Advice verification will happen in weaver, since this extention point is not under weaver's control

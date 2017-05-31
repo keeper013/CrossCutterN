@@ -6,8 +6,9 @@
 namespace CrossCutterN.Weaver.Reference
 {
     using Advice.Parameter;
+    using Advice.Switch;
 
-    internal sealed class AdviceParameterReference : IAdviceParameterReference
+    internal sealed class AdviceReference : IAdviceReference
     {
         public IAttributePropertyReference AttributeProperty { get; set; }
         public ICanAddAttributePropertyReference CustomAttribute { get; set; }
@@ -16,5 +17,8 @@ namespace CrossCutterN.Weaver.Reference
         public ICanAddCustomAttributeReference Parameter { get; set; }
         public IParameterFactoryReference ParameterFactory { get; set; }
         public IWriteOnlyReturnReference Return { get; set; }
+        public IAdviceSwitchBuildUpReference BuildUp { get; set; }
+        public ISwitchBackStageReference Controller { get; set; }
+        public IAdviceSwitchLookUpReference LookUp { get; set; }
     }
 }

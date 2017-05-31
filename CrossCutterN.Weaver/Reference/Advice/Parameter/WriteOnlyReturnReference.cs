@@ -1,5 +1,6 @@
 ﻿/**
  * Description: IWriteOnlyReturn reference implementation
+ * Author: David Cui
  */
 
 namespace CrossCutterN.Weaver.Reference.Advice.Parameter
@@ -7,146 +8,67 @@ namespace CrossCutterN.Weaver.Reference.Advice.Parameter
     using System;
     using System.Reflection;
     using Mono.Cecil;
-    using CrossCutterN.Advice.Common;
 
-    internal sealed class WriteOnlyReturnReference : IWriteOnlyReturnReference, IWriteOnlyReturnWriteOnlyReference
+    internal sealed class WriteOnlyReturnReference : ReferenceBase, IWriteOnlyReturnReference, IWriteOnlyReturnWriteOnlyReference
     {
-        private readonly ModuleDefinition _module;
-        private TypeReference _typeReference;
-        private TypeReference _readOnlyTypeReference;
-        private MethodReference _hasReturnSetter;
-        private MethodReference _valueSetter;
-        private MethodReference _toReadOnlyMethod;
-
-        private readonly IrreversibleOperation _readOnly = new IrreversibleOperation();
-
-        public WriteOnlyReturnReference(ModuleDefinition module)
+        public WriteOnlyReturnReference(ModuleDefinition module) : base(module, true)
         {
-            if (module == null)
-            {
-                throw new ArgumentNullException("module");
-            }
-            _module = module;
         }
 
         TypeReference IWriteOnlyReturnReference.TypeReference
         {
-            get
-            {
-                _readOnly.Assert(true);
-                return _typeReference;
-            }
+            get { return GetType("TypeReference"); }
         }
 
         public Type TypeReference
         {
-            set
-            {
-                if (value == null)
-                {
-                    throw new ArgumentNullException("value");
-                }
-                _readOnly.Assert(false);
-                _typeReference = _module.Import(value);
-            }
+            set { SetType("TypeReference", value); }
         }
 
         TypeReference IWriteOnlyReturnReference.ReadOnlyTypeReference
         {
-            get
-            {
-                _readOnly.Assert(true);
-                return _readOnlyTypeReference;
-            }
+            get { return GetType("ReadOnlyTypeReference"); }
         }
 
         public Type ReadOnlyTypeReference
         {
-            set
-            {
-                if (value == null)
-                {
-                    throw new ArgumentNullException("value");
-                }
-                _readOnly.Assert(false);
-                _readOnlyTypeReference = _module.Import(value);
-            }
+            set { SetType("ReadOnlyTypeReference", value); }
         }
 
         MethodReference IWriteOnlyReturnReference.HasReturnSetter
         {
-            get
-            {
-                _readOnly.Assert(true);
-                return _hasReturnSetter;
-            }
+            get { return GetMethod("HasReturnSetter"); }
         }
 
         public MethodInfo HasReturnSetter
         {
-            set
-            {
-                if (value == null)
-                {
-                    throw new ArgumentNullException("value");
-                }
-                _readOnly.Assert(false);
-                _hasReturnSetter = _module.Import(value);
-            }
+            set { SetMethod("HasReturnSetter", value); }
         }
 
         MethodReference IWriteOnlyReturnReference.ValueSetter
         {
-            get
-            {
-                _readOnly.Assert(true);
-                return _valueSetter;
-            }
+            get { return GetMethod("ValueSetter"); }
         }
 
         public MethodInfo ValueSetter
         {
-            set
-            {
-                if (value == null)
-                {
-                    throw new ArgumentNullException("value");
-                }
-                _readOnly.Assert(false);
-                _valueSetter = _module.Import(value);
-            }
+            set { SetMethod("ValueSetter", value); }
         }
 
-        MethodReference IWriteOnlyReturnReference.ToReadOnlyMethod
+        MethodReference IWriteOnlyReturnReference.ConvertMethod
         {
-            get
-            {
-                _readOnly.Assert(true);
-                return _toReadOnlyMethod;
-            }
+            get { return GetMethod("ConvertMethod"); }
         }
 
-        public MethodInfo ToReadOnlyMethod
+        public MethodInfo ConvertMethod
         {
-            set
-            {
-                if (value == null)
-                {
-                    throw new ArgumentNullException("value");
-                }
-                _readOnly.Assert(false);
-                _toReadOnlyMethod = _module.Import(value);
-            }
+            set { SetMethod("ConvertMethod", value); }
         }
 
-        public IWriteOnlyReturnReference ToReadOnly()
+        public IWriteOnlyReturnReference Convert()
         {
-            if (_hasReturnSetter == null || _typeReference == null || _valueSetter == null || 
-                _toReadOnlyMethod == null || _readOnlyTypeReference == null)
-            {
-                throw new InvalidOperationException("Necessary reference not set yet");
-            }
-            _readOnly.Apply();
+            ValidateConvert("TypeReference", "ReadOnlyTypeReference", "HasReturnSetter", 
+                "ValueSetter", "ConvertMethod");
             return this;
         }
     }

@@ -143,7 +143,7 @@ namespace CrossCutterN.Aspect.Concern
             _setterCustomAttributes.Add(attribute);
         }
 
-        public IProperty ToReadOnly()
+        public IProperty Convert()
         {
             _readOnly.Apply();
             return this;

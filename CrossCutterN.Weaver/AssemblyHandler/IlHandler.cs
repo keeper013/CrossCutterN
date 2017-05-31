@@ -3,6 +3,8 @@
  * Author: David Cui
  */
 
+using CrossCutterN.Aspect;
+
 namespace CrossCutterN.Weaver.AssemblyHandler
 {
     using System;
@@ -11,6 +13,7 @@ namespace CrossCutterN.Weaver.AssemblyHandler
     using Mono.Cecil;
     using Mono.Cecil.Cil;
     using Batch;
+    using Switch;
 
     internal class IlHandler
     {
@@ -18,6 +21,20 @@ namespace CrossCutterN.Weaver.AssemblyHandler
         private readonly ILProcessor _processor;
         private readonly IWeavingContext _context;
         private readonly IList<Instruction> _instructions = new List<Instruction>();
+        private string _methodSignature;
+
+        // to boost performance a bit by avoiding repeatedly build up method signature
+        private string MethodSignature
+        {
+            get
+            {
+                if (string.IsNullOrWhiteSpace(_methodSignature))
+                {
+                    _methodSignature = _method.GetSignature();
+                }
+                return _methodSignature;
+            }
+        }
 
         public IlHandler(MethodDefinition method, IWeavingContext context)
         {
@@ -40,6 +57,35 @@ namespace CrossCutterN.Weaver.AssemblyHandler
             _context.ResetVolatileData();
         }
 
+        public IlHandler(TypeDefinition clazz, IWeavingContext context)
+        {
+            if(clazz == null)
+            {
+                throw new ArgumentNullException("clazz");
+            }
+            if (context == null)
+            {
+                throw new ArgumentNullException("context");
+            }
+            _context = context;
+            _context.ResetVolatileData();
+            var staticConstructor = clazz.Methods.FirstOrDefault(method => method.IsStaticConstructor());
+            if (staticConstructor == null)
+            {
+                _method = new MethodDefinition(".cctor",
+                    MethodAttributes.Static | MethodAttributes.HideBySig | MethodAttributes.SpecialName | MethodAttributes.RTSpecialName,
+                    _context.GetTypeReference(typeof(void)));
+                _processor = _method.Body.GetILProcessor();
+                _method.Body.Instructions.Add(_processor.Create(OpCodes.Ret));
+                clazz.Methods.Add(_method);
+            }
+            else
+            {
+                _method = staticConstructor;
+                _processor = _method.Body.GetILProcessor();
+            }
+        }
+
         #region SetLocalVariables
 
         public void AddReturnValueVariable()
@@ -51,16 +97,18 @@ namespace CrossCutterN.Weaver.AssemblyHandler
         public void AddExecutionContextVariable()
         {
             _context.ExecutionContextVariableIndex = _method.Body.Variables.Count;
-            _method.Body.Variables.Add(new VariableDefinition(_context.AdviceParameterReference.ExecutionContext.TypeReference));
-            _instructions.Add(_processor.Create(OpCodes.Call, _context.AdviceParameterReference.ParameterFactory.InitializeExecutionContextMethod));
+            _method.Body.Variables.Add(new VariableDefinition(_context.AdviceReference.ExecutionContext.TypeReference));
+            _instructions.Add(_processor.Create(OpCodes.Call, _context.AdviceReference.ParameterFactory.InitializeExecutionContextMethod));
             _instructions.Add(_processor.Create(OpCodes.Stloc, _context.ExecutionContextVariableIndex));
         }
 
         public void AddExecutionParameter()
         {
             // evaluation stack: bottom
-            _method.Body.Variables.Add(new VariableDefinition(_context.AdviceParameterReference.Execution.TypeReference));
-            _instructions.Add(_processor.Create(OpCodes.Ldstr, _method.Module.Assembly.FullName));
+            _method.Body.Variables.Add(new VariableDefinition(_context.AdviceReference.Execution.TypeReference));
+            var firstInstruction = _processor.Create(OpCodes.Ldstr, _method.Module.Assembly.FullName);
+            _context.ExecutionParameterStartInstruction = firstInstruction;
+            _instructions.Add(firstInstruction);
             _instructions.Add(_processor.Create(OpCodes.Ldstr, _method.DeclaringType.Namespace));
             _instructions.Add(_processor.Create(OpCodes.Ldstr, _method.DeclaringType.FullName));
             _instructions.Add(_processor.Create(OpCodes.Ldstr, _method.DeclaringType.Name));
@@ -68,7 +116,7 @@ namespace CrossCutterN.Weaver.AssemblyHandler
             _instructions.Add(_processor.Create(OpCodes.Ldstr, _method.Name));
             _instructions.Add(_processor.Create(OpCodes.Ldstr, _method.ReturnType.FullName));
             // evaluation stack after the following statement: bottom->ICanAddParameters
-            _instructions.Add(_processor.Create(OpCodes.Call, _context.AdviceParameterReference.ParameterFactory.InitializeExecutionMethod));
+            _instructions.Add(_processor.Create(OpCodes.Call, _context.AdviceReference.ParameterFactory.InitializeExecutionMethod));
             if (_method.HasParameters)
             {
                 foreach (var parameter in _method.Parameters)
@@ -90,7 +138,7 @@ namespace CrossCutterN.Weaver.AssemblyHandler
                         _instructions.Add(_processor.CreateBoxValueTypeInstruction(parameter.ParameterType));
                     }
                     // evaluation stack after the following statement: bottom->ICanAddParameters->ICanAddParameters->ICanAddCustomAttribute
-                    _instructions.Add(_processor.Create(OpCodes.Call, _context.AdviceParameterReference.ParameterFactory.InitializeParameterMethod));
+                    _instructions.Add(_processor.Create(OpCodes.Call, _context.AdviceReference.ParameterFactory.InitializeParameterMethod));
                     if (parameter.HasCustomAttributes)
                     {
                         for (var i = 0; i < parameter.CustomAttributes.Count; i++)
@@ -101,7 +149,7 @@ namespace CrossCutterN.Weaver.AssemblyHandler
                             _instructions.Add(_processor.Create(OpCodes.Ldstr, attribute.AttributeType.FullName));
                             _instructions.Add(_processor.Create(OpCodes.Ldc_I4, i));
                             // evaluation stack after the following statement: bottom->ICanAddParameters->ICanAddParameters->ICanAddCustomAttribute->ICanAddCustomAttribute->ICanAddAttributeProperty
-                            _instructions.Add(_processor.Create(OpCodes.Call, _context.AdviceParameterReference.ParameterFactory.InitializeCustomAttributeMethod));
+                            _instructions.Add(_processor.Create(OpCodes.Call, _context.AdviceReference.ParameterFactory.InitializeCustomAttributeMethod));
                             if (attribute.HasProperties)
                             {
                                 for (var j = 0; j < attribute.Properties.Count; j++)
@@ -120,30 +168,31 @@ namespace CrossCutterN.Weaver.AssemblyHandler
                                             _instructions.Add(_processor.CreateBoxValueTypeInstruction(property.Argument.Type));
                                         }
                                         // evaluation stack after the following statement: bottom->ICanAddParameters->ICanAddParameters->ICanAddCustomAttribute->ICanAddCustomAttribute->ICanAddAttributeProperty->ICanAddAttributeProperty->IAttributeProperty
-                                        _instructions.Add(_processor.Create(OpCodes.Call, _context.AdviceParameterReference.ParameterFactory.InitializeAttributePropertyMethod));
+                                        _instructions.Add(_processor.Create(OpCodes.Call, _context.AdviceReference.ParameterFactory.InitializeAttributePropertyMethod));
                                         // evaluation stack after the following statement: bottom->ICanAddParameters->ICanAddParameters->ICanAddCustomAttribute->ICanAddCustomAttribute->ICanAddAttributeProperty
-                                        _instructions.Add(_processor.Create(OpCodes.Callvirt, _context.AdviceParameterReference.CustomAttribute.AddAttributePropertyMethod));
+                                        _instructions.Add(_processor.Create(OpCodes.Callvirt, _context.AdviceReference.CustomAttribute.AddAttributePropertyMethod));
                                     }
                                 }
                             }
                             // evaluation stack after the following statement: bottom->ICanAddParameters->ICanAddParameters->ICanAddCustomAttribute->ICanAddCustomAttribute->ICustomAttribute
-                            _instructions.Add(_processor.Create(OpCodes.Callvirt, _context.AdviceParameterReference.CustomAttribute.ToReadOnlyMethod));
+                            _instructions.Add(_processor.Create(OpCodes.Callvirt, _context.AdviceReference.CustomAttribute.ConvertMethod));
                             // evaluation stack after the following statement: bottom->ICanAddParameters->ICanAddParameters->ICanAddCustomAttribute
-                            _instructions.Add(_processor.Create(OpCodes.Callvirt, _context.AdviceParameterReference.Parameter.AddCustomAttributeMethod));
+                            _instructions.Add(_processor.Create(OpCodes.Callvirt, _context.AdviceReference.Parameter.AddCustomAttributeMethod));
                         }
                     }
                     // evaluation stack after the following statement: bottom->ICanAddParameters->ICanAddParameters->IParameter
-                    _instructions.Add(_processor.Create(OpCodes.Callvirt, _context.AdviceParameterReference.Parameter.ToReadOnlyMethod));
+                    _instructions.Add(_processor.Create(OpCodes.Callvirt, _context.AdviceReference.Parameter.ConvertMethod));
                     // evaluation stack after the following statement: bottom->ICanAddParameters
-                    _instructions.Add(_processor.Create(OpCodes.Callvirt, _context.AdviceParameterReference.Execution.AddParameterMethod));
+                    _instructions.Add(_processor.Create(OpCodes.Callvirt, _context.AdviceReference.Execution.AddParameterMethod));
                 }
             }
             // evaluation stack after the following statement: bottom->IMethodExecution
-            _instructions.Add(_processor.Create(OpCodes.Callvirt, _context.AdviceParameterReference.Execution.ToReadOnlyMethod));
+            _instructions.Add(_processor.Create(OpCodes.Callvirt, _context.AdviceReference.Execution.ConvertMethod));
             _context.ExecutionVariableIndex = _method.Body.Variables.Count;
-            _method.Body.Variables.Add(new VariableDefinition(_context.AdviceParameterReference.Execution.ReadOnlyTypeReference));
+            _method.Body.Variables.Add(new VariableDefinition(_context.AdviceReference.Execution.ReadOnlyTypeReference));
             _instructions.Add(_processor.Create(OpCodes.Stloc, _context.ExecutionVariableIndex));
             // evaluation stack after the following statement: bottom
+            _context.ExecutionParameterEndInstructionIndex = _instructions.Count;
         }
 
         public void AddExceptionParameter()
@@ -155,17 +204,32 @@ namespace CrossCutterN.Weaver.AssemblyHandler
         public void AddReturnParameter()
         {
             _context.ReturnVariableIndex = _method.Body.Variables.Count;
-            _method.Body.Variables.Add(new VariableDefinition(_context.AdviceParameterReference.Return.TypeReference));
+            _method.Body.Variables.Add(new VariableDefinition(_context.AdviceReference.Return.TypeReference));
             var returnTypeName = _method.ReturnType.FullName;
-            _instructions.Add(_processor.Create(returnTypeName.Equals(typeof(void).FullName) ? OpCodes.Ldc_I4_0 : OpCodes.Ldc_I4_1));
+            var firstInstruction = _processor.Create(returnTypeName.Equals(typeof (void).FullName) ? OpCodes.Ldc_I4_0 : OpCodes.Ldc_I4_1);
+            _context.ReturnParameterStartInstruction = firstInstruction;
+            _instructions.Add(firstInstruction);
             _instructions.Add(_processor.Create(OpCodes.Ldstr, returnTypeName));
-            _instructions.Add(_processor.Create(OpCodes.Call, _context.AdviceParameterReference.ParameterFactory.InitializeReturnMethod));
+            _instructions.Add(_processor.Create(OpCodes.Call, _context.AdviceReference.ParameterFactory.InitializeReturnMethod));
             _instructions.Add(_processor.Create(OpCodes.Stloc, _context.ReturnVariableIndex));
+            _context.ReturnParameterEndInstructionIndex = _instructions.Count;
         }
 
         public void FinalizeSetLocalVariableInstructions()
         {
             _context.TryStartInstruction = _method.Body.Instructions.First();
+            if (_context.ExecutionParameterStartInstruction != null)
+            {
+                _context.ExecutionParameterEndInstruction = _context.ExecutionParameterEndInstructionIndex >= _instructions.Count ?
+                    _context.TryStartInstruction : _instructions[_context.ExecutionParameterEndInstructionIndex];
+                _context.ExecutionParameterEndInstructionIndex = -1;
+            }
+            if (_context.ReturnParameterStartInstruction != null)
+            {
+                _context.ReturnParameterEndInstruction = _context.ReturnParameterEndInstructionIndex >= _instructions.Count ?
+                    _context.TryStartInstruction : _instructions[_context.ReturnParameterEndInstructionIndex];
+                _context.ReturnParameterEndInstructionIndex = -1;
+            }
             PersistentInstructions(_context.TryStartInstruction);
         }
 
@@ -175,6 +239,12 @@ namespace CrossCutterN.Weaver.AssemblyHandler
 
         public void FinalizeWeavingEntry()
         {
+            // apply switch from last advice call
+            if (_context.PendingSwitchIndex >= 0)
+            {
+                _instructions[_context.PendingSwitchIndex] = _processor.Create(OpCodes.Brfalse_S, _context.TryStartInstruction);
+                _context.PendingSwitchIndex = -1;
+            }
             var firstEntryInstruction = _instructions.FirstOrDefault();
             PersistentInstructions(_context.TryStartInstruction);
             _context.TryStartInstruction = firstEntryInstruction ?? _context.TryStartInstruction;
@@ -189,14 +259,14 @@ namespace CrossCutterN.Weaver.AssemblyHandler
             if (_context.ExecutionContextVariableIndex >= 0)
             {
                 _instructions.Add(_processor.Create(OpCodes.Ldloc, _context.ExecutionContextVariableIndex));
-                _instructions.Add(_processor.Create(OpCodes.Callvirt, _context.AdviceParameterReference.ExecutionContext.MarkExceptionThrownMethod));
+                _instructions.Add(_processor.Create(OpCodes.Callvirt, _context.AdviceReference.ExecutionContext.MarkExceptionThrownMethod));
             }
             // set return variable has return property
             if (_context.ReturnVariableIndex >= 0)
             {
                 _instructions.Add(_processor.Create(OpCodes.Ldloc, _context.ReturnVariableIndex));
                 _instructions.Add(_processor.Create(OpCodes.Ldc_I4_0));
-                _instructions.Add(_processor.Create(OpCodes.Callvirt, _context.AdviceParameterReference.Return.HasReturnSetter));
+                _instructions.Add(_processor.Create(OpCodes.Callvirt, _context.AdviceReference.Return.HasReturnSetter));
             }
         }
 
@@ -211,6 +281,12 @@ namespace CrossCutterN.Weaver.AssemblyHandler
                     ? _processor.Create(OpCodes.Stloc, _context.ExceptionVariableIndex)
                     : _processor.Create(OpCodes.Pop);
                 _processor.InsertBefore(rethrowInstruction, handleExceptionInstruction);
+                // apply switch from last advice call
+                if (_context.PendingSwitchIndex >= 0)
+                {
+                    _instructions[_context.PendingSwitchIndex] = _processor.Create(OpCodes.Brfalse_S, rethrowInstruction);
+                    _context.PendingSwitchIndex = -1;
+                }
 
                 // instruction persistent
                 PersistentInstructions(rethrowInstruction);
@@ -242,7 +318,7 @@ namespace CrossCutterN.Weaver.AssemblyHandler
                     _instructions.Add(_processor.Create(OpCodes.Ldloc, _context.ExecutionContextVariableIndex));
                     // evaluation stack after the following statement: bottom-><exception thrown>
                     _instructions.Add(_processor.Create(OpCodes.Callvirt,
-                                                        _context.AdviceParameterReference.ExecutionContext
+                                                        _context.AdviceReference.ExecutionContext
                                                                 .ExceptionThrownGetter));
                     //later, insert if start statement here
                     var ifStartIndex = _instructions.Count;
@@ -263,7 +339,7 @@ namespace CrossCutterN.Weaver.AssemblyHandler
                     }
                     // evaluation stack after the following statement: bottom
                     _instructions.Add(_processor.Create(OpCodes.Callvirt,
-                                                        _context.AdviceParameterReference.Return.ValueSetter));
+                                                        _context.AdviceReference.Return.ValueSetter));
                     var ifEndInstruction = _processor.Create(OpCodes.Ldloc, _context.ReturnVariableIndex);
                     _instructions[ifStartIndex] = _processor.Create(OpCodes.Brtrue_S, ifEndInstruction);
                     // evaluation stack after the following statement: bottom->IWriteOnlyReturn
@@ -275,9 +351,9 @@ namespace CrossCutterN.Weaver.AssemblyHandler
                     _instructions.Add(_processor.Create(OpCodes.Ldloc, _context.ReturnVariableIndex));
                 }
                 // evaluation stack after the following statement: bottom->IReturn
-                _instructions.Add(_processor.Create(OpCodes.Callvirt, _context.AdviceParameterReference.Return.ToReadOnlyMethod));
+                _instructions.Add(_processor.Create(OpCodes.Callvirt, _context.AdviceReference.Return.ConvertMethod));
                 _context.ReturnVariableIndex = _method.Body.Variables.Count;
-                _method.Body.Variables.Add(new VariableDefinition(_context.AdviceParameterReference.Return.ReadOnlyTypeReference));
+                _method.Body.Variables.Add(new VariableDefinition(_context.AdviceReference.Return.ReadOnlyTypeReference));
                 _instructions.Add(_processor.Create(OpCodes.Stloc, _context.ReturnVariableIndex));
             }
         }
@@ -287,8 +363,15 @@ namespace CrossCutterN.Weaver.AssemblyHandler
             if (_instructions.Any())
             {
                 // must add end finally instruction at the end
-                _instructions.Add(_processor.Create(OpCodes.Endfinally));
+                var endFinally = _processor.Create(OpCodes.Endfinally);
+                _instructions.Add(endFinally);
                 FixReturnInstructions();
+                // apply switch from last advice call
+                if (_context.PendingSwitchIndex >= 0)
+                {
+                    _instructions[_context.PendingSwitchIndex] = _processor.Create(OpCodes.Brfalse_S, endFinally);
+                    _context.PendingSwitchIndex = -1;
+                }
                 var tryEndInstruction = _instructions.First();
                 PersistentInstructions(_context.EndingInstruction);
                 // if catch block exists, it's handler end must be updated
@@ -305,6 +388,59 @@ namespace CrossCutterN.Weaver.AssemblyHandler
                     HandlerEnd = _context.EndingInstruction
                 };
                 _method.Body.ExceptionHandlers.Add(handler);
+            }
+        }
+
+        #endregion
+
+        #region Advice Switching
+
+        public void RegisterSwitch(FieldReference field, string clazz, string property, string method, string aspect, bool value)
+        {
+            _instructions.Add(_processor.Create(OpCodes.Call, _context.AdviceReference.Controller.BuildUpGetterReference));
+            _instructions.Add(_processor.Create(OpCodes.Ldstr, clazz));
+            _instructions.Add(_processor.Create(OpCodes.Ldstr, property??string.Empty));
+            _instructions.Add(_processor.Create(OpCodes.Ldstr, method));
+            _instructions.Add(_processor.Create(OpCodes.Ldstr, aspect));
+            _instructions.Add(_processor.Create(value ? OpCodes.Ldc_I4_1 : OpCodes.Ldc_I4_0));
+            _instructions.Add(_processor.Create(OpCodes.Callvirt, _context.AdviceReference.BuildUp.RegisterSwitchMethod));
+            _instructions.Add(_processor.Create(OpCodes.Stsfld, field));
+        }
+
+        public void FinalizeSwitchRegistration(string clazz)
+        {
+            _instructions.Add(_processor.Create(OpCodes.Call, _context.AdviceReference.Controller.BuildUpGetterReference));
+            _instructions.Add(_processor.Create(OpCodes.Ldstr, clazz));
+            _instructions.Add(_processor.Create(OpCodes.Callvirt, _context.AdviceReference.BuildUp.CompleteMethod));
+            PersistentInstructions(_method.Body.Instructions.First());
+        }
+
+        public void WeaveSwitchInitialization()
+        {
+            var dict = _context.FieldLocalVariableDictionary;
+            if (dict.Any())
+            {
+                foreach (var fieldVariable in dict)
+                {
+                    _instructions.Add(_processor.Create(OpCodes.Call, _context.AdviceReference.Controller.LookUpGetterReference));
+                    _instructions.Add(_processor.Create(OpCodes.Ldsfld, fieldVariable.Key));
+                    _instructions.Add(_processor.Create(OpCodes.Callvirt, _context.AdviceReference.LookUp.IsOnMethod));
+                    _instructions.Add(_processor.Create(OpCodes.Stloc, fieldVariable.Value));
+                }
+                PersistentInstructions(_method.Body.Instructions.First());
+            }
+            var executionParameterSwitches = _context.NeedExecutionParameterSwitches;
+            if (executionParameterSwitches != null && executionParameterSwitches.Any())
+            {
+                AddLocalVariableSwitch(executionParameterSwitches, _context.ExecutionParameterStartInstruction, _context.ExecutionParameterEndInstruction);
+                PersistentInstructions(_context.ExecutionParameterStartInstruction);
+            }
+
+            var returnParameterSwitches = _context.NeedReturnParameterSwitches;
+            if (returnParameterSwitches != null && returnParameterSwitches.Any())
+            {
+                AddLocalVariableSwitch(returnParameterSwitches, _context.ReturnParameterStartInstruction, _context.ReturnParameterEndInstruction);
+                PersistentInstructions(_context.ReturnParameterStartInstruction);
             }
         }
 
@@ -348,13 +484,46 @@ namespace CrossCutterN.Weaver.AssemblyHandler
             }
         }
 
-        public void CallAdvice(IAdviceInfo advice)
+        public void CallAdvice(IAdviceInfo advice, IWriteOnlySwitchHandler switchHandler)
         {
             if (advice == null)
             {
                 throw new ArgumentNullException("advice");
             }
-            if (advice.ParameterFlag.NeedExecutionParameter())
+            var pendingSwitchIndex = _context.PendingSwitchIndex;
+            var firstIndex = _instructions.Count;
+            var needExecutionParameter = advice.ParameterFlag.NeedExecutionParameter();
+            var needReturnParameter = advice.ParameterFlag.NeedReturnParameter();
+            if (advice.SwitchStatus.IsSwitchable())
+            {
+                var field = switchHandler.GetSwitchField(MethodSignature, advice.BuilderId,
+                                                         advice.SwitchStatus == SwitchStatus.On);
+                var index = _context.GetLocalVariableForField(field);
+                if (index < 0)
+                {
+                    index = _method.Body.Variables.Count;
+                    _method.Body.Variables.Add(new VariableDefinition(_context.GetTypeReference(typeof (bool))));
+                    _context.RecordLocalVariableForField(field, index);
+                    if (needExecutionParameter)
+                    {
+                        _context.RegisterNeedExecutionParameterSwitch(index);
+                    }
+                    if (needReturnParameter)
+                    {
+                        _context.RegisterNeedReturnParameterSwitch(index);
+                    }
+                }
+                _instructions.Add(_processor.Create(OpCodes.Ldloc, index));
+                // the null instruction is to be filled in later
+                _context.PendingSwitchIndex = _instructions.Count;
+                _instructions.Add(null);
+            }
+            else
+            {
+                _context.SetExecutionParameterUnSwitchable();
+                _context.SetReturnParameterUnSwitchable();
+            }
+            if (needExecutionParameter)
             {
                 _instructions.Add(_processor.Create(OpCodes.Ldloc, _context.ExecutionVariableIndex));
             }
@@ -362,16 +531,38 @@ namespace CrossCutterN.Weaver.AssemblyHandler
             {
                 _instructions.Add(_processor.Create(OpCodes.Ldloc, _context.ExceptionVariableIndex));
             }
-            if (advice.ParameterFlag.NeedReturnParameter())
+            if (needReturnParameter)
             {
                 _instructions.Add(_processor.Create(OpCodes.Ldloc, _context.ReturnVariableIndex));
             }
             if (advice.ParameterFlag.NeedHasException())
             {
                 _instructions.Add(_processor.Create(OpCodes.Ldloc, _context.ExecutionContextVariableIndex));
-                _instructions.Add(_processor.Create(OpCodes.Callvirt, _context.AdviceParameterReference.ExecutionContext.ExceptionThrownGetter));
+                _instructions.Add(_processor.Create(OpCodes.Callvirt, _context.AdviceReference.ExecutionContext.ExceptionThrownGetter));
             }
             _instructions.Add(_processor.Create(OpCodes.Call, _context.GetMethodReference(advice.Advice)));
+            // apply switch from last advice call
+            if (pendingSwitchIndex >= 0)
+            {
+                _instructions[pendingSwitchIndex] = _processor.Create(OpCodes.Brfalse_S, _instructions[firstIndex]);
+                // reset pending switch index if no switch this time
+                if (!advice.SwitchStatus.IsSwitchable())
+                {
+                    _context.PendingSwitchIndex = -1;
+                }
+            }
+        }
+
+        private void AddLocalVariableSwitch(IReadOnlyList<int> variableList, Instruction first, Instruction end)
+        {
+            var count = variableList.Count;
+            for (var i = 0; i < count - 1; i++)
+            {
+                _instructions.Add(_processor.Create(OpCodes.Ldloc, variableList[i]));
+                _instructions.Add(_processor.Create(OpCodes.Brtrue_S, first));
+            }
+            _instructions.Add(_processor.Create(OpCodes.Ldloc, variableList[count - 1]));
+            _instructions.Add(_processor.Create(OpCodes.Brfalse_S, end));
         }
 
         private void PersistentInstructions(Instruction beforeTarget)

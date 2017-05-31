@@ -24,7 +24,7 @@ namespace CrossCutterN.Weaver.Statistics
             _records.Add(record);
         }
 
-        public IPropertyMethodWeavingRecords ToReadOnly()
+        public IPropertyMethodWeavingRecords Convert()
         {
             _readOnly.Apply();
             return this;

@@ -7,7 +7,7 @@ namespace CrossCutterN.Aspect.Concern
 {
     using Advice.Common;
 
-    public interface ICanAddCustomAttribute : ICanConvertToReadOnly<IParameter>
+    public interface ICanAddCustomAttribute : ICanConvert<IParameter>
     {
         void AddCustomAttribute(ICustomAttribute attribute);
     }

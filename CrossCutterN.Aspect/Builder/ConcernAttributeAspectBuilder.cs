@@ -11,7 +11,7 @@ namespace CrossCutterN.Aspect.Builder
     using Concern;
     using Advice.Concern;
 
-    internal sealed class ConcernAttributeAspectBuilder : AspectBuilderWithDefaultOptions, IWriteOnlyConcernAttributeAspectBuilder
+    internal sealed class ConcernAttributeAspectBuilder : SwitchableAspectBuilderWithDefaultOptions, IWriteOnlyConcernAttributeAspectBuilder
     {
         private bool _pointCutAtEntry;
         private bool _pointCutAtException;
@@ -108,7 +108,7 @@ namespace CrossCutterN.Aspect.Builder
                 throw new ArgumentNullException("method");
             }
             ReadOnly.Assert(true);
-            var aspect = AspectFactory.InitializeAspect();
+            var aspect = AspectFactory.InitializeAspect(SwitchStatus);
 
             // NoConcernAttribute takes priority
             if (!NoConcern(method.CustomAttributes))
@@ -122,7 +122,7 @@ namespace CrossCutterN.Aspect.Builder
                     }
                 }
             }
-            return aspect.ToReadOnly();
+            return aspect.Convert();
         }
 
         public override IPropertyAspect GetAspect(IProperty property)
@@ -132,8 +132,8 @@ namespace CrossCutterN.Aspect.Builder
                 throw new ArgumentNullException("property");
             }
             ReadOnly.Assert(true);
-            var getterAspect = AspectFactory.InitializeAspect();
-            var setterAspect = AspectFactory.InitializeAspect();
+            var getterAspect = AspectFactory.InitializeAspect(SwitchStatus);
+            var setterAspect = AspectFactory.InitializeAspect(SwitchStatus);
             if (!NoConcern(property.CustomAttributes))
             {
                 var joinPoints = Enum.GetValues(typeof(JoinPoint)).Cast<JoinPoint>().ToList();
@@ -158,7 +158,7 @@ namespace CrossCutterN.Aspect.Builder
                     }
                 }
             }
-            return AspectFactory.InitializePropertyAspect(getterAspect.ToReadOnly(), setterAspect.ToReadOnly());
+            return AspectFactory.InitializePropertyAspect(getterAspect.Convert(), setterAspect.Convert());
         }
 
         private bool CutAt(JoinPoint joinPoint, IMethod method)
@@ -456,9 +456,9 @@ namespace CrossCutterN.Aspect.Builder
         {
             if (defaultValue)
             {
-                return !attribute.HasProperty(propertyName) || Convert.ToBoolean(attribute.GetProperty(propertyName).Value);
+                return !attribute.HasProperty(propertyName) || System.Convert.ToBoolean(attribute.GetProperty(propertyName).Value);
             }
-            return attribute.HasProperty(propertyName) && Convert.ToBoolean(attribute.GetProperty(propertyName).Value);
+            return attribute.HasProperty(propertyName) && System.Convert.ToBoolean(attribute.GetProperty(propertyName).Value);
         }
     }
 }

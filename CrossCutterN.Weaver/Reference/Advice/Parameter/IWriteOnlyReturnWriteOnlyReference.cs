@@ -9,13 +9,13 @@ namespace CrossCutterN.Weaver.Reference.Advice.Parameter
     using System.Reflection;
     using CrossCutterN.Advice.Common;
 
-    internal interface IWriteOnlyReturnWriteOnlyReference : ICanConvertToReadOnly<IWriteOnlyReturnReference>
+    internal interface IWriteOnlyReturnWriteOnlyReference : ICanConvert<IWriteOnlyReturnReference>
     {
         Type TypeReference { set; }
         Type ReadOnlyTypeReference { set; }
 
         MethodInfo HasReturnSetter { set; }
         MethodInfo ValueSetter { set; }
-        MethodInfo ToReadOnlyMethod { set; }
+        MethodInfo ConvertMethod { set; }
     }
 }

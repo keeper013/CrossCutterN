@@ -8,7 +8,7 @@ namespace CrossCutterN.Weaver.Reference.Advice.Parameter
     using System.Reflection;
     using CrossCutterN.Advice.Common;
 
-    internal interface IParameterFactoryWriteOnlyReference : ICanConvertToReadOnly<IParameterFactoryReference>
+    internal interface IParameterFactoryWriteOnlyReference : ICanConvert<IParameterFactoryReference>
     {
         MethodInfo InitializeExecutionMethod { set; }
         MethodInfo InitializeExecutionContextMethod { set; }

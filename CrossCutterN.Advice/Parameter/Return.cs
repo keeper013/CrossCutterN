@@ -43,15 +43,18 @@ namespace CrossCutterN.Advice.Parameter
 
         internal Return(bool hasReturn, string typeName)
         {
+#if DEBUG
+            // the code will be called in client assembly, so reducing unnecessary validations for performance consideration
             if(string.IsNullOrWhiteSpace(typeName))
             {
                 throw new ArgumentNullException("typeName");
             }
+#endif
             HasReturn = hasReturn;
             TypeName = typeName;
         }
 
-        public IReturn ToReadOnly()
+        public IReturn Convert()
         {
             if(string.IsNullOrWhiteSpace(TypeName))
             {

@@ -6,12 +6,13 @@
 namespace CrossCutterN.Weaver.Batch
 {
     using System.Reflection;
+    using Aspect;
 
     internal static class BatchFactory
     {
-        public static IAdviceInfo InitializeAdviceInfo(MethodInfo method, string builderId, AdviceParameterFlag parameterFlag)
+        public static IAdviceInfo InitializeAdviceInfo(MethodInfo method, string builderId, AdviceParameterFlag parameterFlag, SwitchStatus switchStatus)
         {
-            return new AdviceInfo(method, builderId, parameterFlag);
+            return new AdviceInfo(method, builderId, parameterFlag, switchStatus);
         }
 
         public static ICanAddJoinPoint InitializeWeavingPlan()

@@ -11,7 +11,7 @@ namespace CrossCutterN.Aspect.Builder
     using System.Text.RegularExpressions;
     using Concern;
 
-    internal class NameExpressionAspectBuilder : AspectBuilderWithDefaultOptions, IWriteOnlyNameExpressionAspectBuilder
+    internal class NameExpressionAspectBuilder : SwitchableAspectBuilderWithDefaultOptions, IWriteOnlyNameExpressionAspectBuilder
     {
         private readonly IDictionary<string, bool> _includes = new Dictionary<string, bool>();
         private readonly ISet<string> _excludes = new HashSet<string>(); 
@@ -63,7 +63,7 @@ namespace CrossCutterN.Aspect.Builder
                 throw new ArgumentNullException("method");
             }
             ReadOnly.Assert(true);
-            var aspect = AspectFactory.InitializeAspect();
+            var aspect = AspectFactory.InitializeAspect(SwitchStatus);
             var fullName = string.Format("{0}.{1}", method.ClassFullName, method.MethodName);
             var joinPoints = Enum.GetValues(typeof (JoinPoint)).Cast<JoinPoint>().ToList();
             var match = PatternMatch(fullName);
@@ -78,7 +78,7 @@ namespace CrossCutterN.Aspect.Builder
                     }
                 }
             }
-            return aspect.ToReadOnly();
+            return aspect.Convert();
         }
 
         public override IPropertyAspect GetAspect(IProperty property)
@@ -88,8 +88,8 @@ namespace CrossCutterN.Aspect.Builder
                 throw new ArgumentNullException("property");
             }
             ReadOnly.Assert(true);
-            var getterAspect = AspectFactory.InitializeAspect();
-            var setterAspect = AspectFactory.InitializeAspect();
+            var getterAspect = AspectFactory.InitializeAspect(SwitchStatus);
+            var setterAspect = AspectFactory.InitializeAspect(SwitchStatus);
             var fullName = string.Format("{0}.{1}", property.ClassFullName, property.PropertyName);
             var joinPoints = Enum.GetValues(typeof (JoinPoint)).Cast<JoinPoint>().ToList();
             var match = PatternMatch(fullName);
@@ -116,7 +116,7 @@ namespace CrossCutterN.Aspect.Builder
                     }
                 }
             }
-            return AspectFactory.InitializePropertyAspect(getterAspect.ToReadOnly(), setterAspect.ToReadOnly());
+            return AspectFactory.InitializePropertyAspect(getterAspect.Convert(), setterAspect.Convert());
         }
 
         private bool MethodMatch(IMethod method)

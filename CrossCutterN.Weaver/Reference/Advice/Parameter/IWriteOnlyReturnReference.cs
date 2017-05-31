@@ -14,6 +14,6 @@ namespace CrossCutterN.Weaver.Reference.Advice.Parameter
 
         MethodReference HasReturnSetter { get; }
         MethodReference ValueSetter { get; }
-        MethodReference ToReadOnlyMethod { get; }
+        MethodReference ConvertMethod { get; }
     }
 }

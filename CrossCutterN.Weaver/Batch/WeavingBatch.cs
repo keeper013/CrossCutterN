@@ -62,7 +62,7 @@ namespace CrossCutterN.Weaver.Batch
             foreach(var joinPoint in pointCut)
             {
                 var flag = AdviceValidator.Validate(joinPoint, builder.GetAdvice(joinPoint));
-                builderJoinPointDict.Add(joinPoint, new BuilderJoinPointInfo { Sequence = sequenceDict[joinPoint], ParameterFlag = flag });
+                builderJoinPointDict.Add(joinPoint, new BuilderJoinPointInfo { Sequence = sequenceDict[joinPoint], ParameterFlag = flag});
             }
             _builders.Add(id, builder);
             foreach(var joinPoint in pointCut)
@@ -88,10 +88,10 @@ namespace CrossCutterN.Weaver.Batch
                     var advice = jp.Value;
                     var id = builder.Key;
                     var info = _joinPoints[joinPoint][id];
-                    plan.AddJoinPoint(joinPoint, id, advice, info.Sequence, info.ParameterFlag);
+                    plan.AddJoinPoint(joinPoint, id, advice, info.Sequence, info.ParameterFlag, aspect.SwitchStatus);
                 }
             }
-            return plan.ToReadOnly();
+            return plan.Convert();
         }
 
         public IPropertyWeavingPlan BuildPlan(IProperty property)
@@ -108,7 +108,7 @@ namespace CrossCutterN.Weaver.Batch
                     var advice = jp.Value;
                     var id = builder.Key;
                     var info = _joinPoints[joinPoint][id];
-                    getterPlan.AddJoinPoint(joinPoint, id, advice, info.Sequence, info.ParameterFlag);
+                    getterPlan.AddJoinPoint(joinPoint, id, advice, info.Sequence, info.ParameterFlag, aspect.GetterAspect.SwitchStatus);
                 }
                 foreach (var jp in aspect.SetterAspect.PointCut)
                 {
@@ -116,13 +116,13 @@ namespace CrossCutterN.Weaver.Batch
                     var advice = jp.Value;
                     var id = builder.Key;
                     var info = _joinPoints[joinPoint][id];
-                    setterPlan.AddJoinPoint(joinPoint, id, advice, info.Sequence, info.ParameterFlag);
+                    setterPlan.AddJoinPoint(joinPoint, id, advice, info.Sequence, info.ParameterFlag, aspect.SetterAspect.SwitchStatus);
                 }
             }
-            return BatchFactory.InitializePropertyWeavingPlan(getterPlan.ToReadOnly(), setterPlan.ToReadOnly());
+            return BatchFactory.InitializePropertyWeavingPlan(getterPlan.Convert(), setterPlan.Convert());
         }
 
-        public IWeavingBatch ToReadOnly()
+        public IWeavingBatch Convert()
         {
             if(!_builders.Any())
             {

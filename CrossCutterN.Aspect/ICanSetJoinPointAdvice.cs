@@ -8,7 +8,7 @@ namespace CrossCutterN.Aspect
     using System.Reflection;
     using Advice.Common;
 
-    public interface ICanSetJoinPointAdvice : ICanConvertToReadOnly<IAspect>
+    public interface ICanSetJoinPointAdvice : ICanConvert<IAspect>
     {
         void SetJoinPointAdvice(JoinPoint joinPoint, MethodInfo advice);
     }

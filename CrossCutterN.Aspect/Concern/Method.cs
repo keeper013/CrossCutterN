@@ -132,7 +132,7 @@ namespace CrossCutterN.Aspect.Concern
             return _parameters.Has(name);
         }
 
-        public IMethod ToReadOnly()
+        public IMethod Convert()
         {
             _readOnly.Apply();
             return this;

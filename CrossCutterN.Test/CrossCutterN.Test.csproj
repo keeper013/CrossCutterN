@@ -73,6 +73,9 @@
     <Compile Include="ParameterTest\ParameterTest.cs" />
     <Compile Include="ParameterTest\ParameterTestTarget.cs" />
     <Compile Include="ParameterTest\ParameterTestAdvice.cs" />
+    <Compile Include="SwitchTest\SwitchTest.cs" />
+    <Compile Include="SwitchTest\SwitchTestAdvice.cs" />
+    <Compile Include="SwitchTest\SwitchTestTarget.cs" />
     <Compile Include="Utilities\MethodAdviceContainer.cs" />
     <Compile Include="Utilities\MethodAdviceRecord.cs" />
     <Compile Include="OptionsTest\OptionsTest.cs" />
@@ -132,13 +135,13 @@
       <ToBeCleanedFiles Include="$(TargetDir)CrossCutterN.Command.exe;$(TargetDir)CrossCutterN.Weaver.dll;$(TargetDir)CrossCutterN.Aspect.dll;$(TargetDir)Mono.Cecil.dll;$(TargetDir)Mono.Cecil.Pdb.dll;$(TargetDir)CrossCutterN.Command.exe.config;$(TargetPath)" />
     </ItemGroup>
     <Copy SourceFiles="@(CommandFiles)" DestinationFolder="$(TargetDir)" />
-	<Exec Condition=" '$(OS)' == 'Unix' " Command="chmod a+x $(TargetDir)CrossCutterN.Command.exe"/>
-	<Exec Condition=" '$(OS)' == 'Unix' " Command="mono $(TargetDir)CrossCutterN.Command.exe $(TargetDir)CrossCutterN.Test.dll $(TargetDir)CrossCutterN.Test.dll_temp" />
-	<Exec Condition=" '$(OS)' != 'Unix' " Command="$(TargetDir)CrossCutterN.Command.exe $(TargetPath) $(TargetPath)_temp Y" />
+    <Exec Condition=" '$(OS)' == 'Unix' " Command="chmod a+x $(TargetDir)CrossCutterN.Command.exe" />
+    <Exec Condition=" '$(OS)' == 'Unix' " Command="mono $(TargetDir)CrossCutterN.Command.exe $(TargetDir)CrossCutterN.Test.dll $(TargetDir)CrossCutterN.Test.dll_temp" />
+    <Exec Condition=" '$(OS)' != 'Unix' " Command="$(TargetDir)CrossCutterN.Command.exe $(TargetPath) $(TargetPath)_temp Y" />
     <Delete Files="@(ToBeCleanedFiles)" ContinueOnError="true" />
-	<Copy Condition=" '$(OS)' == 'Unix' " SourceFiles="$(TargetDir)CrossCutterN.Test.dll_temp" DestinationFiles="$(TargetDir)CrossCutterN.Test.dll" />
-	<Delete Condition=" '$(OS)' == 'Unix' " Files="$(TargetDir)CrossCutterN.Test.dll_temp" ContinueOnError="true" />
+    <Copy Condition=" '$(OS)' == 'Unix' " SourceFiles="$(TargetDir)CrossCutterN.Test.dll_temp" DestinationFiles="$(TargetDir)CrossCutterN.Test.dll" />
+    <Delete Condition=" '$(OS)' == 'Unix' " Files="$(TargetDir)CrossCutterN.Test.dll_temp" ContinueOnError="true" />
     <Copy Condition=" '$(OS)' != 'Unix' " SourceFiles="$(TargetPath)_temp" DestinationFiles="$(TargetPath)" />
-	<Delete Condition=" '$(OS)' != 'Unix' " Files="$(TargetPath)_temp" ContinueOnError="true" />
+    <Delete Condition=" '$(OS)' != 'Unix' " Files="$(TargetPath)_temp" ContinueOnError="true" />
   </Target>
 </Project>

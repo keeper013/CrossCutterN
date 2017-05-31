@@ -42,9 +42,10 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Builder\AspectBuilderFactory.cs" />
-    <Compile Include="Builder\AspectBuilderWithDefaultOptions.cs" />
+    <Compile Include="Builder\SwitchableAspectBuilderWithDefaultOptions.cs" />
     <Compile Include="Builder\ConcernAttributeAspectBuilder.cs" />
     <Compile Include="Builder\IAspectBuilder.cs" />
+    <Compile Include="Builder\ISwitchableAspectBuilder.cs" />
     <Compile Include="Builder\IWriteOnlyAspectBuilder.cs" />
     <Compile Include="Builder\IWriteOnlyConcernAttributeAspectBuilder.cs" />
     <Compile Include="Builder\IWriteOnlyJoinPointDefaultOptions.cs" />
@@ -84,6 +85,9 @@
     <Compile Include="Configuration\NameExpressionAspectBuilderElement.cs" />
     <Compile Include="Configuration\NameExpressionCollection.cs" />
     <Compile Include="Configuration\NameExpressionElement.cs" />
+    <Compile Include="Configuration\SwitchableAspectBuilderElement.cs" />
+    <Compile Include="Configuration\SwitchElement.cs" />
+    <Compile Include="SwitchStatus.cs" />
     <Compile Include="IAspect.cs" />
     <Compile Include="Aspect.cs" />
     <Compile Include="AspectFactory.cs" />
