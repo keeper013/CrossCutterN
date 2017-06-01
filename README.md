@@ -2,181 +2,228 @@
 
 [![Build Status](https://travis-ci.org/keeper013/CrossCutterN.svg?branch=master)](https://travis-ci.org/keeper013/CrossCutterN)
 
-_CrossCutterN_ is designed to allow .NET developers to inject customized AOP code into existing assemblies without the need of re-compilation of them. It allows to inject customized AOP code at the point of **entry**, **exception** and **exit** of **methods** and **property getters and setters** via **custom attributes** and **name matching**.
+**_CrossCutterN_** is a free and lightweight AOP tool for .NET using IL weaving technology. It allows developers to inject custom AOP code into methods/properties of classes via custom attributes and method/property names, and switch on/off injected aspects at runtime. It is totally free, and is able to relieve projects from compile time dependencies on AOP code.
 
 ## Quick Examples
 
 :exclamation: In the examples, this article assumes that readers have cloned this project into there own environment and are able to compile and run the project binaries.
 
-### AOP via Custom Attribute
-
-For projects under development, AOP via custom attribute is a good way to inject customized AOP codes.
+### AOP Code Injection
 
 The following C# code (The code piece can be found in _CrossCutterN.SampleTarget_ project):
 
 ```C#
-class Target
+namespace CrossCutterN.SampleTarget
 {
-    [SampleConcernMethod]
-    public static int Add1(int x, int y)
-    {
-    	Console.Out.WriteLine("Inside Add1, starting");
-    	var z = x + y;
-        Console.Out.WriteLine("Inside Add1, ending");
-        return z;
-    }
-}
+    using System;
+    using SampleAdvice;
 
-class Program
-{
-    static void Main(string[] args)
+    class Target
     {
-    	Target.Add1(1, 2);
+        public static int Add(int x, int y)
+        {
+            Console.Out.WriteLine("Add starting");
+            var z = x + y;
+            Console.Out.WriteLine("Add ending");
+            return z;
+        }
+    }
+
+    class Program
+    {
+        static void Main(string[] args)
+        {
+            //CrossCutterN.Advice.Switch.SwitchFacade.Controller.SwitchOn(
+            //  "AspectInjectedByAttributeExample");
+            Target.Add(1, 2);
+        }
     }
 }
 ```
 
 Outputs:
 
-```
-Inside Add1, starting
-Inside Add1, ending
+```batchfile
+Add starting
+Add ending
 ```
 
-To inject the following AOP code into Add1 method (The code piece can be found in _CrossCutterN.SampleAdvice_ project):
+To output method name and parameter values upon method entry and return value upon method exit for Add function, _CrossCutterN_ tool have 2 ways to achieve the goal.
+
+First of all, some AOP code is to be implemented to output the necessary information. Here for demonstration purpose, a very simple AOP code implementation is provided in project _CrossCuttern.SampleAdvice_:
 
 ```C#
-public sealed class SampleConcernMethodAttribute : MethodConcernAttribute
+namespace CrossCutterN.SampleAdvice
 {
-}
-    
-public static class Advices
-{
-    public static void OnEntry(IExecution execution)
+    using System;
+    using System.Text;
+    using Advice.Parameter;
+    using Advice.Concern;
+
+    public sealed class SampleConcernMethodAttribute : MethodConcernAttribute
     {
-    	var strb = new StringBuilder(execution.Name);
-        strb.Append("(");
-        if (execution.Parameters.Count > 0)
-        {
-            foreach (var parameter in execution.Parameters)
-            {
-            	strb.Append(parameter.Name).Append("=").Append(parameter.Value).Append(",");
-            }
-            strb.Remove(strb.Length - 1, 1);
-        }
-        strb.Append(")");
-        Console.Out.WriteLine("Entry at {0}: {1}", DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss.fff tt"), strb.ToString());
     }
 
-    public static void OnExit(IReturn rReturn)
+    public static class Advices
     {
-    	if (rReturn.HasReturn)
-    	{
-            Console.Out.WriteLine("Exit at {0}: returns {1}", DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss.fff tt"), rReturn.Value);
-        }
-        else
+        public static void InjectByAttributeOnEntry(IExecution execution)
         {
-            Console.Out.WriteLine("Exit at {0}: no return", DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss.fff tt"));
+            Console.Out.WriteLine("{0} Injected by attribute on entry: {1}", 
+                DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss.fff tt"), GetMethodInfo(execution));
+        }
+
+        public static void InjectByAttributeOnExit(IReturn rReturn)
+        {
+            Console.Out.WriteLine("{0} Injected by attribute on exit: {1}", 
+                DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss.fff tt"), GetReturnInfo(rReturn));
+        }
+
+        public static void InjectByMethodNameOnEntry(IExecution execution)
+        {
+            Console.Out.WriteLine("{0} Injected by method name on entry: {1}", 
+                DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss.fff tt"), GetMethodInfo(execution));
+        }
+
+        public static void InjectByMethodNameOnExit(IReturn rReturn)
+        {
+            Console.Out.WriteLine("{0} Injected by method name on exit: {1}", 
+                DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss.fff tt"), GetReturnInfo(rReturn));
+        }
+
+        private static string GetMethodInfo(IExecution execution)
+        {
+            var strb = new StringBuilder(execution.Name);
+            strb.Append("(");
+            if (execution.Parameters.Count > 0)
+            {
+                foreach (var parameter in execution.Parameters)
+                {
+                    strb.Append(parameter.Name).Append("=").Append(parameter.Value).Append(",");
+                }
+                strb.Remove(strb.Length - 1, 1);
+            }
+            strb.Append(")");
+            return strb.ToString();
+        }
+
+        private static string GetReturnInfo(IReturn rReturn)
+        {
+            return rReturn.HasReturn ? string.Format("returns {0}", rReturn.Value) : "no return";
         }
     }
 }
 ```
-Now if the reader follow the steps below:
-1. Compile the whole project (Here we assume Debug configuration is used).
-2. Copy _CrossCutterN.SampleAdvice/bin/Debug/CrossCutterN.SampleAdvice.dll_ to _CrossCutterN.Command/bin/Debug/_.
-3. Copy _CrossCutterN.SampleTarget/CrossCutterN.Command.exe.config_ to _CrossCutterN.Command/bin/Debug_, overwrite existing file with the same name, the relevant content in the configuration file for this injection is as below:
+
+Note that 4 public static methods are implemented, _InjectByAttributeOnEntry_ and _InjectByAttributeOnExit_ methods will be injected via _SampleConcernMethodAttribute_ defined together; _InjectByMethodNameOnEntry_ and _InjectByMethodNameOnExit_ methods will be injected by the method name "Add".
+
+**_CrossCutterN_** tool assumes that AOP code assemblies should reference _CrossCutterN.Advice.dll_ assembly to correctly support the injection behavior. IExecution, IReturn and other necessary and supportive interfaces and implementations are defined in CrossCutterN.Advice.dll assembly. This assembly should be copied over together with AOP code assembly to work together with injected assemblies.
+
+**_CrossCutterN_** tool utilizes a console application project _CrossCutterN.Command_ to do the AOP code injection. Before executing it, it's configuration file CrossCutterN.Command.exe.config must be properly set up for the AOP code injection process (In sample program it's already prepared in CrossCutterN.Command directory):
+
+The content of _CrossCutterN.Command.exe.config_ is like the following:
 
 ```xml
-<concernAttributeAspectBuilders>
-    <add id="Builder1">
-        <factoryMethod type="CrossCutterN.Aspect.Builder.AspectBuilderFactory, CrossCutterN.Aspect"
-                       method="InitializeConcernAttributeAspectBuilder"
-                       methodConcernAttribute="CrossCutterN.SampleAdvice.SampleConcernMethodAttribute, CrossCutterN.SampleAdvice"/>
+<?xml version="1.0" encoding="utf-8" ?>
+<configuration>
+  <configSections>
+    <section name="crossCutterN" type="CrossCutterN.Command.Configuration.CrossCutterNSection, CrossCutterN.Command" allowLocation="true" allowDefinition="Everywhere" />
+  </configSections>
+  <crossCutterN>
+    <concernAttributeAspectBuilders>
+      <add id="AspectInjectedByAttributeExample">
+        <factoryMethod type="CrossCutterN.Aspect.Builder.AspectBuilderFactory, CrossCutterN.Aspect" method="InitializeConcernAttributeAspectBuilder" methodConcernAttribute="CrossCutterN.SampleAdvice.SampleConcernMethodAttribute, CrossCutterN.SampleAdvice"/>
         <pointcut>
-            <add joinPoint="Entry" sequence="1"
-		 classType="CrossCutterN.SampleAdvice.Advices, CrossCutterN.SampleAdvice" method="OnEntry" parameterPattern="Execution"/>
-	    <add joinPoint="Exit" sequence="1"
-                 classType="CrossCutterN.SampleAdvice.Advices, CrossCutterN.SampleAdvice" method="OnExit" parameterPattern="Return"/>
-	</pointcut>
-    </add>
-</concernAttributeAspectBuilders>
+          <add joinPoint="Entry" sequence="1" classType="CrossCutterN.SampleAdvice.Advices, CrossCutterN.SampleAdvice" method="InjectByAttributeOnEntry" parameterPattern="Execution"/>
+          <add joinPoint="Exit" sequence="2" classType="CrossCutterN.SampleAdvice.Advices, CrossCutterN.SampleAdvice" method="InjectByAttributeOnExit" parameterPattern="Return"/>
+        </pointcut>
+        <!--<switch status="Off"/>-->
+      </add>
+    </concernAttributeAspectBuilders>
+    <nameExpressionAspectBuilders>
+      <add id="AspectInjectedByMethodNameExample">
+        <factoryMethod type="CrossCutterN.Aspect.Builder.AspectBuilderFactory, CrossCutterN.Aspect" method="InitializeNameExpressionAspectBuilder">
+          <includes>
+            <add expression="CrossCutterN.SampleTarget.Target.Ad*"/>
+          </includes>
+        </factoryMethod>
+        <pointcut>
+          <add joinPoint="Entry" sequence="2" classType="CrossCutterN.SampleAdvice.Advices, CrossCutterN.SampleAdvice" method="InjectByMethodNameOnEntry" parameterPattern="Execution"/>
+          <add joinPoint="Exit" sequence="1" classType="CrossCutterN.SampleAdvice.Advices, CrossCutterN.SampleAdvice" method="InjectByMethodNameOnExit" parameterPattern="Return"/>
+        </pointcut>
+      </add>
+    </nameExpressionAspectBuilders>
+  </crossCutterN>
+  <startup>
+    <supportedRuntime version="v4.0" sku=".NETFramework,Version=v4.5.2" />
+  </startup>
+</configuration>
 ```
-4. In Windows Command Prompt, navigate to _CrossCutterN.Command/bin/Debug/_ directory, and execute the following command to load _CrossCutterN.SampleTarget.exe_ assembly, inject it with AOP code above, and output a new assembly named _CrossCutterN.SampleTarget_Weaved.exe_:
+In the above configuration:
+
+One aspect builder with id "**AspectInjectedByAttributeExample**" is added to **concernAttributeAspectBuilders** collection. According to the value of it's configuration property **methodConcernAttribute**, any method (property getter and setter as well) marked by the attribute class it's value represents will be injected upon entry and exit with the AOP methods defined in its Pointcut collection. To apply this aspect builder to Add method, apply **[SampleConcernMethod]** attribute to it defined in _CrossCutterN.SampleTarget.Target_ class.
+
+Similarly, one aspect builder with id "**AspectInjectedByMethodNameExample**" is added to **nameExpressionAspectBuilders** collection, according to the setting of which, any method whose full name matches "**CrossCutterN.SampleTarget.Target.Ad\***" will be injected upon entry and exit with the AOP methods defined in its **Pointcut** collection.
+
+Compile the whole project using release build, then in windows command prompt, nevigate to path _CrossCutterN/CrossCutterN.Command/bin/Release_ and execute the following commands:
 
 ```batchfile
-CrossCutterN.Command.exe ../../../CrossCutterN.SampleTarget/bin/Debug/CrossCutterN.SampleTarget.exe ../../../CrossCutterN.SampleTarget/bin/Debug/CrossCutterN.SampleTarget_Weaved.exe
-```
-5. The execution should be successful, a log file of weaving statistics should be generated under _CrossCutterN.Command/bin/Debug/ directory_.
-6. Nevigate to _CrossCutterN.SampleTarget/bin/Debug/_ directory, _CrossCutterN.SampleTarget_Weaved.exe_ should be generated there already.
-7. Execute _CrossCutterN.SampleTarget_Weaved.exe_, something like the following result suggests that OnEntry and OnExit methods have been injected into _CrossCutterN.SampleTarget_ assembly.
-```
-Entry at 2017-05-16 07:51:24.332 PM: Add1(x=1,y=2)
-Inside Add1, starting
-Inside Add1, ending
-Exit at 2017-05-16 07:51:24.332 PM: returns 3
-```
-In the above example, the configuration section tells _CrossCutter.Command.exe_ tool to inject OnEntry and OnExit methods into all methods that has custom attribute _CrossCutterN.SampleAdvice.SampleConcernMethodAttribute_.
-
-### AOP via Name Matching
-
-For assemblies that need AOP injections but can't be re-compiled for certain reasons (like source code unavailable or releasing activity for new versions is limited), this is an effective way to inject AOP codes into these assemblies without the need of re-compilation.
-
-The steps for AOP injection are about the same with the former example, only a little differences of the code and configuration.  
-
-_CrossCutterN.SampleTarget_ code:
-
-```C#
-class Target
-{
-    public static int Add2(int x, int y)
-    {
-    	Console.Out.WriteLine("Inside Add2, starting");
-    	var z = x + y;
-        Console.Out.WriteLine("Inside Add2, ending");
-        return z;
-    }
-}
-
-class Program
-{
-    static void Main(string[] args)
-    {
-    	Target.Add2(1, 2);
-    }
-}
+copy ..\..\..\CrossCutterN.SampleAdvice\bin\Release\CrossCutterN.SampleAdvice.dll .
+copy ..\..\..\CrossCutterN.SampleTarget\bin\Release\CrossCutterN.SampleTarget.exe .
+copy ..\..\..\CrossCutterN.SampleTarget\bin\Release\CrossCutterN.SampleTarget.pdb .
+CrossCutterN.Command.exe CrossCutterN.SampleTarget.exe CrossCutterN.SampleTarget_Weaved.exe Y
 ```
 
-Relevent element in configuration file:
+Note that since we are injecting code implemented in project _CrossCutterN.SampleAdvice_, the _CrossCutterN.SampleAdvice.dll_ assembly must be available in _CrossCutterN.Command.exe_'s search path, most conveniently just copy it to the same directory. The last command tells _CrossCutterN.Command.exe_ command to load _CrossCutterN.SampleTarget.exe_ assembly, inject it with the AOP code according to the content in _CrossCutterN.Command.exe.config_ file (which will be mentioned later), and output the result as assembly _CrossCutterN.SampleTarget_Weaved.exe_. The "Y" parameter means handling pdb file as well, this parameter is optional, and is only applicable when the target pdb file is within the same folder of the assembly being injected, and very useful if the injected assembly needs to be debugged. Note that an injection log file named like "Wave_yyyy_MM_dd_HH_mm_ss_fff.log" should be generated in the same folder which contains the injection summary.
+
+After the last command is successfully executed, try to execute _CrossCutterN.SampleTarget_Weaved.exe_, the extra output than original suggests that AOP code has been injected successfully.
+
+```batchfile
+2017-05-31 10:30:47.581 PM Injected by attribute on entry: Add(x=1,y=2)
+2017-05-31 10:30:47.591 PM Injected by method name on entry: Add(x=1,y=2)
+Add starting
+Add ending
+2017-05-31 10:30:47.591 PM Injected by method name on exit: Add(x=1,y=2)
+2017-05-31 10:30:47.595 PM Injected by attribute on exit: Add(x=1,y=2)
+```
+
+Injection by attribute is designed for development on going projects to allow developers to separate AOP code from business code, and easily apply aspects by attributes.  
+Injection by method name is more designed for built assemblies of which recompile actions are limited or impossible.
+
+### Aspect Switching
+
+To provide operational convenience (e.g. trouble shooting), In case that occationaly some injected aspects need to be turned off for a while and later turned on after problems are solved or when necessary, **_CrossCutterN_** provides runtime aspect switching feature.
+
+Note the commented out line in config file of _CrossCutterN.Command.exe_:
 
 ```xml
-<nameExpressionAspectBuilders>
-    <add id="Builder2">
-	<factoryMethod type="CrossCutterN.Aspect.Builder.AspectBuilderFactory, CrossCutterN.Aspect"
-                       method="InitializeNameExpressionAspectBuilder">
-	    <includes>
-		<add expression="CrossCutterN.SampleTarget.Target.Add2"/>
-	    </includes>
-	</factoryMethod>
-	<pointcut>
-	    <add joinPoint="Entry" sequence="2"
-		 classType="CrossCutterN.SampleAdvice.Advices, CrossCutterN.SampleAdvice" method="OnEntry" parameterPattern="Execution"/>
-	    <add joinPoint="Exit" sequence="2"
-		 classType="CrossCutterN.SampleAdvice.Advices, CrossCutterN.SampleAdvice" method="OnExit" parameterPattern="Return"/>
-	</pointcut>
-    </add>
-</nameExpressionAspectBuilders>
+<!--<switch status="Off"/>-->
 ```
 
-And the result is something like the following when executing _CrossCutterN.SampleTarget_Weaved.exe_:
+Uncomment it, execute the last command (this time it's not necessary to copy over the dll and exe and pdb files if they are there already) to generate _CrossCutterN.SampleTarget_Weaved.exe_ file using the updated configuration. After that execute _CrossCutterN.SampleTarget_Weaved.exe_, the result suggests that injected feature by aspect builder with id "**AspectInjectedByAttributeExample**" is not applied anymore.
 
+```batchfile
+2017-05-31 10:32:39.018 PM Injected by method name on entry: Add(x=1,y=2)
+Add starting
+Add ending
+2017-05-31 10:32:39.034 PM Injected by method name on exit: Add(x=1,y=2)
 ```
-Entry at 2017-05-16 09:13:15.218 PM: Add2(x=1,y=2)
-Inside Add2, starting
-Inside Add2, ending
-Exit at 2017-05-16 09:13:15.218 PM: returns 3
+To switch it on at run time, note the commented out lines in Main method of project _CrossCutterN.SampleTarget_:
+
+```C#
+//CrossCutterN.Advice.Switch.SwitchFacade.Controller.SwitchOn(
+//  "AspectInjectedByAttributeExample");
 ```
 
-The configuration tells _CrossCutterN.Command.exe_ tool to inject OnEntry and OnExit methods into all methods that match name "CrossCutterN.SampleTarget.Target.Add2" (For a name without wildcard, of course there can be at most 1 matching, wildcard for name pattern matching will be talked about below).
+Uncomment it, rebuild the project, execute the commands again (No need to copy over _CrossCutterN.SampleAdvice.dll_ if it's there already, it is not updated), and execute _CrossCutterN.SampleTarget_Weaved.exe_, the result suggests that the injected feature by aspect builder with id "**AspectInjectedByAttributeExample**" is switched on.
+
+```batchfile
+2017-05-31 10:36:27.727 PM Injected by attribute on entry: Add(x=1,y=2)
+2017-05-31 10:36:27.742 PM Injected by method name on entry: Add(x=1,y=2)
+Add starting
+Add ending
+2017-05-31 10:36:27.742 PM Injected by method name on exit: Add(x=1,y=2)
+2017-05-31 10:36:27.742 PM Injected by attribute on exit: Add(x=1,y=2)
+```
 
 ## Feature Summary
 
@@ -280,9 +327,16 @@ namespace CrossCutterN.SampleTarget
     {
         public static string SampleMethod(int x, StringBuilder strb)
         {
-	    // The following local variables will only be initialized if needed for injected advices
+	    // these switches are for switching aspects on and off
+            // assume aspects 2, 4, 6 and 7 are switchable
+            bool switch2 = <pre-initialized value>;
+            bool switch4 = <pre-initialized value>;
+            bool switch6 = <pre-initialized value>;
+            bool switch7 = <pre-initialized value>;
+            // The following local variables will only be initialized if needed for injected advices
             string returnValue = null;
             var executionContext = CrossCutterN.Advice.Parameter.ParameterFactory.InitializeExecutionContext();
+            // executionParameter local variable is not switchable because EntryAdvice1 advice needs it which is in an not switchable aspect
             var executionParameter = CrossCutterN.Advice.Parameter.ParameterFactory.InitializeExecution(
                 "CrossCutterN.SampleTarget, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null", 
                 "CrossCutterN.SampleTarget", 
@@ -292,16 +346,26 @@ namespace CrossCutterN.SampleTarget
                 "SampleMethod", 
                 "System.String");
             executionParameter.AddParameter(
-                CrossCutterN.Advice.Parameter.ParameterFactory.InitializeParameter("x", "System.Int32", 0, x).ToReadOnly());
+                CrossCutterN.Advice.Parameter.ParameterFactory.InitializeParameter("x", "System.Int32", 0, x).Convert());
             executionParameter.AddParameter(
-                CrossCutterN.Advice.Parameter.ParameterFactory.InitializeParameter("strb", "System.Text.StringBuilder", 1, strb).ToReadOnly());
-            var execution = executionParameter.ToReadOnly();
-            var returnParameter = CrossCutterN.Advice.Parameter.ParameterFactory.InitializeReturn(true, "System.String");
+                CrossCutterN.Advice.Parameter.ParameterFactory.InitializeParameter("strb", "System.Text.StringBuilder", 1, strb).Convert());
+            var execution = executionParameter.Convert();
+            // if all switches are switched off, returnParameter may not be necessary to be initialized
+            // this is an optimization done during il weaving process
+            // the same optimization is implemented for execution parameter as well, if all aspects that need it are switchable
+            IWriteOnlyReturn returnParameter;
+            if (switch2 || switch4 || switch6 || switch7)
+            {
+                returnParameter = CrossCutterN.Advice.Parameter.ParameterFactory.InitializeReturn(true, "System.String");
+            }
             try
             {
                 // Injected Entry Advices
                 EntryAdvice1(execution);
-                EntryAdvice2();
+                if (switch2)
+                {
+                    EntryAdvice2();
+                }
                 ...
                 if (strb != null)
                 {
@@ -319,9 +383,15 @@ namespace CrossCutterN.SampleTarget
                 returnParameter.HasReturn = false;
                 // Injected Exception Advices
                 ExceptionAdvice1(execution);
-                ExceptionAdvice2(execution, e);
+                if (switch2)
+                {
+                    ExceptionAdvice2(execution, e);
+                }
                 ExceptionAdvice3(e);
-		ExceptionAdvice4();
+                if (switch4)
+                {
+                    ExceptionAdvice4();
+                }
                 ...
 		// CrossCutterN will rethrow the exception to keep the original behaivor
 		throw;
@@ -332,15 +402,31 @@ namespace CrossCutterN.SampleTarget
                 {
                     returnParameter.Value = returnValue;
                 }
-                var rtn = returnParameter.ToReadOnly();
+                IReturn rtn;
+                if (switch2 || switch4 || switch6 || switch7)
+                {
+                    rtn = returnParameter.Convert();
+                }
                 // Injected Exit Advices
                 ExitAdvice1(execution);
-                ExitAdvice2(rtn);
+                if (switch2)
+                {
+                    ExitAdvice2(rtn);
+                }
                 ExitAdvice3(executionContext.ExceptionThrown);
-                ExitAdvice4(execution, rtn);
+                if (switch4)
+                {
+                    ExitAdvice4(execution, rtn);
+                }
                 ExitAdvice5(execution, executionContext.ExceptionThrown);
-                ExitAdvice6(rtn, executionContext.ExceptionThrown);
-                ExitAdvice7(execution, rtn, executionContext.ExceptionThrown);
+                if (switch6)
+                {
+                    ExitAdvice6(rtn, executionContext.ExceptionThrown);
+                }
+                if (switch7)
+                {
+                    ExitAdvice7(execution, rtn, executionContext.ExceptionThrown);
+                }
 		ExitAdvice8();
                 ...
             }
@@ -457,6 +543,61 @@ AOP code injection via name matching supports including and excluding method/pro
 * if the method/property is matched by one of the excluding patterns, it will not be injected even if it is also matched by one of the including patterns that contains wildcards.
 * if the method/property is matched by one of the including patterns which doesn't contain wildcards, it will be injected, regardless of any other configurations or settings, which is called "Exact match takes priority" rule.
 
+### Aspect Switching
+
+#### Configuration
+
+Currently both **NameExpressionAspectBuilder** and **ConcernAttributeAspectBuilder** support aspect switching, and the configuration elment are the same as in the quick demonstration. There are 3 available values for **status** configuration propety of **switch** element:
+* On: The aspect is switchable, by default turned on
+* Off: The aspect is switchable, by default turned off
+* NotSwitchable: The aspect is not switchable, it will always be executed, can't be turned off/on. This is the default value, if **switch** element is not specified, this value will be taken.
+
+#### Interface
+
+**_CrossCutterN_** allows to switch aspects with methods listed below, all listed method are implemented under interface _CrossCutterN.Advice.Switch.IAdviceSwitch_, which is exposed as static property _Controller_ of static class _CrossCutterN.Advice.Switch.SwitchFacade_
+
+| Method | Description |
+| --- | --- |
+| Switch(Type type) | Switch all aspects applied to all methods and all properties under the class, on=>off, off=>on |
+| Switch(MethodInfo method) | Switch all aspects applied to the method, on=>off, off=>on |
+| Switch(PropertyInfo property) | Switch all aspects applied to getter and setter (if exists) of the property, on=>off, off=>on |
+| Switch(string aspect) | Switch the aspect, on=>off, off=>on |
+| Switch(Type type, string aspect) | Switch the aspect applied to the class, on=>off, off=>on |
+| Switch(MethodInfo method, string aspect) | Switch the aspect applied to the method, on=>off, off=>on |
+| Switch(PropertyInfo property, string aspect) | Switch the aspect applied to getter and setter (if exists) of the property, on=>off, off=>on |
+| SwitchOn(Type type) | Switch on all aspects applied to all methods and all properties under the class |
+| SwitchOn(MethodInfo method) | Switch on all aspects applied to the method |
+| SwitchOn(PropertyInfo property) | Switch on all aspects applied to getter and setter (if exists) of the property |
+| SwitchOn(string aspect) | Switch on the aspect |
+| SwitchOn(Type type, string aspect) | Switch on the aspect applied to the class |
+| SwitchOn(MethodInfo method, string aspect) | Switch on the aspect applied to the method |
+| SwitchOn(PropertyInfo property, string aspect) | Switch on the aspect applied to getter and setter (if exists) of the property |
+| SwitchOff(Type type) | Switch off all aspects applied to all methods and all properties under the class |
+| SwitchOff(MethodInfo method) | Switch off all aspects applied to the method |
+| SwitchOff(PropertyInfo property) | Switch off all aspects applied to getter and setter (if exists) of the property |
+| SwitchOff(string aspect) | Switch off the aspect |
+| SwitchOff(Type type, string aspect) | Switch off the aspect applied to the class |
+| SwitchOff(MethodInfo method, string aspect) | Switch off the aspect applied to the method |
+| SwitchOff(PropertyInfo property, string aspect) | Switch off the aspect applied to getter and setter (if exists) of the property |
+
+Each of the switch operation listed above will overwrite any previous operation results. For example, if there is an aspect build with id "**TestAspectBuilder**", which applied advice to "_Minus_" method of "_TestMath_" class, and the aspect builder by default turns on aspects. Then:
+
+1. Call Switch("TestAspectBuilder"), then the all advices applied by **TestAspectBuilder** will be switched, in this case switched off (because by default the status is turned on, and there are no previous switching operations) including the aspect mentioned in the example
+2. Call SwitchOn(_TestMath_), then all aspects applied to "_TestMath_" class will be turned on, including the aspect mentioned in the example
+3. Assume "_TestProperty_" is a property of class "_TestMath_", calling SwitchOff(_TestProperty_) won't change the aspect switch status mentioned in the example, because it's not relevant
+4. Call Switch(_Minus_), the aspect mentioned in the example will be turned off, because previously it's switch status was switched on
+5. Call SwitchOff(_TestMath_, "TestAspectBuilder"), the aspect mentioned in the example will be turned off again, so the status is still turned off.
+
+Please note that the smallest granularity of aspect switching is aspect applied to a method/property getter/property setter. **_CrossCutterN_** doesn't support switching individual advices in an aspect (e.g. If an aspect builder injects advices on entry and exit to a method, the individual advice on entry can't be switched without switching the on exit advice together).
+
+#### Other Concerns
+
+There is a concern that when a program is executing, there is no way to tell when a specific class is loaded. So what happens if aspects applied to the not loaded classes are switched before they actually get loaded?
+
+The answer is: **_CrossCutterN_** tool will record the switching statuses in case some injected classes haven't been loaded into program, and apply the switching history once the class is loaded. This switching status recording process is optimized so that not each and every switching operation is kept in memory before loading the class, but only the minimum switching statuses are recorded to make sure if loading classes after some switching operation, it behaves the same as if the classes have been loaded before any aspect switching happens.
+
+For multi-threading concern, aspect switching feature is designed for multi-threading use cases, switching operation and switch look up operation (carried out by injected IL) can happen in multiple threads without causing problems of the injected program.
+
 ## Project Structure
 * **_CrossCutterN.Advice_**: Basic support assembly for _CrossCutterN_ tool. Please make sure that this assembly is copied over to the directories where injected assemblies are deployed. It contains pre-defined advice parameters, common supports, base attributes for _ConcernAttributeAspectBuilder_ and so on.
 * **_CrossCutterN.Aspect_**: Contains the definition of the 2 ways of AOP code injection. _CrossCutterN.Command_ tool depends on this assembly. Also, to have customized ways for AOP code injection, this assembly is also the extension point.
@@ -465,6 +606,13 @@ AOP code injection via name matching supports including and excluding method/pro
 * **_CrossCutterN.Test_**: Unit test project for CrossCutterN. AfterBuild target within the project is filled in with msbuild/xbuild scripts to copy _CrossCutterN.Command.exe_ and it's dependencies into output directory of this project, execute it to generate a injected _CrossCutterN.Test.dll_, replace the original _CrossCutterN.Test.dll_ with it, and clean up _CrossCutterN.Command.exe_ and the dependencies from the output directory. So unit test can be carried out directly after build is done, and execution of _CrossCutterN.Command.exe_ is transparent in the build process.
 * **_CrossCutterN.SampleAdvice_**: Sample AOP code for a quick demonstration of the tool.
 * **_CrossCutterN.SampleTarget_**: Sample assembly to be injected for a quick demonstration of the tool.
+
+## Usage Attention
+
+:exclamation: Please don't use this tool to inject the already injected assemblies. Take the assembly _CrossCutterN.SampleTarget_Weaved.exe_ mentioned in the quick demonstration for example, if this assembly is injected again using CrossCutterN tool, there is no guarantee that it still works perfectly. 
+:exclamation: There is no guarantee that CrossCutterN works with any other AOP tools.
+:exclamation: There is no point to do this AOP code injection process using multi-thread style, for developers tend to develop their own tools based on CrossCutterN source code, please be reminded that the AOP code injection part isn't designed for multi-threading at all (why would someone want 2 thread to inject one assembly).
+:exclamation: There is no guarantee that CrossCutterN works with obfuscation tools.
 
 ## Extension
 
