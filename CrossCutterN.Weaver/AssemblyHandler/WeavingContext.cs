@@ -49,6 +49,9 @@ namespace CrossCutterN.Weaver.AssemblyHandler
         public Instruction ReturnParameterStartInstruction { get; set; }
         public int ReturnParameterEndInstructionIndex { get; set; }
         public Instruction ReturnParameterEndInstruction { get; set; }
+        public Instruction ReturnConvertStartInstruction { get; set; }
+        public int ReturnConvertEndInstructionIndex { get; set; }
+        public Instruction ReturnConvertEndInstruction { get; set; }
 
         public IReadOnlyDictionary<FieldReference, int> FieldLocalVariableDictionary
         {
@@ -201,6 +204,9 @@ namespace CrossCutterN.Weaver.AssemblyHandler
             ReturnParameterStartInstruction = null;
             ReturnParameterEndInstruction = null;
             ReturnParameterEndInstructionIndex = -1;
+            ReturnConvertStartInstruction = null;
+            ReturnConvertEndInstructionIndex = -1;
+            ReturnConvertEndInstruction = null;
             _switchFieldVariableDictionary.Clear();
             _executionParameterSwitchable = true;
             _returnParameterSwitchable = true;

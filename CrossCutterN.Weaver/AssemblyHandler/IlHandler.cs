@@ -312,10 +312,15 @@ namespace CrossCutterN.Weaver.AssemblyHandler
             // evaluation stack: bottom
             if (_context.ReturnVariableIndex >= 0)
             {
+                var returnVariableIndex = _context.ReturnVariableIndex;
+                _context.ReturnVariableIndex = _method.Body.Variables.Count;
+                _method.Body.Variables.Add(new VariableDefinition(_context.AdviceReference.Return.ReadOnlyTypeReference));
                 if (_context.ReturnValueVariableIndex >= 0)
                 {
+                    var firstInstruction = _processor.Create(OpCodes.Ldloc, _context.ExecutionContextVariableIndex);
+                    _context.ReturnConvertStartInstruction = firstInstruction;
                     // evaluation stack after the following statement: bottom->IExecutionContext
-                    _instructions.Add(_processor.Create(OpCodes.Ldloc, _context.ExecutionContextVariableIndex));
+                    _instructions.Add(firstInstruction);
                     // evaluation stack after the following statement: bottom-><exception thrown>
                     _instructions.Add(_processor.Create(OpCodes.Callvirt,
                                                         _context.AdviceReference.ExecutionContext
@@ -324,7 +329,7 @@ namespace CrossCutterN.Weaver.AssemblyHandler
                     var ifStartIndex = _instructions.Count;
                     _instructions.Add(null);
                     // evaluation stack after the following statement: bottom->IWriteOnlyReturn
-                    _instructions.Add(_processor.Create(OpCodes.Ldloc, _context.ReturnVariableIndex));
+                    _instructions.Add(_processor.Create(OpCodes.Ldloc, returnVariableIndex));
                     // evaluation stack after the following statement: bottom->IWriteOnlyReturn-><return value>
                     _instructions.Add(_processor.Create(OpCodes.Ldloc, _context.ReturnValueVariableIndex));
                     // insert indirect load instruction
@@ -340,21 +345,22 @@ namespace CrossCutterN.Weaver.AssemblyHandler
                     // evaluation stack after the following statement: bottom
                     _instructions.Add(_processor.Create(OpCodes.Callvirt,
                                                         _context.AdviceReference.Return.ValueSetter));
-                    var ifEndInstruction = _processor.Create(OpCodes.Ldloc, _context.ReturnVariableIndex);
+                    var ifEndInstruction = _processor.Create(OpCodes.Ldloc, returnVariableIndex);
                     _instructions[ifStartIndex] = _processor.Create(OpCodes.Brtrue_S, ifEndInstruction);
                     // evaluation stack after the following statement: bottom->IWriteOnlyReturn
                     _instructions.Add(ifEndInstruction);
                 }
                 else
                 {
+                    var firstInstruction = _processor.Create(OpCodes.Ldloc, returnVariableIndex);
+                    _context.ReturnConvertStartInstruction = firstInstruction;
                     // evaluation stack after the following statement: bottom->IWriteOnlyReturn
-                    _instructions.Add(_processor.Create(OpCodes.Ldloc, _context.ReturnVariableIndex));
+                    _instructions.Add(firstInstruction);
                 }
                 // evaluation stack after the following statement: bottom->IReturn
                 _instructions.Add(_processor.Create(OpCodes.Callvirt, _context.AdviceReference.Return.ConvertMethod));
-                _context.ReturnVariableIndex = _method.Body.Variables.Count;
-                _method.Body.Variables.Add(new VariableDefinition(_context.AdviceReference.Return.ReadOnlyTypeReference));
                 _instructions.Add(_processor.Create(OpCodes.Stloc, _context.ReturnVariableIndex));
+                _context.ReturnConvertEndInstructionIndex = _instructions.Count;
             }
         }
 
@@ -366,6 +372,12 @@ namespace CrossCutterN.Weaver.AssemblyHandler
                 var endFinally = _processor.Create(OpCodes.Endfinally);
                 _instructions.Add(endFinally);
                 FixReturnInstructions();
+                // return variable switching
+                if (_context.ReturnConvertStartInstruction != null)
+                {
+                    _context.ReturnConvertEndInstruction = _instructions[_context.ReturnConvertEndInstructionIndex];
+                    _context.ReturnConvertEndInstructionIndex = -1;
+                }
                 // apply switch from last advice call
                 if (_context.PendingSwitchIndex >= 0)
                 {
@@ -441,6 +453,8 @@ namespace CrossCutterN.Weaver.AssemblyHandler
             {
                 AddLocalVariableSwitch(returnParameterSwitches, _context.ReturnParameterStartInstruction, _context.ReturnParameterEndInstruction);
                 PersistentInstructions(_context.ReturnParameterStartInstruction);
+                AddLocalVariableSwitch(returnParameterSwitches, _context.ReturnConvertStartInstruction, _context.ReturnConvertEndInstruction);
+                PersistentInstructions(_context.ReturnConvertStartInstruction);
             }
         }
 

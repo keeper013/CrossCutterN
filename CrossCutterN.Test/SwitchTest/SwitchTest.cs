@@ -349,9 +349,9 @@ namespace CrossCutterN.Test.SwitchTest
             var value = Advice.Switch.SwitchFacade.Controller.GetSwitchStatus(method, aspect4);
             Assert.IsTrue(value.HasValue);
             Assert.IsTrue(value.Value);
-            //value = Advice.Switch.SwitchFacade.Controller.GetSwitchStatus(getter, aspect5);
-            //Assert.IsTrue(value.HasValue);
-            //Assert.IsFalse(value.Value);
+            value = Advice.Switch.SwitchFacade.Controller.GetSwitchStatus(getter, aspect5);
+            Assert.IsTrue(value.HasValue);
+            Assert.IsFalse(value.Value);
             value = Advice.Switch.SwitchFacade.Controller.GetSwitchStatus(method, aspect5);
             Assert.IsTrue(value.HasValue);
             Assert.IsTrue(value.Value);
@@ -409,6 +409,13 @@ namespace CrossCutterN.Test.SwitchTest
             value = Advice.Switch.SwitchFacade.Controller.GetSwitchStatus(getter, aspect4);
             Assert.IsTrue(value.HasValue);
             Assert.IsFalse(value.Value);
+
+            MethodAdviceContainer.Clear();
+            Advice.Switch.SwitchFacade.Controller.SwitchOff(aspect4);
+            Advice.Switch.SwitchFacade.Controller.SwitchOff(aspect5);
+            SwitchLookUpTestTarget.Test1(1);
+            var content = MethodAdviceContainer.Content;
+            Assert.AreEqual(0, content.Count);
         }
     }
 }

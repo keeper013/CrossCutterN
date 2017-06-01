@@ -50,6 +50,9 @@ namespace CrossCutterN.Weaver.AssemblyHandler
         Instruction ReturnParameterStartInstruction { get; set; }
         int ReturnParameterEndInstructionIndex { get; set; }
         Instruction ReturnParameterEndInstruction { get; set; }
+        Instruction ReturnConvertStartInstruction { get; set; }
+        int ReturnConvertEndInstructionIndex { get; set; }
+        Instruction ReturnConvertEndInstruction { get; set; }
 
         // reset before weaving each method
         void ResetVolatileData();
