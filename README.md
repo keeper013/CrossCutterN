@@ -590,6 +590,14 @@ Each of the switch operation listed above will overwrite any previous operation 
 
 Please note that the smallest granularity of aspect switching is aspect applied to a method/property getter/property setter. **_CrossCutterN_** doesn't support switching individual advices in an aspect (e.g. If an aspect builder injects advices on entry and exit to a method, the individual advice on entry can't be switched without switching the on exit advice together).
 
+IAspectSwitch interface also provides one method for user to check the switch status of one aspect applied on one method/property getter/property setter:
+
+```c#
+bool? GetSwitchStatus(MethodInfo method, string aspect);
+```
+
+True or false return suggests the switch status, if return has no value, it suggests that the switch doesn't exist, maybe the aspect applied isn't switchable, or the aspect is not applied to the method, or the aspect is supposed to be applied to the method, but the class which defines the method isn't loaded yet.
+
 #### Other Concerns
 
 There is a concern that when a program is executing, there is no way to tell when a specific class is loaded. So what happens if aspects applied to the not loaded classes are switched before they actually get loaded?
