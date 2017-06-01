@@ -398,13 +398,13 @@ namespace CrossCutterN.SampleTarget
             }
             finally
             {
-                if (!executionContext.ExceptionThrown)
-                {
-                    returnParameter.Value = returnValue;
-                }
                 IReturn rtn;
                 if (switch2 || switch4 || switch6 || switch7)
                 {
+		    if (!executionContext.ExceptionThrown)
+                    {
+                        returnParameter.Value = returnValue;
+                    }
                     rtn = returnParameter.Convert();
                 }
                 // Injected Exit Advices
