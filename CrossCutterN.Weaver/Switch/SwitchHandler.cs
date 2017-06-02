@@ -12,7 +12,7 @@ namespace CrossCutterN.Weaver.Switch
     using Mono.Cecil;
     using Advice.Common;
 
-    internal class SwitchHandler : ISwitchHandler, IWriteOnlySwitchHandler
+    internal sealed class SwitchHandler : ISwitchHandler, IWriteOnlySwitchHandler
     {
         private static readonly Random Random = new Random();
         private readonly IrreversibleOperation _readOnly = new IrreversibleOperation();

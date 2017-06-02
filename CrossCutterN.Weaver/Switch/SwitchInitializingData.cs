@@ -9,7 +9,7 @@ namespace CrossCutterN.Weaver.Switch
 {
     using Mono.Cecil;
 
-    internal class SwitchInitializingData
+    internal sealed class SwitchInitializingData
     {
         public string Property { get; private set; }
         public string Method { get; private set; }

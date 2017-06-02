@@ -47,9 +47,9 @@ namespace CrossCutterN.Advice.Parameter
             return new AttributeProperty(name, typeName, sequence, value);
         }
 
-        public static IWriteOnlyReturn InitializeReturn(bool hasReturn, string typeName)
+        public static IWriteOnlyReturn InitializeReturn(string typeName)
         {
-            return new Return(hasReturn, typeName);
+            return new Return(typeName);
         }
     }
 }

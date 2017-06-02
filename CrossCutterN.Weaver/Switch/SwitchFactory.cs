@@ -18,5 +18,15 @@ namespace CrossCutterN.Weaver.Switch
         {
             return new SwitchHandler(type, reference);
         }
+
+        public static ISwitchSet InitializeSwitchSet()
+        {
+            return new SwitchSet();
+        }
+
+        public static ISwitchableSection InitializeSwitchableSection()
+        {
+            return new SwitchableSection();
+        }
     }
 }

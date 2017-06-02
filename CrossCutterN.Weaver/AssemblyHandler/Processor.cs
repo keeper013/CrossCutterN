@@ -103,7 +103,7 @@ namespace CrossCutterN.Weaver.AssemblyHandler
                 switchHandler.Property = null;
                 var methodStatistics = StatisticsFactory.InitializeMethodWeavingRecord(method.Name, method.FullName);
                 var ilhandler = WeavingFactory.InitializeIlHandler(method, context);
-                SetLocalParameters(method, ilhandler, plan);
+                SetLocalVariables(method, ilhandler, plan);
                 WeaveEntryJoinPoint(ilhandler, plan.GetAdvices(JoinPoint.Entry), switchHandler, methodStatistics);
                 WeaveExceptionJoinPoint(ilhandler, plan.GetAdvices(JoinPoint.Exception), switchHandler, methodStatistics);
                 WeaveExitJoinPoint(ilhandler, plan.GetAdvices(JoinPoint.Exit), switchHandler, methodStatistics);
@@ -130,7 +130,7 @@ namespace CrossCutterN.Weaver.AssemblyHandler
                 if (!getterPlan.IsEmpty() && getter != null)
                 {
                     var ilhandler = WeavingFactory.InitializeIlHandler(getter, context);
-                    SetLocalParameters(getter, ilhandler, getterPlan);
+                    SetLocalVariables(getter, ilhandler, getterPlan);
                     WeaveEntryJoinPoint(ilhandler, getterPlan.GetAdvices(JoinPoint.Entry), switchHandler, propertyStatistics.GetterContainer);
                     WeaveExceptionJoinPoint(ilhandler, getterPlan.GetAdvices(JoinPoint.Exception), switchHandler, propertyStatistics.GetterContainer);
                     WeaveExitJoinPoint(ilhandler, getterPlan.GetAdvices(JoinPoint.Exit), switchHandler, propertyStatistics.GetterContainer);
@@ -141,7 +141,7 @@ namespace CrossCutterN.Weaver.AssemblyHandler
                 if (!setterPlan.IsEmpty() && setter != null)
                 {
                     var ilhandler = WeavingFactory.InitializeIlHandler(setter, context);
-                    SetLocalParameters(setter, ilhandler, setterPlan);
+                    SetLocalVariables(setter, ilhandler, setterPlan);
                     WeaveEntryJoinPoint(ilhandler, setterPlan.GetAdvices(JoinPoint.Entry), switchHandler, propertyStatistics.SetterContainer);
                     WeaveExceptionJoinPoint(ilhandler, setterPlan.GetAdvices(JoinPoint.Exception), switchHandler, propertyStatistics.SetterContainer);
                     WeaveExitJoinPoint(ilhandler, setterPlan.GetAdvices(JoinPoint.Exit), switchHandler, propertyStatistics.SetterContainer);
@@ -172,29 +172,14 @@ namespace CrossCutterN.Weaver.AssemblyHandler
             }
         }
 
-        private static void SetLocalParameters(MethodDefinition method, IlHandler handler, IWeavingPlan plan)
+        private static void SetLocalVariables(MethodDefinition method, IlHandler handler, IWeavingPlan plan)
         {
-            if (NeedToStoreReturnValueAsLocalVariable(method, plan))
-            {
-                handler.AddReturnValueVariable();
-            }
-            if (NeedExecutionContextParameter(method, plan))
-            {
-                handler.AddExecutionContextVariable();
-            }
-            if (plan.NeedExecutionParameter())
-            {
-                handler.AddExecutionParameter();
-            }
-            if (plan.NeedExceptionParameter())
-            {
-                handler.AddExceptionParameter();
-            }
-            if (plan.NeedReturnParameter())
-            {
-                handler.AddReturnParameter();
-            }
-            handler.FinalizeSetLocalVariableInstructions();
+            var addExecution = plan.NeedExecutionParameter();
+            var addException = plan.NeedExceptionParameter();
+            var addReturn = plan.NeedReturnParameter();
+            var addReturnValue = NeedToStoreReturnValueAsLocalVariable(method, plan);
+            var addExecutionContext = NeedExecutionContextParameter(method, plan);
+            handler.AddLocalVariables(addExecution, addException, addReturn, addReturnValue, addExecutionContext);
         }
 
         private static void WeaveEntryJoinPoint(IlHandler handler, IReadOnlyCollection<IAdviceInfo> advices,
@@ -258,13 +243,12 @@ namespace CrossCutterN.Weaver.AssemblyHandler
 
         private static bool NeedToStoreReturnValueAsLocalVariable(MethodDefinition method, IWeavingPlan plan)
         {
-            return !method.ReturnType.FullName.Equals(typeof(void).FullName) && plan.NeedToStoreReturnValueAsLocalVariable();
+            return !method.IsVoidReturn() && plan.NeedToStoreReturnValueAsLocalVariable();
         }
 
         private static bool NeedExecutionContextParameter(MethodDefinition method, IWeavingPlan plan)
         {
-            return plan.NeedHasException() || 
-                (plan.NeedReturnParameter() && NeedToStoreReturnValueAsLocalVariable(method, plan));
+            return plan.NeedHasException() || (plan.NeedReturnParameter() && !method.IsVoidReturn());
         }
 
         private static bool IsPropertyMethod(this MethodDefinition method)

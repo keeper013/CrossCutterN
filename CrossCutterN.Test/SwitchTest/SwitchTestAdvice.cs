@@ -39,5 +39,45 @@ namespace CrossCutterN.Test.SwitchTest
         {
             MethodAdviceContainer.Add(new MethodAdviceRecord("Exit3", execution, null, rtn, null));
         }
+
+        public static void Exit4(IExecution execution, IReturn rtn, bool hasException)
+        {
+            MethodAdviceContainer.Add(new MethodAdviceRecord("Exit4", execution, null, rtn, hasException));
+        }
+
+        public static void Exit5(bool hasException)
+        {
+            MethodAdviceContainer.Add(new MethodAdviceRecord("Exit5", null, null, null, hasException));
+        }
+
+        public static void Entry6(IExecution execution)
+        {
+            MethodAdviceContainer.Add(new MethodAdviceRecord("Entry6", execution, null, null, null));
+        }
+
+        public static void Exit6(bool hasException)
+        {
+            MethodAdviceContainer.Add(new MethodAdviceRecord("Exit6", null, null, null, hasException));
+        }
+
+        public static void Entry7()
+        {
+            MethodAdviceContainer.Add(new MethodAdviceRecord("Entry7", null, null, null, null));
+        }
+
+        public static void Exit7(IReturn rtn, bool hasException)
+        {
+            MethodAdviceContainer.Add(new MethodAdviceRecord("Exit7", null, null, rtn, hasException));
+        }
+
+        public static void Entry8(IExecution execution)
+        {
+            MethodAdviceContainer.Add(new MethodAdviceRecord("Entry8", execution, null, null, null));
+        }
+
+        public static void Exit8(IExecution execution)
+        {
+            MethodAdviceContainer.Add(new MethodAdviceRecord("Exit8", execution, null, null, null));
+        }
     }
 }

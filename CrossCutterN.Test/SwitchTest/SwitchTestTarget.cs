@@ -92,4 +92,40 @@ namespace CrossCutterN.Test.SwitchTest
 
         public static int Value1 { get; set; }
     }
+
+    internal class SwitchExceptionTestTarget
+    {
+        public static int Test1(int x)
+        {
+            if (x == 2)
+            {
+                throw new Exception();
+            }
+            return x * x;
+        }
+    }
+
+    internal class SwitchNoReturnTestTarget
+    {
+        public static int Test(int x)
+        {
+            return x * x;
+        }
+    }
+
+    internal class SwitchNoExecutionTestTarget
+    {
+        public static int Test(int x)
+        {
+            return x * x;
+        }
+    }
+
+    internal class SwitchOnlyExecutionTestTarget
+    {
+        public static int Test(int x)
+        {
+            return x * x;
+        }
+    }
 }

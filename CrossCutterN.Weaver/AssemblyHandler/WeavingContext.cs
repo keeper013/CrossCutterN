@@ -7,15 +7,15 @@ namespace CrossCutterN.Weaver.AssemblyHandler
 {
     using System;
     using System.Collections.Generic;
-    using System.Linq;
     using System.Reflection;
     using Mono.Cecil;
     using Mono.Cecil.Cil;
     using Advice.Common;
     using Reference;
+    using Switch;
     using Utilities;
 
-    internal class WeavingContext : IWeavingContext
+    internal sealed class WeavingContext : IWeavingContext
     {
         private static readonly FieldReferenceComparer FieldReferenceComparer = new FieldReferenceComparer();
         private readonly IDictionary<string, MethodReference> _methodReferences = new Dictionary<string, MethodReference>();
@@ -23,10 +23,6 @@ namespace CrossCutterN.Weaver.AssemblyHandler
         private readonly ModuleDefinition _module;
         private readonly IAdviceReference _adviceParameterReference;
         private readonly Dictionary<FieldReference, int> _switchFieldVariableDictionary = new Dictionary<FieldReference, int>(FieldReferenceComparer);
-        private bool _executionParameterSwitchable;
-        private readonly HashSet<int> _needExecutionParameterSwitches = new HashSet<int>();
-        private bool _returnParameterSwitchable;
-        private readonly HashSet<int> _needReturnParameterSwitches = new HashSet<int>(); 
 
         public IAdviceReference AdviceReference
         {
@@ -36,36 +32,29 @@ namespace CrossCutterN.Weaver.AssemblyHandler
         public int ExecutionVariableIndex { get; set; }
         public int ExceptionVariableIndex { get; set; }
         public int ExceptionHandlerIndex { get; set; }
+        public int FinallyHandlerIndex { get; set; }
         public int ReturnValueVariableIndex { get; set; }
         public int ReturnVariableIndex { get; set; }
+        public int HasExceptionVariableIndex { get; set; }
 
         public Instruction TryStartInstruction { get; set; }
         public Instruction EndingInstruction { get; set; }
 
         public int PendingSwitchIndex { get; set; }
-        public Instruction ExecutionParameterStartInstruction { get; set; }
-        public int ExecutionParameterEndInstructionIndex { get; set; }
-        public Instruction ExecutionParameterEndInstruction { get; set; }
-        public Instruction ReturnParameterStartInstruction { get; set; }
-        public int ReturnParameterEndInstructionIndex { get; set; }
-        public Instruction ReturnParameterEndInstruction { get; set; }
-        public Instruction ReturnConvertStartInstruction { get; set; }
-        public int ReturnConvertEndInstructionIndex { get; set; }
-        public Instruction ReturnConvertEndInstruction { get; set; }
+
+        public ISwitchSet ExecutionSwitches { get; private set; }
+        public ISwitchSet ReturnSwitches { get; private set; }
+        public ISwitchSet ExecutionContextSwitches { get; private set; }
+        public ISwitchableSection ExecutionVariableSwitchableSection { get; private set; }
+        public ISwitchableSection ReturnVariableSwitchableSection { get; private set; }
+        public ISwitchableSection ReturnFinallySwitchableSection { get; private set; }
+        public ISwitchableSection ExecutionContextVariableSwitchableSection { get; private set; }
+        public ISwitchableSection ExecutionContextExceptionSwitchableSection { get; private set; }
+        public ISwitchableSection ExecutionContextFinallySwitchableSection { get; private set; }
 
         public IReadOnlyDictionary<FieldReference, int> FieldLocalVariableDictionary
         {
             get { return _switchFieldVariableDictionary; }
-        }
-
-        public IReadOnlyList<int> NeedExecutionParameterSwitches
-        {
-            get { return _executionParameterSwitchable ? _needExecutionParameterSwitches.ToList().AsReadOnly() : null; }
-        }
-
-        public IReadOnlyList<int> NeedReturnParameterSwitches
-        {
-            get { return _returnParameterSwitchable ? _needReturnParameterSwitches.ToList().AsReadOnly() : null; }
         }
 
         public WeavingContext(ModuleDefinition module)
@@ -76,6 +65,15 @@ namespace CrossCutterN.Weaver.AssemblyHandler
             }
             _module = module;
             _adviceParameterReference = AdviceReferenceFactory.InitializeAdviceParameterReference(module);
+            ExecutionSwitches = SwitchFactory.InitializeSwitchSet();
+            ReturnSwitches = SwitchFactory.InitializeSwitchSet();
+            ExecutionContextSwitches = SwitchFactory.InitializeSwitchSet();
+            ExecutionVariableSwitchableSection = SwitchFactory.InitializeSwitchableSection();
+            ReturnVariableSwitchableSection = SwitchFactory.InitializeSwitchableSection();
+            ReturnFinallySwitchableSection = SwitchFactory.InitializeSwitchableSection();
+            ExecutionContextVariableSwitchableSection = SwitchFactory.InitializeSwitchableSection();
+            ExecutionContextExceptionSwitchableSection = SwitchFactory.InitializeSwitchableSection();
+            ExecutionContextFinallySwitchableSection = SwitchFactory.InitializeSwitchableSection();
         }
 
         public void AddMethodReference(MethodInfo method)
@@ -163,55 +161,32 @@ namespace CrossCutterN.Weaver.AssemblyHandler
             _switchFieldVariableDictionary.Add(field, variableIndex);
         }
 
-        public bool RegisterNeedExecutionParameterSwitch(int variableIndex)
-        {
-            return _executionParameterSwitchable && _needExecutionParameterSwitches.Add(variableIndex);
-        }
-
-        public void SetExecutionParameterUnSwitchable()
-        {
-            _executionParameterSwitchable = false;
-            _needExecutionParameterSwitches.Clear();
-        }
-
-        public bool RegisterNeedReturnParameterSwitch(int variableIndex)
-        {
-            return _returnParameterSwitchable && _needReturnParameterSwitches.Add(variableIndex);
-        }
-
-        public void SetReturnParameterUnSwitchable()
-        {
-            _returnParameterSwitchable = false;
-            _needReturnParameterSwitches.Clear();
-        }
-
-        public virtual void ResetVolatileData()
+        public void Reset()
         {
             ExecutionContextVariableIndex = -1;
             ExecutionVariableIndex = -1;
             ExceptionVariableIndex = -1;
             ExceptionHandlerIndex = -1;
+            FinallyHandlerIndex = -1;
             ReturnValueVariableIndex = -1;
             ReturnVariableIndex = -1;
+            HasExceptionVariableIndex = -1;
 
             TryStartInstruction = null;
             EndingInstruction = null;
 
-            PendingSwitchIndex = -1;
-            ExecutionParameterStartInstruction = null;
-            ExecutionParameterEndInstruction = null;
-            ExecutionParameterEndInstructionIndex = -1;
-            ReturnParameterStartInstruction = null;
-            ReturnParameterEndInstruction = null;
-            ReturnParameterEndInstructionIndex = -1;
-            ReturnConvertStartInstruction = null;
-            ReturnConvertEndInstructionIndex = -1;
-            ReturnConvertEndInstruction = null;
             _switchFieldVariableDictionary.Clear();
-            _executionParameterSwitchable = true;
-            _returnParameterSwitchable = true;
-            _needExecutionParameterSwitches.Clear();
-            _needReturnParameterSwitches.Clear();
+
+            PendingSwitchIndex = -1;
+            ExecutionSwitches.Reset();
+            ReturnSwitches.Reset();
+            ExecutionContextSwitches.Reset();
+            ExecutionVariableSwitchableSection.Reset();
+            ReturnVariableSwitchableSection.Reset();
+            ReturnFinallySwitchableSection.Reset();
+            ExecutionContextVariableSwitchableSection.Reset();
+            ExecutionContextExceptionSwitchableSection.Reset();
+            ExecutionContextFinallySwitchableSection.Reset();
         }
     }
 }

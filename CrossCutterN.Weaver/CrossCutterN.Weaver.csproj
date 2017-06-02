@@ -61,7 +61,11 @@
     <Compile Include="AssemblyHandler\IlUtilities.cs" />
     <Compile Include="Statistics\ISwitchWeavingRecord.cs" />
     <Compile Include="Statistics\SwitchWeavingRecord.cs" />
-    <Compile Include="Switch\DefinitionUtility.cs" />
+    <Compile Include="Switch\ISwitchableSection.cs" />
+    <Compile Include="Switch\ISwitchSet.cs" />
+    <Compile Include="Switch\SwitchableSection.cs" />
+    <Compile Include="Switch\SwitchSet.cs" />
+    <Compile Include="Utilities\DefinitionUtility.cs" />
     <Compile Include="Switch\ISwitchHandler.cs" />
     <Compile Include="AssemblyHandler\IWeavingContext.cs" />
     <Compile Include="AssemblyHandler\IlHandler.cs" />
@@ -105,6 +109,7 @@
     <Compile Include="Statistics\IPropertyMethodWeavingRecords.cs" />
     <Compile Include="Statistics\PropertyMethodWeavingRecords.cs" />
     <Compile Include="Utilities\AddBuilderByConfiguration.cs" />
+    <Compile Include="Utilities\ICanReset.cs" />
     <Compile Include="Weaver.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Reference\Advice\Parameter\AttributePropertyReference.cs" />

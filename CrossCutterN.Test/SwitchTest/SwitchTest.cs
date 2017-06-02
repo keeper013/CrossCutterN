@@ -6,6 +6,7 @@
 namespace CrossCutterN.Test.SwitchTest
 {
     using System;
+    using System.Collections.Generic;
     using System.Linq;
     using NUnit.Framework;
     using Utilities;
@@ -416,6 +417,143 @@ namespace CrossCutterN.Test.SwitchTest
             SwitchLookUpTestTarget.Test1(1);
             var content = MethodAdviceContainer.Content;
             Assert.AreEqual(0, content.Count);
+        }
+
+        [Test]
+        public void TestSwitchException()
+        {
+            var clazz = typeof (SwitchExceptionTestTarget);
+            const string aspect6 = "NameExpressionSwitch6";
+            const string aspect7 = "NameExpressionSwitch7";
+            Advice.Switch.SwitchFacade.Controller.SwitchOff(clazz, aspect6);
+            IReadOnlyCollection<MethodAdviceRecord> content;
+
+            MethodAdviceContainer.Clear();
+            try
+            {
+                SwitchExceptionTestTarget.Test1(2);
+            }
+            catch (Exception e)
+            {
+                Console.Out.WriteLine(e.Message);
+            }
+            finally
+            {
+                content = MethodAdviceContainer.Content;
+                Assert.AreEqual(1, content.Count);
+                Assert.IsNull(content.ElementAt(0).Return);
+                Assert.IsTrue(content.ElementAt(0).HasException.HasValue && content.ElementAt(0).HasException.Value);
+            }
+
+            MethodAdviceContainer.Clear();
+            Advice.Switch.SwitchFacade.Controller.SwitchOff(clazz, aspect7);
+            Advice.Switch.SwitchFacade.Controller.SwitchOn(clazz, aspect6);
+            SwitchExceptionTestTarget.Test1(1);
+            content = MethodAdviceContainer.Content;
+            Assert.AreEqual(1, content.Count);
+            Assert.IsFalse(content.ElementAt(0).HasException);
+            Assert.IsNotNull(content.ElementAt(0).Return);
+            Assert.IsTrue(content.ElementAt(0).Return.HasReturn);
+            Assert.AreEqual(1, content.ElementAt(0).Return.Value);
+
+            MethodAdviceContainer.Clear();
+            try
+            {
+                SwitchExceptionTestTarget.Test1(2);
+            }
+            catch (Exception e)
+            {
+                Console.Out.WriteLine(e.Message);
+            }
+            finally
+            {
+                content = MethodAdviceContainer.Content;
+                Assert.AreEqual(1, content.Count);
+                Assert.IsNotNull(content.ElementAt(0).Return);
+                Assert.IsTrue(content.ElementAt(0).HasException.HasValue && content.ElementAt(0).HasException.Value);
+                Assert.IsFalse(content.ElementAt(0).Return.HasReturn);
+            }
+
+            MethodAdviceContainer.Clear();
+            Advice.Switch.SwitchFacade.Controller.SwitchOff(clazz, aspect6);
+            Assert.AreEqual(0, content.Count);
+            try
+            {
+                SwitchExceptionTestTarget.Test1(2);
+            }
+            catch (Exception e)
+            {
+                Console.Out.WriteLine(e.Message);
+            }
+            finally
+            {
+                content = MethodAdviceContainer.Content;
+                Assert.AreEqual(0, content.Count);
+            }
+
+            MethodAdviceContainer.Clear();
+            SwitchExceptionTestTarget.Test1(1);
+            content = MethodAdviceContainer.Content;
+            Assert.AreEqual(0, content.Count);
+        }
+
+        [Test]
+        public void TestSwitchNoReturn()
+        {
+            var clazz = typeof(SwitchNoReturnTestTarget);
+            const string aspect8 = "NameExpressionSwitch8";
+            MethodAdviceContainer.Clear();
+            Advice.Switch.SwitchFacade.Controller.SwitchOff(clazz, aspect8);
+            SwitchNoReturnTestTarget.Test(1);
+            var content = MethodAdviceContainer.Content;
+            Assert.AreEqual(0, content.Count);
+            Advice.Switch.SwitchFacade.Controller.SwitchOn(clazz, aspect8);
+            SwitchNoReturnTestTarget.Test(1);
+            content = MethodAdviceContainer.Content;
+            Assert.AreEqual(2, content.Count);
+            Assert.AreEqual("Exit6", content.ElementAt(1).Name);
+            Assert.IsTrue(content.ElementAt(1).HasException.HasValue);
+            Assert.IsFalse(content.ElementAt(1).HasException);
+        }
+
+        [Test]
+        public void TestSwitchNoExecution()
+        {
+            var clazz = typeof(SwitchNoExecutionTestTarget);
+            const string aspect9 = "NameExpressionSwitch9";
+            MethodAdviceContainer.Clear();
+            Advice.Switch.SwitchFacade.Controller.SwitchOff(clazz, aspect9);
+            SwitchNoExecutionTestTarget.Test(1);
+            var content = MethodAdviceContainer.Content;
+            Assert.AreEqual(0, content.Count);
+            Advice.Switch.SwitchFacade.Controller.SwitchOn(clazz, aspect9);
+            SwitchNoExecutionTestTarget.Test(1);
+            content = MethodAdviceContainer.Content;
+            Assert.AreEqual(2, content.Count);
+            Assert.AreEqual("Exit7", content.ElementAt(1).Name);
+            Assert.IsTrue(content.ElementAt(1).HasException.HasValue);
+            Assert.IsFalse(content.ElementAt(1).HasException.Value);
+            Assert.IsNotNull(content.ElementAt(1).Return);
+            Assert.IsTrue(content.ElementAt(1).Return.HasReturn);
+            Assert.AreEqual(1, content.ElementAt(1).Return.Value);
+        }
+
+        [Test]
+        public void TestSwitchOnlyExecution()
+        {
+            var clazz = typeof(SwitchOnlyExecutionTestTarget);
+            const string aspect10 = "NameExpressionSwitch10";
+            MethodAdviceContainer.Clear();
+            Advice.Switch.SwitchFacade.Controller.SwitchOff(clazz, aspect10);
+            SwitchOnlyExecutionTestTarget.Test(1);
+            var content = MethodAdviceContainer.Content;
+            Assert.AreEqual(0, content.Count);
+            Advice.Switch.SwitchFacade.Controller.SwitchOn(clazz, aspect10);
+            SwitchOnlyExecutionTestTarget.Test(1);
+            content = MethodAdviceContainer.Content;
+            Assert.AreEqual(2, content.Count);
+            Assert.AreEqual("Entry8", content.ElementAt(0).Name);
+            Assert.AreEqual("Exit8", content.ElementAt(1).Name);
         }
     }
 }

@@ -3,7 +3,7 @@
  * Author: David Cui
  */
 
-namespace CrossCutterN.Weaver.Switch
+namespace CrossCutterN.Weaver.Utilities
 {
     using System;
     using System.Linq;
@@ -37,7 +37,20 @@ namespace CrossCutterN.Weaver.Switch
 
         public static string GetFullName(this TypeDefinition type)
         {
+            if (type == null)
+            {
+                throw new ArgumentNullException("type");
+            }
             return string.Format("{0}.{1}", type.Namespace, type.Name);
+        }
+
+        public static bool IsVoidReturn(this MethodDefinition method)
+        {
+            if (method == null)
+            {
+                throw new ArgumentNullException("method");
+            }
+            return method.ReturnType.FullName.Equals(typeof (void).FullName);
         }
     }
 }
