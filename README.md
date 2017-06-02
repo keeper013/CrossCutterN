@@ -334,9 +334,7 @@ namespace CrossCutterN.SampleTarget
             bool switch6 = <pre-initialized value>;
             bool switch7 = <pre-initialized value>;
             // The following local variables will only be initialized if needed for injected advices
-            string returnValue = null;
-            var executionContext = CrossCutterN.Advice.Parameter.ParameterFactory.InitializeExecutionContext();
-            // executionParameter local variable is not switchable because EntryAdvice1 advice needs it which is in an not switchable aspect
+	    // executionParameter local variable is not switchable because EntryAdvice1 advice needs it which is in an not switchable aspect
             var executionParameter = CrossCutterN.Advice.Parameter.ParameterFactory.InitializeExecution(
                 "CrossCutterN.SampleTarget, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null", 
                 "CrossCutterN.SampleTarget", 
@@ -350,7 +348,7 @@ namespace CrossCutterN.SampleTarget
             executionParameter.AddParameter(
                 CrossCutterN.Advice.Parameter.ParameterFactory.InitializeParameter("strb", "System.Text.StringBuilder", 1, strb).Convert());
             var execution = executionParameter.Convert();
-            // if all switches are switched off, returnParameter may not be necessary to be initialized
+	    // if all switches are switched off, returnParameter may not be necessary to be initialized
             // this is an optimization done during il weaving process
             // the same optimization is implemented for execution parameter as well, if all aspects that need it are switchable
             IWriteOnlyReturn returnParameter;
@@ -358,6 +356,9 @@ namespace CrossCutterN.SampleTarget
             {
                 returnParameter = CrossCutterN.Advice.Parameter.ParameterFactory.InitializeReturn(true, "System.String");
             }
+            string returnValue = null;
+	    // there are advices that need hasException parameter that aren't switchable, so this local variable is not switchable, or else is will be
+            var executionContext = CrossCutterN.Advice.Parameter.ParameterFactory.InitializeExecutionContext();
             try
             {
                 // Injected Entry Advices
@@ -379,8 +380,8 @@ namespace CrossCutterN.SampleTarget
             }
             catch (Exception e)
             {
+	        // again, this statement is switchable if all advices that need IReturn and all advices that need hasException are switchable
                 executionContext.MarkExceptionThrown();
-                returnParameter.HasReturn = false;
                 // Injected Exception Advices
                 ExceptionAdvice1(execution);
                 if (switch2)
@@ -398,10 +399,14 @@ namespace CrossCutterN.SampleTarget
             }
             finally
             {
+	    	// again, this statement is switchable if all advices that need IReturn and all advices that need hasException are switchable
+	    	var hasException = executionContext.ExceptionThrown;
                 IReturn rtn;
+		// here is an example of switching off operation of a added local variable if all relevant advices are switched off
                 if (switch2 || switch4 || switch6 || switch7)
                 {
-		    if (!executionContext.ExceptionThrown)
+		    returnParameter.HasReturn = !hasException;
+		    if (!hasException)
                     {
                         returnParameter.Value = returnValue;
                     }
