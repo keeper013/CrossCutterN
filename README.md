@@ -622,9 +622,12 @@ For multi-threading concern, aspect switching feature is designed for multi-thre
 
 ## Usage Attention
 
-:exclamation: Please don't use this tool to inject the already injected assemblies. Take the assembly _CrossCutterN.SampleTarget_Weaved.exe_ mentioned in the quick demonstration for example, if this assembly is injected again using CrossCutterN tool, there is no guarantee that it still works perfectly. 
-:exclamation: There is no guarantee that CrossCutterN works with any other AOP tools.
-:exclamation: There is no point to do this AOP code injection process using multi-thread style, for developers tend to develop their own tools based on CrossCutterN source code, please be reminded that the AOP code injection part isn't designed for multi-threading at all (why would someone want 2 thread to inject one assembly).
+:exclamation: Please don't use this tool to inject the already injected assemblies. Take the assembly _CrossCutterN.SampleTarget_Weaved.exe_ mentioned in the quick demonstration for example, if this assembly is injected again using CrossCutterN tool, there is no guarantee that it still works perfectly.  
+
+:exclamation: There is no guarantee that CrossCutterN works with any other AOP tools.  
+
+:exclamation: There is no point to do this AOP code injection process using multi-thread style, for developers tend to develop their own tools based on CrossCutterN source code, please be reminded that the AOP code injection part isn't designed for multi-threading at all (why would someone want 2 thread to inject one assembly).  
+
 :exclamation: There is no guarantee that CrossCutterN works with obfuscation tools.
 
 ## Extension
