@@ -255,30 +255,45 @@ _CrossCutterN_ allows to inject AOP code at 3 points of methods/property getters
 | Parameter List Pattern | Configuration Value |
 | --- | --- |
 | () | Empty |
+| (CrossCutterN.Advice.Parameter.IExecutionContext) | Context |
 | (CrossCutterN.Advice.Parameter.IExecution) | Execution |
+| (CrossCutterN.Advice.Parameter.IExecutionContext, CrossCutterN.Advice.Parameter.IExecution) | ContextExecution |
 
 #### Exception
 
 | Parameter List Pattern | Configuration Value |
 | --- | --- |
 | () | Empty |
+| (CrossCutterN.Advice.Parameter.IExecutionContext) | Context |
 | (CrossCutterN.Advice.Parameter.IExecution) | Execution |
 | (System.Exception) | Exception |
+| (CrossCutterN.Advice.Parameter.IExecutionContext, CrossCutterN.Advice.Parameter.IExecution) | ContextExecution |
+| (CrossCutterN.Advice.Parameter.IExecutionContext, System.Exception) | ContextException |
 | (CrossCutterN.Advice.Parameter.IExecution, System.Exception) | ExecutionException |
+| (CrossCutterN.Advice.Parameter.IExecutionContext, CrossCutterN.Advice.Parameter.IExecution, System.Exception) | ContextExecutionException |
 
 #### Exit
 
 | Parameter List Pattern | Configuration Value |
 | --- | --- |
 | () | Empty |
+| (CrossCutterN.Advice.Parameter.IExecutionContext) | Context |
 | (CrossCutterN.Advice.Parameter.IExecution) | Execution |
 | (CrossCutterN.Advice.Parameter.IReturn) | Return |
 | (bool) | HasException |
+| (CrossCutterN.Advice.Parameter.IExecutionContext, CrossCutterN.Advice.Parameter.IExecution) | ContextExecution |
+| (CrossCutterN.Advice.Parameter.IExecutionContext, CrossCutterN.Advice.Parameter.IReturn) | ContextReturn |
+| (CrossCutterN.Advice.Parameter.IExecutionContext, bool) | ContextHasException |
 | (CrossCutterN.Advice.Parameter.IExecution, CrossCutterN.Advice.Parameter.IReturn) | ExecutionReturn |
 | (CrossCutterN.Advice.Parameter.IExecution, bool) | ExecutionHasException |
 | (CrossCutterN.Advice.Parameter.IReturn, bool) | ReturnHasException |
+| (CrossCutterN.Advice.Parameter.IExecutionContext, CrossCutterN.Advice.Parameter.IExecution, CrossCutterN.Advice.Parameter.IReturn) | ContextExecutionReturn |
+| (CrossCutterN.Advice.Parameter.IExecutionContext, CrossCutterN.Advice.Parameter.IExecution, bool) | ContextExecutionHasException |
+| (CrossCutterN.Advice.Parameter.IExecutionContext, CrossCutterN.Advice.Parameter.IReturn, bool) | ContextReturnHasException |
 | (CrossCutterN.Advice.Parameter.IExecution, CrossCutterN.Advice.Parameter.IReturn, bool) | ExecutionReturnHasException |
+| (CrossCutterN.Advice.Parameter.IExecutionContext, CrossCutterN.Advice.Parameter.IExecution, CrossCutterN.Advice.Parameter.IReturn, bool) | ContextExecutionReturnHasException |
 
+* _CrossCutterN.Advice.Parameter.IExecutionContext_ parameter is for passing objects among advice methods, it has Get, Set, Remove and Exist method for retrieving, storing, rmoving and looking up for objects that are supposed to be passed among entry, exception or exit advices with object keys.
 * _CrossCutterN.Advice.Parameter.IExecution_ parameter contains information of the injected method/property, which includes assembly name, module name, class name, method name, parameter list (which includes name, type and value for each parameter)
 * _System.Exception_ parameter for exception join point is the uncaught exception thrown during execution of the method/property injected  
 * _CrossCutterN.Advice.Parameter.IReturn_ parameter contains return value information of the execution, which includes if has return value (in case of exception thrown uncaught or return type if "void" there will be no return value), return value type and return value itself.
@@ -334,6 +349,8 @@ namespace CrossCutterN.SampleTarget
             bool switch6 = <pre-initialized value>;
             bool switch7 = <pre-initialized value>;
             // The following local variables will only be initialized if needed for injected advices
+	    // execution context is for passing object among advices, not switchable because some advices that needs it are not switchable
+	    var executionContext = CrossCutterN.Advice.Parameter.ParameterFactory.InitializeExecutionContext();
 	    // executionParameter local variable is not switchable because EntryAdvice1 advice needs it which is in an not switchable aspect
             var executionParameter = CrossCutterN.Advice.Parameter.ParameterFactory.InitializeExecution(
                 "CrossCutterN.SampleTarget, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null", 
@@ -358,7 +375,8 @@ namespace CrossCutterN.SampleTarget
             }
             string returnValue = null;
 	    // there are advices that need hasException parameter that aren't switchable, so this local variable is not switchable, or else is will be
-            var executionContext = CrossCutterN.Advice.Parameter.ParameterFactory.InitializeExecutionContext();
+	    // considering hasException is only one bool, switching it consumes more computing resouse, we don't switch this parameter
+            var hasException = false;
             try
             {
                 // Injected Entry Advices
@@ -367,6 +385,8 @@ namespace CrossCutterN.SampleTarget
                 {
                     EntryAdvice2();
                 }
+		EntryAdvice3(executionContext, execution);
+		EntryAdvice4(executionContext);
                 ...
                 if (strb != null)
                 {
@@ -380,8 +400,8 @@ namespace CrossCutterN.SampleTarget
             }
             catch (Exception e)
             {
-	        // again, this statement is switchable if all advices that need IReturn and all advices that need hasException are switchable
-                executionContext.MarkExceptionThrown();
+	        // again, we don't switch hasException because it's not worth the performance cost
+                hasException = true
                 // Injected Exception Advices
                 ExceptionAdvice1(execution);
                 if (switch2)
@@ -393,6 +413,10 @@ namespace CrossCutterN.SampleTarget
                 {
                     ExceptionAdvice4();
                 }
+		ExceptionAdvice5(executionContext, execution);
+		ExceptionAdvice6(executionContext, exception);
+		ExceptionAdvice7(executionContext);
+		ExceptionAdvice8(executionContext, execution, exception);
                 ...
 		// CrossCutterN will rethrow the exception to keep the original behaivor
 		throw;
@@ -400,7 +424,6 @@ namespace CrossCutterN.SampleTarget
             finally
             {
 	    	// again, this statement is switchable if all advices that need IReturn and all advices that need hasException are switchable
-	    	var hasException = executionContext.ExceptionThrown;
                 IReturn rtn;
 		// here is an example of switching off operation of a added local variable if all relevant advices are switched off
                 if (switch2 || switch4 || switch6 || switch7)
@@ -433,6 +456,14 @@ namespace CrossCutterN.SampleTarget
                     ExitAdvice7(execution, rtn, executionContext.ExceptionThrown);
                 }
 		ExitAdvice8();
+		ExitAdvice9(executionContext);
+		ExitAdvice10(executionContext, execution);
+		ExitAdvice11(executionContext, rtn);
+		ExitAdvice12(executionContext, hasException);
+		ExitAdvice13(executionContext, execution, rtn);
+		ExitAdvice14(executionContext, execution, hasException);
+		ExitAdvice15(executionContext, rtn, hasException);
+		ExitAdvice16(executionContext, execution, rtn, hasException);
                 ...
             }
         }
