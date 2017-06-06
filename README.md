@@ -343,11 +343,15 @@ namespace CrossCutterN.SampleTarget
         public static string SampleMethod(int x, StringBuilder strb)
         {
 	    // these switches are for switching aspects on and off
-            // assume aspects 2, 4, 6 and 7 are switchable
+            // assume aspects 2, 4, 6, 7, 11, 13, 15 and 16 are switchable, which makes IReturn parameter switchable
             bool switch2 = <pre-initialized value>;
             bool switch4 = <pre-initialized value>;
             bool switch6 = <pre-initialized value>;
             bool switch7 = <pre-initialized value>;
+	    bool switch11 = <pre-initialized value>;
+	    bool switch13 = <pre-initialized value>;
+	    bool switch15 = <pre-initialized value>;
+	    bool switch16 = <pre-initialized value>;
             // The following local variables will only be initialized if needed for injected advices
 	    // execution context is for passing object among advices, not switchable because some advices that needs it are not switchable
 	    var executionContext = CrossCutterN.Advice.Parameter.ParameterFactory.InitializeExecutionContext();
@@ -369,7 +373,7 @@ namespace CrossCutterN.SampleTarget
             // this is an optimization done during il weaving process
             // the same optimization is implemented for execution parameter as well, if all aspects that need it are switchable
             IWriteOnlyReturn returnParameter;
-            if (switch2 || switch4 || switch6 || switch7)
+            if (switch2 || switch4 || switch6 || switch7 || switch11 || switch13 || switch15 || switch16)
             {
                 returnParameter = CrossCutterN.Advice.Parameter.ParameterFactory.InitializeReturn(true, "System.String");
             }
@@ -400,7 +404,7 @@ namespace CrossCutterN.SampleTarget
             }
             catch (Exception e)
             {
-	        // again, we don't switch hasException because it's not worth the performance cost
+	        // again, we don't switch hasException because it's not worthy of the performance cost
                 hasException = true
                 // Injected Exception Advices
                 ExceptionAdvice1(execution);
@@ -426,7 +430,7 @@ namespace CrossCutterN.SampleTarget
 	    	// again, this statement is switchable if all advices that need IReturn and all advices that need hasException are switchable
                 IReturn rtn;
 		// here is an example of switching off operation of a added local variable if all relevant advices are switched off
-                if (switch2 || switch4 || switch6 || switch7)
+                if (switch2 || switch4 || switch6 || switch7 || switch11 || switch13 || switch15 || switch16)
                 {
 		    returnParameter.HasReturn = !hasException;
 		    if (!hasException)
@@ -458,12 +462,24 @@ namespace CrossCutterN.SampleTarget
 		ExitAdvice8();
 		ExitAdvice9(executionContext);
 		ExitAdvice10(executionContext, execution);
-		ExitAdvice11(executionContext, rtn);
+		if (switch11) 
+		{
+		    ExitAdvice11(executionContext, rtn);
+		}
 		ExitAdvice12(executionContext, hasException);
-		ExitAdvice13(executionContext, execution, rtn);
+		if (switch13) 
+		{
+		    ExitAdvice13(executionContext, execution, rtn);
+		}
 		ExitAdvice14(executionContext, execution, hasException);
-		ExitAdvice15(executionContext, rtn, hasException);
-		ExitAdvice16(executionContext, execution, rtn, hasException);
+		if (switch15) 
+		{
+		    ExitAdvice15(executionContext, rtn, hasException);
+		}
+		if (switch16) 
+		{
+		    ExitAdvice16(executionContext, execution, rtn, hasException);
+		}
                 ...
             }
         }
@@ -471,6 +487,12 @@ namespace CrossCutterN.SampleTarget
 }
 ```
 Only the injected portion is done by IL weaving instead of written in C# code. After a successful injection, all a developer needs to do is to copy _CrossCutterN.Advice_ assembly and the assembly that contains the declaration and implementation of injected methods (like EntryAdvice1, ExitAdvice7 in the represented code above) in to the search path of the running program (most conveniently the same folder with the injected assembly), to make sure necessary assemblies can be found by the program.
+
+### Object Passing
+
+Parameter IExecutionContext is designed for passing objects amoung injected advices, in case required. Any object saved in one advice may be accessed, updated or deleted by other adviced called later, even if the advices may not come from the same aspect builder. In other words, the IExecutionContext is shared among all advices. This design is for flexibility concern.
+
+When using this feature, please be sure to choose the key for each object in each aspect carefully, if different aspects aren't supposed to access object saved by other aspects, don't overwrite other aspects' objects by mistake.
 
 ### Multiple Injections to the Same Method/Property 
 
