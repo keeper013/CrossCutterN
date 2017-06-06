@@ -73,14 +73,10 @@ namespace CrossCutterN.Weaver.Reference
 
         private static IExecutionContextReference InitializeExecutionContext(ModuleDefinition module)
         {
-            const string propertyExceptionThrown = "ExceptionThrown";
-            const string methodMarkExceptionThrown = "MarkExceptionThrown";
             var reference = new ExecutionContextReference(module);
             var type = typeof(IExecutionContext);
-            reference.ExceptionThrownGetter = type.GetProperty(propertyExceptionThrown).GetMethod;
-            reference.MarkExceptionThrownMethod = type.GetMethod(methodMarkExceptionThrown);
             reference.TypeReference = type;
-            return reference;
+            return reference.Convert();
         }
 
         private static ICanAddCustomAttributeReference InitializeParameter(ModuleDefinition module)

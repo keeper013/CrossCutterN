@@ -49,7 +49,5 @@ namespace CrossCutterN.Weaver.AssemblyHandler
         ISwitchableSection ReturnVariableSwitchableSection { get; }
         ISwitchableSection ReturnFinallySwitchableSection { get; }
         ISwitchableSection ExecutionContextVariableSwitchableSection { get; }
-        ISwitchableSection ExecutionContextExceptionSwitchableSection { get; }
-        ISwitchableSection ExecutionContextFinallySwitchableSection { get; }
     }
 }

@@ -9,6 +9,7 @@ namespace CrossCutterN.Weaver.AssemblyHandler
     using System.Linq;
     using Aspect;
     using Batch;
+    using Utilities;
 
     internal static class WeavingPlanExtension
     {
@@ -32,40 +33,49 @@ namespace CrossCutterN.Weaver.AssemblyHandler
             return pointCut.Contains(JoinPoint.Exception) || pointCut.Contains(JoinPoint.Exit);
         }
 
-        public static bool NeedHasException(this IWeavingPlan plan)
+        public static bool NeedContentVariable(this IWeavingPlan plan)
         {
             if (plan == null)
             {
                 throw new ArgumentNullException("plan");
             }
-            return plan.ParameterFlag.NeedHasException();
+            return plan.ParameterFlag.HasContextParameter();
         }
 
-        public static bool NeedExecutionParameter(this IWeavingPlan plan)
+        public static bool NeedHasExceptionVariable(this IWeavingPlan plan)
         {
             if (plan == null)
             {
                 throw new ArgumentNullException("plan");
             }
-            return plan.ParameterFlag.NeedExecutionParameter();
+            return plan.ParameterFlag.HasHasExceptionParameter();
         }
 
-        public static bool NeedExceptionParameter(this IWeavingPlan plan)
+        public static bool NeedExecutionVariable(this IWeavingPlan plan)
         {
             if (plan == null)
             {
                 throw new ArgumentNullException("plan");
             }
-            return plan.ParameterFlag.NeedExceptionParameter();
+            return plan.ParameterFlag.HasExecutionParameter();
         }
 
-        public static bool NeedReturnParameter(this IWeavingPlan plan)
+        public static bool NeedExceptionVariable(this IWeavingPlan plan)
         {
             if (plan == null)
             {
                 throw new ArgumentNullException("plan");
             }
-            return plan.ParameterFlag.NeedReturnParameter();
+            return plan.ParameterFlag.HasExceptionParameter();
+        }
+
+        public static bool NeedReturnVariable(this IWeavingPlan plan)
+        {
+            if (plan == null)
+            {
+                throw new ArgumentNullException("plan");
+            }
+            return plan.ParameterFlag.HasReturnParameter();
         }
     }
 }

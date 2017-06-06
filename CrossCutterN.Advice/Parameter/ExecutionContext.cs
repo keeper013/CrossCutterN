@@ -1,22 +1,55 @@
 ﻿/**
-* Description: method run time flags implementation
+* Description: method run time context implementation
 * Author: David Cui
 */
 
 namespace CrossCutterN.Advice.Parameter
 {
+    using System;
+    using System.Collections.Generic;
+
     internal sealed class ExecutionContext : IExecutionContext
     {
-        public bool ExceptionThrown { get; private set; }
+        private readonly Dictionary<object, object> _dictionary = new Dictionary<object, object>();
 
-        internal ExecutionContext()
+        public void Set(object key, object value)
         {
-            ExceptionThrown = false;
+            if (key == null)
+            {
+                throw new ArgumentNullException("key");
+            }
+            _dictionary[key] = value;
         }
 
-        public void MarkExceptionThrown()
+        public bool Remove(object key)
         {
-            ExceptionThrown = true;
+            if (key == null)
+            {
+                throw new ArgumentNullException("key");
+            }
+            return _dictionary.Remove(key);
+        }
+
+        public object Get(object key)
+        {
+            if (key == null)
+            {
+                throw new ArgumentNullException("key");
+            }
+            if (!_dictionary.ContainsKey(key))
+            {
+                throw new ArgumentException(string.Format("Valus is not set for key {0}", key), "key");
+            }
+            return _dictionary[key];
+        }
+
+        public bool Exist(object key)
+        {
+            if (key == null)
+            {
+                throw new ArgumentNullException("key");
+            }
+            return _dictionary.ContainsKey(key);
         }
     }
 }

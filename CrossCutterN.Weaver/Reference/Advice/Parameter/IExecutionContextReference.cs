@@ -10,7 +10,5 @@ namespace CrossCutterN.Weaver.Reference.Advice.Parameter
     internal interface IExecutionContextReference
     {
         TypeReference TypeReference { get; }
-        MethodReference ExceptionThrownGetter { get; }
-        MethodReference MarkExceptionThrownMethod { get; }
     }
 }

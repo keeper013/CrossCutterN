@@ -11,9 +11,10 @@ namespace CrossCutterN.Weaver.Batch
     internal enum AdviceParameterFlag
     {
         None = 0,
-        Execution = 1,
-        Exception = 2,
-        Return = 4,
-        HasException = 8
+        Context = 1,
+        Execution = 2,
+        Exception = 4,
+        Return = 8,
+        HasException = 16
     }
 }

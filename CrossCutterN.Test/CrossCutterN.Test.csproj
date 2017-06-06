@@ -56,6 +56,10 @@
     <Otherwise />
   </Choose>
   <ItemGroup>
+    <Compile Include="ContextTest\ConTextTest.cs" />
+    <Compile Include="ContextTest\ContextTestAttribute.cs" />
+    <Compile Include="ContextTest\ContextTestAdvice.cs" />
+    <Compile Include="ContextTest\ContextTestTarget.cs" />
     <Compile Include="MixedTest\MixedTest.cs" />
     <Compile Include="MixedTest\MixedTestAttribute.cs" />
     <Compile Include="MixedTest\MixedTestAdvice.cs" />

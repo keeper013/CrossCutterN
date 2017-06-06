@@ -11,17 +11,17 @@ namespace CrossCutterN.Test.OverwriteTest
     {
         public static void Entry()
         {
-            MethodAdviceContainer.Add(new MethodAdviceRecord("Entry", null, null, null, null));
+            MethodAdviceContainer.Add(new MethodAdviceRecord("Entry", null, null, null, null, null));
         }
 
         public static void Exception()
         {
-            MethodAdviceContainer.Add(new MethodAdviceRecord("Exception", null, null, null, null));
+            MethodAdviceContainer.Add(new MethodAdviceRecord("Exception", null, null, null, null, null));
         }
 
         public static void Exit()
         {
-            MethodAdviceContainer.Add(new MethodAdviceRecord("Exit", null, null, null, null));
+            MethodAdviceContainer.Add(new MethodAdviceRecord("Exit", null, null, null, null, null));
         }
     }
 }

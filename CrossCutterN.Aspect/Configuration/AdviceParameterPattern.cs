@@ -15,19 +15,34 @@ namespace CrossCutterN.Aspect.Configuration
     public enum AdviceParameterPattern
     {
         Empty = 0,
-        Execution = 1,
-        Exception = 2,
-        Return = 4,
-        HasException = 8,
+        Context = 1,
+        Execution = 2,
+        Exception = 4,
+        Return = 8,
+        HasException = 16,
+        ContextExecution = Context | Execution,
+        ContextException = Context | Exception,
+        ContextReturn = Context | Return,
+        ContextHasException = Context | HasException,
         ExecutionException = Execution | Exception,
         ExecutionReturn = Execution | Return,
         ExecutionHasException = Execution | HasException,
         ReturnHasException = Return | HasException,
-        ExecutionReturnHasException = Execution | Return | HasException
+        ContextExecutionException = Context | Execution | Exception,
+        ContextExecutionReturn = Context | Execution | Return,
+        ContextExecutionHasException = Context | Execution | HasException,
+        ContextReturnHasException = Context | Return | HasException,
+        ExecutionReturnHasException = Execution | Return | HasException,
+        ContextExecutionReturnHasException = Context | Execution | Return | HasException
     }
 
     internal static class AdviceParameterPatternExtension
     {
+        public static bool NeedExecutionContextParameter(this AdviceParameterPattern parameterPattern)
+        {
+            return (parameterPattern & AdviceParameterPattern.Context) == AdviceParameterPattern.Context;
+        }
+
         public static bool NeedExecutionParameter(this AdviceParameterPattern parameterPattern)
         {
             return (parameterPattern & AdviceParameterPattern.Execution) == AdviceParameterPattern.Execution;
@@ -43,7 +58,7 @@ namespace CrossCutterN.Aspect.Configuration
             return (parameterPattern & AdviceParameterPattern.Exception) == AdviceParameterPattern.Exception;
         }
 
-        public static bool NeedHasException(this AdviceParameterPattern parameterPattern)
+        public static bool NeedHasExceptionParameter(this AdviceParameterPattern parameterPattern)
         {
             return (parameterPattern & AdviceParameterPattern.HasException) == AdviceParameterPattern.HasException;
         }

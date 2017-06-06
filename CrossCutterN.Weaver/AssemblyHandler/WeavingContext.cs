@@ -49,8 +49,6 @@ namespace CrossCutterN.Weaver.AssemblyHandler
         public ISwitchableSection ReturnVariableSwitchableSection { get; private set; }
         public ISwitchableSection ReturnFinallySwitchableSection { get; private set; }
         public ISwitchableSection ExecutionContextVariableSwitchableSection { get; private set; }
-        public ISwitchableSection ExecutionContextExceptionSwitchableSection { get; private set; }
-        public ISwitchableSection ExecutionContextFinallySwitchableSection { get; private set; }
 
         public IReadOnlyDictionary<FieldReference, int> FieldLocalVariableDictionary
         {
@@ -72,8 +70,6 @@ namespace CrossCutterN.Weaver.AssemblyHandler
             ReturnVariableSwitchableSection = SwitchFactory.InitializeSwitchableSection();
             ReturnFinallySwitchableSection = SwitchFactory.InitializeSwitchableSection();
             ExecutionContextVariableSwitchableSection = SwitchFactory.InitializeSwitchableSection();
-            ExecutionContextExceptionSwitchableSection = SwitchFactory.InitializeSwitchableSection();
-            ExecutionContextFinallySwitchableSection = SwitchFactory.InitializeSwitchableSection();
         }
 
         public void AddMethodReference(MethodInfo method)
@@ -185,8 +181,6 @@ namespace CrossCutterN.Weaver.AssemblyHandler
             ReturnVariableSwitchableSection.Reset();
             ReturnFinallySwitchableSection.Reset();
             ExecutionContextVariableSwitchableSection.Reset();
-            ExecutionContextExceptionSwitchableSection.Reset();
-            ExecutionContextFinallySwitchableSection.Reset();
         }
     }
 }

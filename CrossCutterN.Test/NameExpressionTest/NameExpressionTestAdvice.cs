@@ -11,7 +11,7 @@ namespace CrossCutterN.Test.NameExpressionTest
     {
         public static void Entry()
         {
-            MethodAdviceContainer.Add(new MethodAdviceRecord("Entry", null, null, null, null));
+            MethodAdviceContainer.Add(new MethodAdviceRecord("Entry", null, null, null, null, null));
         }
     }
 }

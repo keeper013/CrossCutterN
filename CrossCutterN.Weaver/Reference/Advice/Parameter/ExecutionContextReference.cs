@@ -6,7 +6,6 @@
 namespace CrossCutterN.Weaver.Reference.Advice.Parameter
 {
     using System;
-    using System.Reflection;
     using Mono.Cecil;
 
     internal sealed class ExecutionContextReference : ReferenceBase, IExecutionContextReference, IExecutionContextWriteOnlyReference
@@ -25,24 +24,10 @@ namespace CrossCutterN.Weaver.Reference.Advice.Parameter
             set { SetType("TypeReference", value); }
         }
 
-        MethodReference IExecutionContextReference.ExceptionThrownGetter
+        public IExecutionContextReference Convert()
         {
-            get { return GetMethod("ExceptionThrownGetter"); }
-        }
-
-        public MethodInfo ExceptionThrownGetter
-        {
-            set { SetMethod("ExceptionThrownGetter", value); }
-        }
-
-        MethodReference IExecutionContextReference.MarkExceptionThrownMethod
-        {
-            get { return GetMethod("MarkExceptionThrownMethod"); }
-        }
-
-        public MethodInfo MarkExceptionThrownMethod
-        {
-            set { SetMethod("MarkExceptionThrownMethod", value); }
+            ValidateConvert("TypeReference");
+            return this;
         }
     }
 }

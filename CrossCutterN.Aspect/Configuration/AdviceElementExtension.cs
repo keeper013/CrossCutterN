@@ -18,6 +18,10 @@ namespace CrossCutterN.Aspect.Configuration
             var method = element.Method;
             var parameterPattern = element.ParameterPattern;
             var parameterTypes = new List<Type>();
+            if (parameterPattern.NeedExecutionContextParameter())
+            {
+                parameterTypes.Add(typeof(IExecutionContext));
+            }
             if (parameterPattern.NeedExecutionParameter())
             {
                 parameterTypes.Add(typeof(IExecution));
@@ -30,7 +34,7 @@ namespace CrossCutterN.Aspect.Configuration
             {
                 parameterTypes.Add(typeof(IReturn));
             }
-            if (parameterPattern.NeedHasException())
+            if (parameterPattern.NeedHasExceptionParameter())
             {
                 parameterTypes.Add(typeof(bool));
             }

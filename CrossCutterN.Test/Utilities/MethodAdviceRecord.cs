@@ -10,9 +10,10 @@ namespace CrossCutterN.Test.Utilities
 
     internal class MethodAdviceRecord
     {
-        public MethodAdviceRecord(string name, IExecution execution, Exception exception, IReturn rReturn, bool? hasException)
+        public MethodAdviceRecord(string name, IExecutionContext context, IExecution execution, Exception exception, IReturn rReturn, bool? hasException)
         {
             Name = name;
+            Context = context;
             Execution = execution;
             Exception = exception;
             Return = rReturn;
@@ -20,6 +21,7 @@ namespace CrossCutterN.Test.Utilities
         }
 
         public string Name { get; private set; }
+        public IExecutionContext Context { get; private set; }
         public IExecution Execution { get; private set; }
         public Exception Exception { get; private set; }
         public IReturn Return { get; private set; }

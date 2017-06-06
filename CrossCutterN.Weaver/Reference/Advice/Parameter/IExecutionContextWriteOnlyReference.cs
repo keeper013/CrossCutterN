@@ -6,13 +6,10 @@
 namespace CrossCutterN.Weaver.Reference.Advice.Parameter
 {
     using System;
-    using System.Reflection;
+    using CrossCutterN.Advice.Common;
 
-    internal interface IExecutionContextWriteOnlyReference
+    internal interface IExecutionContextWriteOnlyReference : ICanConvert<IExecutionContextReference>
     {
         Type TypeReference { set; }
-
-        MethodInfo ExceptionThrownGetter { set; }
-        MethodInfo MarkExceptionThrownMethod { set; }
     }
 }

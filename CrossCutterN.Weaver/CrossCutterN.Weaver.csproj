@@ -57,8 +57,9 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="AssemblyHandler\AdviceParameterFlagExtension.cs" />
+    <Compile Include="Utilities\AdviceParameterFlagExtension.cs" />
     <Compile Include="AssemblyHandler\IlUtilities.cs" />
+    <Compile Include="Reference\Advice\Parameter\IExecutionContextWriteOnlyReference.cs" />
     <Compile Include="Statistics\ISwitchWeavingRecord.cs" />
     <Compile Include="Statistics\SwitchWeavingRecord.cs" />
     <Compile Include="Switch\ISwitchableSection.cs" />
@@ -94,7 +95,6 @@
     <Compile Include="IWeaver.cs" />
     <Compile Include="Reference\AdviceReference.cs" />
     <Compile Include="Reference\AdviceReferenceFactory.cs" />
-    <Compile Include="Reference\Advice\Parameter\IExecutionContextWriteOnlyReference.cs" />
     <Compile Include="Reference\Advice\Switch\AdviceSwitchBuildUpReference.cs" />
     <Compile Include="Reference\Advice\Switch\SwitchBackStageReference.cs" />
     <Compile Include="Reference\Advice\Switch\AdviceSwitchLookUpReference.cs" />

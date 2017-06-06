@@ -7,7 +7,9 @@ namespace CrossCutterN.Advice.Parameter
 {
     public interface IExecutionContext
     {
-        bool ExceptionThrown { get; }
-        void MarkExceptionThrown();
+        void Set(object key, object value);
+        bool Remove(object key);
+        object Get(object key);
+        bool Exist(object key);
     }
 }

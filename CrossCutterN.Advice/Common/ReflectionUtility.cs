@@ -12,6 +12,8 @@ namespace CrossCutterN.Advice.Common
 
     public static class ReflectionUtility
     {
+        private static readonly string VoidTypeName = typeof (void).FullName;
+
         public static string GetFullName(this Type type)
         {
             if (type == null)
@@ -62,6 +64,15 @@ namespace CrossCutterN.Advice.Common
             return method.DeclaringType == null
                        ? method.Name
                        : string.Format("{0}.{1}", method.DeclaringType.FullName, method.Name);
+        }
+
+        public static bool IsVoidReturn(this MethodInfo method)
+        {
+            if (method == null)
+            {
+                throw new ArgumentNullException("method");
+            }
+            return method.ReturnType.FullName.Equals(VoidTypeName);
         }
     }
 }

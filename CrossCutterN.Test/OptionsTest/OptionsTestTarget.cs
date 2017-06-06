@@ -3,11 +3,10 @@
  * Author: David Cui
  */
 
-using System.Globalization;
-
 namespace CrossCutterN.Test.OptionsTest
 {
     using System;
+    using System.Globalization;
     using System.Text;
 
     [OptionsConcernClass]

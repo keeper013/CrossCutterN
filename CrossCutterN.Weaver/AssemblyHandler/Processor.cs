@@ -174,12 +174,13 @@ namespace CrossCutterN.Weaver.AssemblyHandler
 
         private static void SetLocalVariables(MethodDefinition method, IlHandler handler, IWeavingPlan plan)
         {
-            var addExecution = plan.NeedExecutionParameter();
-            var addException = plan.NeedExceptionParameter();
-            var addReturn = plan.NeedReturnParameter();
+            var addContext = plan.NeedContentVariable();
+            var addExecution = plan.NeedExecutionVariable();
+            var addException = plan.NeedExceptionVariable();
+            var addReturn = plan.NeedReturnVariable();
             var addReturnValue = NeedToStoreReturnValueAsLocalVariable(method, plan);
-            var addExecutionContext = NeedExecutionContextParameter(method, plan);
-            handler.AddLocalVariables(addExecution, addException, addReturn, addReturnValue, addExecutionContext);
+            var addHasException = NeedHasExceptionParameter(method, plan);
+            handler.AddLocalVariables(addContext, addExecution, addException, addReturn, addReturnValue, addHasException);
         }
 
         private static void WeaveEntryJoinPoint(IlHandler handler, IReadOnlyCollection<IAdviceInfo> advices,
@@ -246,9 +247,9 @@ namespace CrossCutterN.Weaver.AssemblyHandler
             return !method.IsVoidReturn() && plan.NeedToStoreReturnValueAsLocalVariable();
         }
 
-        private static bool NeedExecutionContextParameter(MethodDefinition method, IWeavingPlan plan)
+        private static bool NeedHasExceptionParameter(MethodDefinition method, IWeavingPlan plan)
         {
-            return plan.NeedHasException() || (plan.NeedReturnParameter() && !method.IsVoidReturn());
+            return plan.NeedHasExceptionVariable() || (plan.NeedReturnVariable() && !method.IsVoidReturn());
         }
 
         private static bool IsPropertyMethod(this MethodDefinition method)

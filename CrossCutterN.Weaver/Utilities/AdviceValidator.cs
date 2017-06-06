@@ -10,164 +10,42 @@ namespace CrossCutterN.Weaver.Utilities
     using Aspect;
     using Batch;
     using Advice.Parameter;
+    using Advice.Common;
 
     internal static class AdviceValidator
     {
-        private static readonly Type MethodExecutionType = typeof(IExecution);
-        private static readonly Type ExceptionType = typeof(Exception);
-        private static readonly Type ReturnType = typeof(IReturn);
-        private static readonly Type BooType = typeof(bool);
-        private static readonly Type VoidType = typeof(void);
+        private static readonly string MethodExecutionContextTypeName = typeof (IExecutionContext).FullName;
+        private static readonly string MethodExecutionTypeName = typeof(IExecution).FullName;
+        private static readonly string ExceptionTypeName = typeof(Exception).FullName;
+        private static readonly string ReturnTypeName = typeof(IReturn).FullName;
+        private static readonly string BooTypeName = typeof(bool).FullName;
+
+        private const AdviceParameterFlag EntryValidParameterFlag = 
+            AdviceParameterFlag.Context | AdviceParameterFlag.Execution;
+
+        private const AdviceParameterFlag ExceptionValidParameterFlag =
+            AdviceParameterFlag.Context | AdviceParameterFlag.Execution | AdviceParameterFlag.Exception;
+
+        private const AdviceParameterFlag ExitValidParameterFlag =
+            AdviceParameterFlag.Context | AdviceParameterFlag.Execution | AdviceParameterFlag.Return | AdviceParameterFlag.HasException;
 
         public static AdviceParameterFlag Validate(JoinPoint joinPoint, MethodInfo advice)
         {
+            if (advice == null)
+            {
+                throw new ArgumentNullException("advice");
+            }
             GeneralMethodValidation(advice);
             switch (joinPoint)
             {
                 case JoinPoint.Entry:
-                    return ValidateEntry(advice);
+                    return ValidateParameters(advice, EntryValidParameterFlag);
                 case JoinPoint.Exception:
-                    return ValidateException(advice);
+                    return ValidateParameters(advice, ExceptionValidParameterFlag);
                 case JoinPoint.Exit:
-                    return ValidateExit(advice);
+                    return ValidateParameters(advice, ExitValidParameterFlag);
             }
             throw new ArgumentException(string.Format("Unsupported join point type {0}", joinPoint), "joinPoint");
-        }
-
-        private static AdviceParameterFlag ValidateEntry(MethodInfo advice)
-        {
-            var parameters = advice.GetParameters();
-            var parameterCount = parameters.Length;
-            if (parameterCount > 1)
-            {
-                throw new ArgumentException("Advice method for entry can have at most 1 parameter.");
-            }
-            var parameterType = AdviceParameterFlag.None;
-            if (parameterCount == 1)
-            {
-                if (!parameters[0].IsOfType(MethodExecutionType))
-                {
-                    throw new ArgumentException(
-                        string.Format("Only allowed parameter type of advice method for entry with 1 parameter is \"{0}\"",
-                                      MethodExecutionType.FullName));
-                }
-                parameterType = AdviceParameterFlag.Execution;
-            }
-            return parameterType;
-        }
-
-        private static AdviceParameterFlag ValidateException(MethodInfo advice)
-        {
-            var parameters = advice.GetParameters();
-            var parameterCount = parameters.Length;
-            var parameterType = AdviceParameterFlag.None;
-            switch (parameterCount)
-            {
-                case 0:
-                    break;
-                case 1:
-                    if (parameters[0].IsOfType(MethodExecutionType))
-                    {
-                        parameterType |= AdviceParameterFlag.Execution;
-                    }
-                    else if (parameters[0].IsOfType(ExceptionType))
-                    {
-                        parameterType |= AdviceParameterFlag.Exception;
-                    }
-                    else
-                    {
-                        throw new ArgumentException(
-                        string.Format(
-                            "Only allowed parameter type of advice method for exception with one parameter is \"{0}\" or \"{1}\"",
-                            MethodExecutionType.FullName, ExceptionType.FullName));
-                    }
-                    break;
-                case 2:
-                    if (!parameters[0].IsOfType(MethodExecutionType) || !parameters[1].IsOfType(ExceptionType))
-                    {
-                        throw new ArgumentException(
-                            string.Format(
-                                "Only allowed parameter type and order for advice method for execption with 2 parameters is (\"{0}\", \"{1}\")",
-                                MethodExecutionType.FullName, ExceptionType.FullName));
-                    }
-                    parameterType |= AdviceParameterFlag.Execution;
-                    parameterType |= AdviceParameterFlag.Exception;
-                    break;
-                default:
-                    throw new ArgumentException("Advice method for exception can have at most 2 parameters.");
-            }
-            return parameterType;
-        }
-
-        private static AdviceParameterFlag ValidateExit(MethodInfo advice)
-        {
-            var parameters = advice.GetParameters();
-            var parameterCount = parameters.Length;
-            var parameterType = AdviceParameterFlag.None;
-            switch (parameterCount)
-            {
-                case 0:
-                    break;
-                case 1:
-                    if (parameters[0].IsOfType(MethodExecutionType))
-                    {
-                        parameterType |= AdviceParameterFlag.Execution;
-                    }
-                    else if (parameters[0].IsOfType(ReturnType))
-                    {
-                        parameterType |= AdviceParameterFlag.Return;
-                    }
-                    else if (parameters[0].IsOfType(BooType))
-                    {
-                        parameterType |= AdviceParameterFlag.HasException;
-                    }
-                    else
-                    {
-                        throw new ArgumentException(
-                            string.Format("Only allowed parameter type for injectable method for exit with 1 parameter is \"{0}\" or \"{1}\" or \"{2}\"",
-                                          MethodExecutionType.FullName, ReturnType.FullName, BooType));
-                    }
-                    break;
-                case 2:
-                    if (parameters[0].IsOfType(MethodExecutionType) && parameters[1].IsOfType(ReturnType))
-                    {
-                        parameterType |= AdviceParameterFlag.Execution;
-                        parameterType |= AdviceParameterFlag.Return;
-                    }
-                    else if (parameters[0].IsOfType(MethodExecutionType) && parameters[1].IsOfType(BooType))
-                    {
-                        parameterType |= AdviceParameterFlag.Execution;
-                        parameterType |= AdviceParameterFlag.HasException;
-                    }
-                    else if (parameters[0].IsOfType(ReturnType) && parameters[1].IsOfType(BooType))
-                    {
-                        parameterType |= AdviceParameterFlag.Return;
-                        parameterType |= AdviceParameterFlag.HasException;
-                    }
-                    else
-                    {
-                        throw new ArgumentException(
-                            string.Format(
-                                "Only allowed parameter type and order for advice method for exit with 2 parameters are (\"{0}\", \"{1}\") or (\"{0}\", \"{2}\") or (\"{1}\", \"{2}\")",
-                                MethodExecutionType.FullName, ReturnType.FullName, BooType.FullName));
-                    }
-                    break;
-                case 3:
-                    if (!parameters[0].IsOfType(MethodExecutionType) || !parameters[1].IsOfType(ReturnType) || !parameters[2].IsOfType(BooType))
-                    {
-                        throw new ArgumentException(
-                            string.Format(
-                                "Only allowed parameter type and order for injectable method for exit with 3 parameters is (\"{0}\", \"{1}\", \"{2}\")",
-                                MethodExecutionType.FullName, ReturnType.FullName, BooType.FullName));
-                    }
-                    parameterType |= AdviceParameterFlag.Execution;
-                    parameterType |= AdviceParameterFlag.Return;
-                    parameterType |= AdviceParameterFlag.HasException;
-                    break;
-                default:
-                    throw new ArgumentException("Advice method for exit can have at most 3 parameters.");
-            }
-            return parameterType;
         }
 
         private static void GeneralMethodValidation(MethodInfo method)
@@ -184,15 +62,79 @@ namespace CrossCutterN.Weaver.Utilities
             {
                 throw new ArgumentException("Advice method must be static");
             }
-            if (!method.ReturnType.FullName.Equals(VoidType.FullName))
+            if (!method.IsVoidReturn())
             {
                 throw new ArgumentException("Return type of advice method must be void");
             }
         }
 
-        private static bool IsOfType(this ParameterInfo info, Type type)
+        private static AdviceParameterFlag ValidateParameters(MethodInfo advice, AdviceParameterFlag flag)
         {
-            return info.ParameterType.FullName.Equals(type.FullName);
+            var parameters = advice.GetParameters();
+            var parameterCount = parameters.Length;
+            if (parameterCount == 0)
+            {
+                return AdviceParameterFlag.None;
+            }
+            var result = parameters[0].Validate(flag);
+            var current = result;
+            for (var i = 1; i < parameterCount; i++)
+            {
+                var temp = parameters[i].Validate(flag);
+                if(temp <= current)
+                {
+                    throw new ArgumentException(string.Format("Wrong order or redundant type of parameter {0} for advice", parameters[i].Name));
+                }
+                current = temp;
+                result |= current;
+            }
+            return result;
+        }
+
+        private static AdviceParameterFlag Validate(this ParameterInfo info, AdviceParameterFlag flag)
+        {
+            var typeFullName = info.ParameterType.FullName;
+            if (typeFullName.Equals(MethodExecutionContextTypeName))
+            {
+                if (!flag.HasContextParameter())
+                {
+                    throw new ArgumentException(string.Format("Parameter type {0} is not allowed for this advice", typeFullName));
+                }
+                return AdviceParameterFlag.Context;
+            }
+            if (typeFullName.Equals(MethodExecutionTypeName))
+            {
+                if (!flag.HasExecutionParameter())
+                {
+                    throw new ArgumentException(string.Format("Parameter type {0} is not allowed for this advice", typeFullName));
+                }
+                return AdviceParameterFlag.Execution;
+            }
+            if (typeFullName.Equals(ExceptionTypeName))
+            {
+                if (!flag.HasExceptionParameter())
+                {
+                    throw new ArgumentException(string.Format("Parameter type {0} is not allowed for this advice", typeFullName));
+                }
+                return AdviceParameterFlag.Exception;
+            }
+            if (typeFullName.Equals(ReturnTypeName))
+            {
+                if (!flag.HasReturnParameter())
+                {
+                    throw new ArgumentException(string.Format("Parameter type {0} is not allowed for this advice", typeFullName));
+                }
+                return AdviceParameterFlag.Return;
+            }
+            if (typeFullName.Equals(BooTypeName))
+            {
+                if (!flag.HasHasExceptionParameter())
+                {
+                    throw new ArgumentException(string.Format("Parameter type {0} is not allowed for this advice", typeFullName));
+                }
+                return AdviceParameterFlag.HasException;
+            }
+            throw new ArgumentException(string.Format("Parameter type {0} is not allowed", typeFullName));
         }
     }
 }
