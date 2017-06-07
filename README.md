@@ -490,7 +490,7 @@ Only the injected portion is done by IL weaving instead of written in C# code. A
 
 ### Object Passing
 
-Parameter IExecutionContext is designed for passing objects amoung injected advices, in case required. Any object saved in one advice may be accessed, updated or deleted by other adviced called later, even if the advices may not come from the same aspect builder. In other words, the IExecutionContext is shared among all advices. This design is for flexibility concern.
+Parameter IExecutionContext is designed for passing objects among injected advices locally (of course without this feature, developers can always try to pass objects among advices via some static data structures, passing object via local variables should be a preferred way for thread safty and resource recycling concerns), in case required. Any object saved in one advice may be accessed, updated or deleted by other adviced called later, even if the advices may not come from the same aspect builder. In other words, the IExecutionContext is shared among all advices. This design is for flexibility concern.
 
 When using this feature, please be sure to choose the key for each object in each aspect carefully, if different aspects aren't supposed to access object saved by other aspects, don't overwrite other aspects' objects by mistake.
 
@@ -602,6 +602,8 @@ AOP code injection via name matching supports including and excluding method/pro
 * if the method/property is matched by one of the including patterns which doesn't contain wildcards, it will be injected, regardless of any other configurations or settings, which is called "Exact match takes priority" rule.
 
 ### Aspect Switching
+
+It is certainly possible to inject switchable aspects into one assembly, and control the switches using the interfaces in another assembly, if both assemblies are loaded in one process. So this feature can be applied to assemblies that can't be re-compiled as well.
 
 #### Configuration
 
