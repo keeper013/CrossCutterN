@@ -38,8 +38,8 @@
     <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="nunit.framework, Version=3.6.1.0, Culture=neutral, PublicKeyToken=2638cd05610744eb, processorArchitecture=MSIL">
-      <HintPath>..\packages\NUnit.3.6.1\lib\net45\nunit.framework.dll</HintPath>
+    <Reference Include="nunit.framework, Version=3.7.1.0, Culture=neutral, PublicKeyToken=2638cd05610744eb, processorArchitecture=MSIL">
+      <HintPath>..\packages\NUnit.3.7.1\lib\net45\nunit.framework.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="System" />
@@ -139,7 +139,6 @@
       <ToBeCleanedFiles Include="$(TargetDir)CrossCutterN.Command.exe;$(TargetDir)CrossCutterN.Weaver.dll;$(TargetDir)CrossCutterN.Aspect.dll;$(TargetDir)Mono.Cecil.dll;$(TargetDir)Mono.Cecil.Pdb.dll;$(TargetDir)CrossCutterN.Command.exe.config;$(TargetPath)" />
     </ItemGroup>
     <Copy SourceFiles="@(CommandFiles)" DestinationFolder="$(TargetDir)" />
-    <Exec Condition=" '$(OS)' == 'Unix' " Command="chmod a+x $(TargetDir)CrossCutterN.Command.exe" />
     <Exec Condition=" '$(OS)' == 'Unix' " Command="mono $(TargetDir)CrossCutterN.Command.exe $(TargetDir)CrossCutterN.Test.dll $(TargetDir)CrossCutterN.Test.dll_temp" />
     <Exec Condition=" '$(OS)' != 'Unix' " Command="$(TargetDir)CrossCutterN.Command.exe $(TargetPath) $(TargetPath)_temp Y" />
     <Delete Files="@(ToBeCleanedFiles)" ContinueOnError="true" />
