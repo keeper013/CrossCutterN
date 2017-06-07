@@ -6,7 +6,7 @@
 
 ## Quick Examples
 
-:exclamation: In the examples, this article assumes that readers have cloned this project into there own environment and are able to compile and run the project binaries.
+:exclamation: In the examples, this article assumes that readers have cloned this project into their own environment and are able to compile and run the project binaries.
 
 ### AOP Code Injection
 
