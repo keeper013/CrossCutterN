@@ -247,6 +247,7 @@ namespace CrossCutterN.Advice.Switch
 
         public IClassAdviceSwitch Convert(string clazz, IClassAdviceSwitchOperation classOperations, Dictionary<string, SwitchOperationStatus> aspectOperations)
         {
+            // This method is not supposed to be called with multithread style, so no locking applied
             using (_switchLock.ReadLock)
             {
                 foreach (var methodSwitch in _methodSwitchDictionary)
