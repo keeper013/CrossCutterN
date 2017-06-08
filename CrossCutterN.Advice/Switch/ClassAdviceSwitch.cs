@@ -8,6 +8,7 @@ namespace CrossCutterN.Advice.Switch
     using System;
     using System.Collections.Generic;
     using Common;
+    using MultiThreading;
 
     internal sealed class ClassAdviceSwitch : IClassAdviceSwitch, IClassAdviceSwitchBuildUp
     {
@@ -15,14 +16,20 @@ namespace CrossCutterN.Advice.Switch
         private readonly Dictionary<string, Dictionary<string, int>> _methodSwitchDictionary = new Dictionary<string, Dictionary<string, int>>();
         private readonly Dictionary<string, List<int>> _aspectSwitchDictionary = new Dictionary<string, List<int>>();
         private readonly IList<bool> _switchList;
+        private readonly ISmartReadWriteLock _switchLock;
         private readonly IrreversibleOperation _complete = new IrreversibleOperation();
 
-        public ClassAdviceSwitch(IList<bool> switchList)
+        public ClassAdviceSwitch(IList<bool> switchList, ISmartReadWriteLock lck)
         {
             if (switchList == null)
             {
                 throw new ArgumentNullException("switchList");
             }
+            if (lck == null)
+            {
+                throw new ArgumentNullException("lck");
+            }
+            _switchLock = lck;
             _switchList = switchList;
         }
 
@@ -41,8 +48,8 @@ namespace CrossCutterN.Advice.Switch
         public int Switch(SwitchOperation operation)
         {
             _complete.Assert(true);
-            var enumerator = _aspectSwitchDictionary.GetEnumerator();
             var count = 0;
+            var enumerator = _aspectSwitchDictionary.GetEnumerator();
             while (enumerator.MoveNext())
             {
                 count += Switch(enumerator.Current.Value, operation);
@@ -159,7 +166,10 @@ namespace CrossCutterN.Advice.Switch
                 throw new ArgumentException(
                     string.Format("Aspect {0} is not applied to property {1}", aspect, propertyName), "aspect");
             }
-            return Switch(aspectDictionary[aspect], operation);
+            using (_switchLock.ReadLock)
+            {
+                return Switch(aspectDictionary[aspect], operation);
+            }
         }
 
         #endregion
@@ -188,6 +198,7 @@ namespace CrossCutterN.Advice.Switch
                 throw new ArgumentException(string.Format("Id {0} is added to aspect {1} already", id, aspect), "id");
             }
 #endif
+            // This method is not supposed to be called with multithread style, so no locking applied
             _complete.Assert(false);
             
             if (!string.IsNullOrWhiteSpace(propertyName))
@@ -234,10 +245,32 @@ namespace CrossCutterN.Advice.Switch
             }
         }
 
-        public IClassAdviceSwitch Convert()
+        public IClassAdviceSwitch Convert(string clazz, IClassAdviceSwitchOperation classOperations, Dictionary<string, SwitchOperationStatus> aspectOperations)
         {
+            using (_switchLock.ReadLock)
+            {
+                foreach (var methodSwitch in _methodSwitchDictionary)
+                {
+                    var methodSignature = methodSwitch.Key;
+                    var aspectSwitch = methodSwitch.Value;
+                    foreach(var value in aspectSwitch) {
+                        var id = value.Value;
+                        _switchList[id] = GetSwitchValue(_switchList[id], clazz, methodSignature, value.Key, classOperations, aspectOperations);
+                    }
+                }
+            }
             _complete.Apply();
             return this;
+        }
+
+        private bool GetSwitchValue(bool value, string clazz, string methodSignature, string aspect, 
+            IClassAdviceSwitchOperation classOperations, Dictionary<string, SwitchOperationStatus> aspectOperations)
+        {
+            if (classOperations != null)
+            {
+                return classOperations.GetSwitchValue(value, methodSignature, aspect);
+            }
+            return aspectOperations.ContainsKey(aspect) ? aspectOperations[aspect].Switch(value) : value;
         }
 
         #endregion
@@ -259,7 +292,10 @@ namespace CrossCutterN.Advice.Switch
                 var aspectDictionary = _methodSwitchDictionary[methodSignature];
                 if (aspectDictionary.ContainsKey(aspect))
                 {
-                    return _switchList[aspectDictionary[aspect]];
+                    using (_switchLock.ReadLock)
+                    {
+                        return _switchList[aspectDictionary[aspect]];
+                    }
                 }
             }
             return null;
@@ -271,7 +307,10 @@ namespace CrossCutterN.Advice.Switch
 
         private int Switch(int id, SwitchOperation operation)
         {
-            _switchList[id] = Switch(_switchList[id], operation);
+            using (_switchLock.ReadLock)
+            {
+                _switchList[id] = Switch(_switchList[id], operation);
+            }
             return 1;
         }
 
@@ -295,9 +334,12 @@ namespace CrossCutterN.Advice.Switch
 
         private int Switch(ICollection<int> ids, SwitchOperation operation)
         {
-            foreach (var id in ids)
+            using (_switchLock.ReadLock)
             {
-                _switchList[id] = Switch(_switchList[id], operation);
+                foreach (var id in ids)
+                {
+                    _switchList[id] = Switch(_switchList[id], operation);
+                }
             }
             return ids.Count;
         }
@@ -305,9 +347,12 @@ namespace CrossCutterN.Advice.Switch
         private int Switch(IEnumerable<PropertySwitches> switches, SwitchOperation operation)
         {
             var result = 0;
-            foreach (var propertySwitches in switches)
+            using (_switchLock.ReadLock)
             {
-                result += Switch(propertySwitches, operation);
+                foreach (var propertySwitches in switches)
+                {
+                    result += Switch(propertySwitches, operation);
+                }
             }
             return result;
         }

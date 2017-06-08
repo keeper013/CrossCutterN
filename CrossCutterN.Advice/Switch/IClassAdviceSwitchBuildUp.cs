@@ -5,10 +5,11 @@
 
 namespace CrossCutterN.Advice.Switch
 {
-    using Common;
+    using System.Collections.Generic;
 
-    internal interface IClassAdviceSwitchBuildUp : ICanConvert<IClassAdviceSwitch>
+    internal interface IClassAdviceSwitchBuildUp
     {
         void RegisterSwitch(int id, string property, string method, string aspect);
+        IClassAdviceSwitch Convert(string clazz, IClassAdviceSwitchOperation classOperations, Dictionary<string, SwitchOperationStatus> aspectOperations);
     }
 }

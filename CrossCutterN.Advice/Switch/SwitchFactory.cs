@@ -6,12 +6,13 @@
 namespace CrossCutterN.Advice.Switch
 {
     using System.Collections.Generic;
+    using MultiThreading;
 
     internal static class SwitchFactory
     {
-        public static IClassAdviceSwitchBuildUp InitializeClassAdviceSwitch(IList<bool> switchList)
+        public static IClassAdviceSwitchBuildUp InitializeClassAdviceSwitch(IList<bool> switchList, ISmartReadWriteLock lck)
         {
-            return new ClassAdviceSwitch(switchList);
+            return new ClassAdviceSwitch(switchList, lck);
         }
 
         public static IClassAdviceSwitchOperation InitializeClassAdviceSwitchOperation(

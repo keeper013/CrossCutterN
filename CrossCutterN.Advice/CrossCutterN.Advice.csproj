@@ -51,6 +51,12 @@
     <Compile Include="Concern\MethodConcernAttribute.cs" />
     <Compile Include="Concern\NoConcernAttribute.cs" />
     <Compile Include="Concern\PropertyConcernAttribute.cs" />
+    <Compile Include="MultiThreading\IReadWriteLock.cs" />
+    <Compile Include="MultiThreading\ISmartLock.cs" />
+    <Compile Include="MultiThreading\ISmartReadWriteLock.cs" />
+    <Compile Include="MultiThreading\LockFactory.cs" />
+    <Compile Include="MultiThreading\ReadWriteLock.cs" />
+    <Compile Include="MultiThreading\SmartReadWriteLock.cs" />
     <Compile Include="Parameter\AttributeProperty.cs" />
     <Compile Include="Parameter\CustomAttribute.cs" />
     <Compile Include="Parameter\IWriteOnlyReturn.cs" />
