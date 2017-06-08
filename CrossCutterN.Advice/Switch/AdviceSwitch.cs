@@ -58,8 +58,8 @@ namespace CrossCutterN.Advice.Switch
                 }
             }
             using (_buildUpLock.WriteLock)
-            using(_completedLock.WriteLock)
-            using(_operationLock.WriteLock)
+            using (_completedLock.WriteLock)
+            using (_operationLock.WriteLock)
             {
                 _completed.Add(clazz, _buildingUps[clazz].Convert(clazz, classOperations, _aspectOperations));
                 _buildingUps.Remove(clazz);
