@@ -664,7 +664,7 @@ There is a concern that when a program is executing, there is no way to tell whe
 
 The answer is: **_CrossCutterN_** tool will record the switching statuses in case some injected classes haven't been loaded into program, and apply the switching history once the class is loaded. This switching status recording process is optimized so that not each and every switching operation is kept in memory before loading the class, but only the minimum switching statuses are recorded to make sure if loading classes after some switching operation, it behaves the same as if the classes have been loaded before any aspect switching happens.
 
-For multi-threading concern, aspect switching feature is designed for multi-threading use cases, switching operation and switch look up operation (carried out by injected IL) can happen in multiple threads without causing problems of the injected program.
+For multi-threading concern, aspect switching feature is designed for multi-threading use cases, switching operation and switch look up operation (carried out by injected IL) can happen in multiple threads without causing problems of the injected program. But please note that throughput of switchable advices will be affected a bit due to switch looking up and read write locking mechanism applied for multi-threading, so don't configure advices to be switchable unless necessary.
 
 ## Project Structure
 * **_CrossCutterN.Advice_**: Basic support assembly for _CrossCutterN_ tool. Please make sure that this assembly is copied over to the directories where injected assemblies are deployed. It contains pre-defined advice parameters, common supports, base attributes for _ConcernAttributeAspectBuilder_ and so on.
