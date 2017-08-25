@@ -1,23 +1,21 @@
-﻿/**
- * Description: Switch field equality comparor
- * Author: David Cui
- */
+﻿// <copyright file="FieldReferenceComparer.cs" company="Cui Ziqiang">
+// Copyright (c) 2017 Cui Ziqiang
+// </copyright>
 
 namespace CrossCutterN.Weaver.Utilities
 {
     using System.Collections.Generic;
     using Mono.Cecil;
 
-    internal class FieldReferenceComparer : IEqualityComparer<FieldReference>
+    /// <summary>
+    /// Comparer utility for field reference.
+    /// </summary>
+    internal sealed class FieldReferenceComparer : IEqualityComparer<FieldReference>
     {
-        public bool Equals(FieldReference x, FieldReference y)
-        {
-            return x.Name.Equals(y.Name);
-        }
+        /// <inheritdoc/>
+        public bool Equals(FieldReference x, FieldReference y) => x.Name.Equals(y.Name);
 
-        public int GetHashCode(FieldReference obj)
-        {
-            return obj.Name.GetHashCode();
-        }
+        /// <inheritdoc/>
+        public int GetHashCode(FieldReference obj) => obj.Name.GetHashCode();
     }
 }

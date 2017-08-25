@@ -1,7 +1,6 @@
-﻿/**
- * Description: mixed test
- * Author: David Cui
- */
+﻿// <copyright file="ParameterTest.cs" company="Cui Ziqiang">
+// Copyright (c) 2017 Cui Ziqiang
+// </copyright>
 
 namespace CrossCutterN.Test.ParameterTest
 {
@@ -11,14 +10,15 @@ namespace CrossCutterN.Test.ParameterTest
     using NUnit.Framework;
     using Utilities;
 
+    /// <summary>
+    /// Parameter test.
+    /// </summary>
     [TestFixture]
-    public class ParameterTest
+    public sealed class ParameterTest
     {
-        private int Square(int i)
-        {
-            return i*i;
-        }
-
+        /// <summary>
+        /// Tests case that has all parameters with exception thrown.
+        /// </summary>
         [Test]
         public void TestAllException()
         {
@@ -34,6 +34,7 @@ namespace CrossCutterN.Test.ParameterTest
             finally
             {
                 var content = MethodAdviceContainer.Content;
+                MethodAdviceContainer.PrintContent(Console.Out);
                 Assert.AreEqual(3, content.Count);
                 Assert.IsNotNull(content.ElementAt(0).Execution);
                 Assert.AreEqual(3, content.ElementAt(0).Execution.Parameters.Count);
@@ -52,23 +53,31 @@ namespace CrossCutterN.Test.ParameterTest
             }
         }
 
+        /// <summary>
+        /// Tests case that has all parameters.
+        /// </summary>
         [Test]
         public void TestAll()
         {
             MethodAdviceContainer.Clear();
             var x = ParameterTestTarget.AllTest();
             var content = MethodAdviceContainer.Content;
+            MethodAdviceContainer.PrintContent(Console.Out);
             Assert.AreEqual(2, content.Count);
             Assert.IsTrue(content.ElementAt(1).Return.HasReturn);
             Assert.AreEqual(x, content.ElementAt(1).Return.Value);
         }
 
+        /// <summary>
+        /// Tests case that has void return type.
+        /// </summary>
         [Test]
         public void TestVoidReturn()
         {
             MethodAdviceContainer.Clear();
             ParameterTestTarget.AllVoidReturnTest();
             var content = MethodAdviceContainer.Content;
+            MethodAdviceContainer.PrintContent(Console.Out);
             Assert.AreEqual(2, content.Count);
             Assert.IsNotNull(content.ElementAt(1).Return);
             Assert.IsFalse(content.ElementAt(1).Return.HasReturn);
@@ -76,6 +85,9 @@ namespace CrossCutterN.Test.ParameterTest
             Assert.IsFalse(hasException != null && (hasException.HasValue && hasException.Value));
         }
 
+        /// <summary>
+        /// Tests case that has no <see cref="CrossCutterN.Base.Metadata.IExecution"/> parameter.
+        /// </summary>
         [Test]
         public void TestNoExecution()
         {
@@ -91,6 +103,7 @@ namespace CrossCutterN.Test.ParameterTest
             finally
             {
                 var content = MethodAdviceContainer.Content;
+                MethodAdviceContainer.PrintContent(Console.Out);
                 Assert.AreEqual(3, content.Count);
                 Assert.IsNull(content.ElementAt(0).Execution);
                 Assert.IsNull(content.ElementAt(1).Execution);
@@ -103,16 +116,23 @@ namespace CrossCutterN.Test.ParameterTest
             }
         }
 
+        /// <summary>
+        /// Tests case that has no <see cref="CrossCutterN.Base.Metadata.IReturn"/> parameter.
+        /// </summary>
         [Test]
         public void TestNoReturn()
         {
             MethodAdviceContainer.Clear();
             ParameterTestTarget.NoReturnTest(10, Square);
             var content = MethodAdviceContainer.Content;
+            MethodAdviceContainer.PrintContent(Console.Out);
             Assert.AreEqual(2, content.Count);
             Assert.IsNull(content.ElementAt(1).Return);
         }
 
+        /// <summary>
+        /// Tests case that has no HasException parameter.
+        /// </summary>
         [Test]
         public void TestNoHasException()
         {
@@ -128,11 +148,15 @@ namespace CrossCutterN.Test.ParameterTest
             finally
             {
                 var content = MethodAdviceContainer.Content;
+                MethodAdviceContainer.PrintContent(Console.Out);
                 Assert.AreEqual(1, content.Count);
                 Assert.IsFalse(content.ElementAt(0).HasException.HasValue);
             }
         }
 
+        /// <summary>
+        /// Tests case that has no System.Exception parameter.
+        /// </summary>
         [Test]
         public void TestNoException()
         {
@@ -148,11 +172,15 @@ namespace CrossCutterN.Test.ParameterTest
             finally
             {
                 var content = MethodAdviceContainer.Content;
+                MethodAdviceContainer.PrintContent(Console.Out);
                 Assert.AreEqual(1, content.Count);
                 Assert.IsNull(content.ElementAt(0).Exception);
             }
         }
 
+        /// <summary>
+        /// Tests case that has only <see cref="CrossCutterN.Base.Metadata.IReturn"/> parameter.
+        /// </summary>
         [Test]
         public void TestOnlyExecution()
         {
@@ -168,6 +196,7 @@ namespace CrossCutterN.Test.ParameterTest
             finally
             {
                 var content = MethodAdviceContainer.Content;
+                MethodAdviceContainer.PrintContent(Console.Out);
                 Assert.AreEqual(2, content.Count);
                 Assert.IsNotNull(content.ElementAt(0).Execution);
                 Assert.AreEqual(0, content.ElementAt(0).Execution.Parameters.Count);
@@ -176,6 +205,11 @@ namespace CrossCutterN.Test.ParameterTest
                 Assert.IsNull(content.ElementAt(1).Return);
                 Assert.IsFalse(content.ElementAt(1).HasException.HasValue);
             }
+        }
+
+        private int Square(int i)
+        {
+            return i * i;
         }
     }
 }

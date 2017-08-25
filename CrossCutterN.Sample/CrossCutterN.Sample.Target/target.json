@@ -1,0 +1,42 @@
+﻿{
+  "CrossCutterN": {
+    "DefaultAspectAssemblyKey": "CrossCutterN.Aspect",
+    "DefaultAdviceAssemblyKey": "sample",
+    "AspectBuilders": {
+      "aspectByAttribute": {
+        "AspectBuilderKey": "CrossCutterN.Aspect.Builder.ConcernAttributeAspectBuilder",
+        "ConcernMethodAttributeType": { "TypeKey": "method" },
+        "Advices": {
+          "Entry": { "MethodKey": "attributeEntry" },
+          "Exit": { "MethodKey": "attributeExit" }
+        }
+        //,"IsSwitchedOn": true
+      },
+      "aspectByMethodName": {
+        "AspectBuilderKey": "CrossCutterN.Aspect.Builder.NameExpressionAspectBuilder",
+        "Includes": [ "CrossCutterN.Sample.Target.Target.Ad*" ],
+        "Advices": {
+          "Entry": { "MethodKey": "expressionEntry" },
+          "Exit": { "MethodKey": "expressionExit" }
+        }
+      }
+    },
+    "Order": {
+      "Entry": [
+        "aspectByAttribute",
+        "aspectByMethodName"
+      ],
+      "Exit": [
+        "aspectByMethodName",
+        "aspectByAttribute"
+      ]
+    },
+    "Targets": [
+      {
+        "Input": "CrossCutterN.Sample.Target.exe",
+        "Output": "CrossCutterN.Sample.Target.Weaved.exe",
+        "IncludeSymbol": true
+      }
+    ]
+  }
+}

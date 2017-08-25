@@ -1,177 +1,212 @@
-﻿/**
-* Description: Class weaving statistics implementation
-* Author: David Cui
-*/
+﻿// <copyright file="ClassWeavingStatistics.cs" company="Cui Ziqiang">
+// Copyright (c) 2017 Cui Ziqiang
+// </copyright>
 
 namespace CrossCutterN.Weaver.Statistics
 {
     using System;
     using System.Collections.Generic;
     using System.Linq;
-    using Advice.Common;
+    using CrossCutterN.Base.Common;
 
-    internal sealed class ClassWeavingStatistics : IClassWeavingStatistics, IWriteOnlyClassWeavingStatistics
+    /// <summary>
+    /// Weaving statistics of class.
+    /// </summary>
+    internal sealed class ClassWeavingStatistics : IClassWeavingStatistics, IClassWeavingStatisticsBuilder
     {
-        private readonly List<IMethodWeavingStatistics> _methodStatistics = new List<IMethodWeavingStatistics>();
-        private readonly List<IPropertyWeavingStatistics> _propertyStatistics = new List<IPropertyWeavingStatistics>();
-        private readonly List<ISwitchWeavingRecord> _switchWeavingRecords = new List<ISwitchWeavingRecord>(); 
-        private readonly IrreversibleOperation _readOnly = new IrreversibleOperation();
+        private readonly List<IMethodWeavingStatistics> methodStatistics = new List<IMethodWeavingStatistics>();
+        private readonly List<IPropertyWeavingStatistics> propertyStatistics = new List<IPropertyWeavingStatistics>();
+        private readonly List<ISwitchWeavingRecord> switchWeavingRecords = new List<ISwitchWeavingRecord>();
+        private readonly IrreversibleOperation readOnly = new IrreversibleOperation();
 
-        public string FullName { get; private set; }
-        public string Name { get; private set; }
-        public string Namespace { get; private set; }
-
-        public IReadOnlyCollection<IMethodWeavingStatistics> MethodWeavingStatistics
-        {
-            get
-            {
-                _readOnly.Assert(true);
-                return _methodStatistics.AsReadOnly();
-            }
-        }
-
-        public IReadOnlyCollection<IPropertyWeavingStatistics> PropertyWeavingStatistics
-        {
-            get
-            {
-                _readOnly.Assert(true);
-                return _propertyStatistics.AsReadOnly();
-            }
-        }
-
-        public IReadOnlyCollection<ISwitchWeavingRecord> SwitchWeavingRecords
-        {
-            get
-            {
-                _readOnly.Assert(true);
-                return _switchWeavingRecords.AsReadOnly();
-            }
-        }
-
-        public int WeavedMethodPropertyCount
-        {
-            get
-            {
-                _readOnly.Assert(true);
-                return WeavedMethodCount + WeavedPropertyCount;
-            }
-        }
-
-        public int WeavedMethodCount
-        {
-            get
-            {
-                _readOnly.Assert(true);
-                return _methodStatistics.Count;
-            }
-        }
-
-        public int WeavedPropertyCount
-        {
-            get
-            {
-                _readOnly.Assert(true);
-                return _propertyStatistics.Count;
-            }
-        }
-
-        public int MethodJoinPointCount
-        {
-            get
-            {
-                _readOnly.Assert(true);
-                return _methodStatistics.Sum(statistics => statistics.JoinPointCount);
-            }
-        }
-
-        public int PropertyGetterJoinPointCount
-        {
-            get
-            {
-                _readOnly.Assert(true);
-                return _propertyStatistics.Sum(statistics => statistics.GetterJoinPointCount);
-            }
-        }
-
-        public int PropertySetterJoinPointCount
-        {
-            get
-            {
-                _readOnly.Assert(true);
-                return _propertyStatistics.Sum(statistics => statistics.SetterJoinPointCount);
-            }
-        }
-
-        public int PropertyJoinPointCount
-        {
-            get
-            {
-                _readOnly.Assert(true);
-                return _propertyStatistics.Sum(statisics => statisics.JoinPointCount);
-            }
-        }
-
-        public int WeavedSwitchCount
-        {
-            get
-            {
-                _readOnly.Assert(true);
-                return _switchWeavingRecords.Count;
-            }
-        }
-
+        /// <summary>
+        /// Initializes a new instance of the <see cref="ClassWeavingStatistics"/> class.
+        /// </summary>
+        /// <param name="name">Name of the class.</param>
+        /// <param name="fullName">Full name of the class.</param>
+        /// <param name="nameSpace">namespace of the class.</param>
         public ClassWeavingStatistics(string name, string fullName, string nameSpace)
         {
+#if DEBUG
             if (string.IsNullOrWhiteSpace(name))
             {
                 throw new ArgumentNullException("name");
             }
+
             if (string.IsNullOrWhiteSpace(fullName))
             {
                 throw new ArgumentNullException("fullName");
             }
+
             if (string.IsNullOrWhiteSpace(nameSpace))
             {
                 throw new ArgumentNullException("nameSpace");
             }
+#endif
             Name = name;
             FullName = fullName;
             Namespace = nameSpace;
         }
 
+        /// <inheritdoc/>
+        public string FullName { get; private set; }
+
+        /// <inheritdoc/>
+        public string Name { get; private set; }
+
+        /// <inheritdoc/>
+        public string Namespace { get; private set; }
+
+        /// <inheritdoc/>
+        public IReadOnlyCollection<IMethodWeavingStatistics> MethodWeavingStatistics
+        {
+            get
+            {
+                readOnly.Assert(true);
+                return methodStatistics.AsReadOnly();
+            }
+        }
+
+        /// <inheritdoc/>
+        public IReadOnlyCollection<IPropertyWeavingStatistics> PropertyWeavingStatistics
+        {
+            get
+            {
+                readOnly.Assert(true);
+                return propertyStatistics.AsReadOnly();
+            }
+        }
+
+        /// <inheritdoc/>
+        public IReadOnlyCollection<ISwitchWeavingRecord> SwitchWeavingRecords
+        {
+            get
+            {
+                readOnly.Assert(true);
+                return switchWeavingRecords.AsReadOnly();
+            }
+        }
+
+        /// <inheritdoc/>
+        public int WeavedMethodPropertyCount
+        {
+            get
+            {
+                readOnly.Assert(true);
+                return WeavedMethodCount + WeavedPropertyCount;
+            }
+        }
+
+        /// <inheritdoc/>
+        public int WeavedMethodCount
+        {
+            get
+            {
+                readOnly.Assert(true);
+                return methodStatistics.Count;
+            }
+        }
+
+        /// <inheritdoc/>
+        public int WeavedPropertyCount
+        {
+            get
+            {
+                readOnly.Assert(true);
+                return propertyStatistics.Count;
+            }
+        }
+
+        /// <inheritdoc/>
+        public int MethodJoinPointCount
+        {
+            get
+            {
+                readOnly.Assert(true);
+                return methodStatistics.Sum(statistics => statistics.JoinPointCount);
+            }
+        }
+
+        /// <inheritdoc/>
+        public int PropertyGetterJoinPointCount
+        {
+            get
+            {
+                readOnly.Assert(true);
+                return propertyStatistics.Sum(statistics => statistics.GetterJoinPointCount);
+            }
+        }
+
+        /// <inheritdoc/>
+        public int PropertySetterJoinPointCount
+        {
+            get
+            {
+                readOnly.Assert(true);
+                return propertyStatistics.Sum(statistics => statistics.SetterJoinPointCount);
+            }
+        }
+
+        /// <inheritdoc/>
+        public int PropertyJoinPointCount
+        {
+            get
+            {
+                readOnly.Assert(true);
+                return propertyStatistics.Sum(statisics => statisics.JoinPointCount);
+            }
+        }
+
+        /// <inheritdoc/>
+        public int WeavedSwitchCount
+        {
+            get
+            {
+                readOnly.Assert(true);
+                return switchWeavingRecords.Count;
+            }
+        }
+
+        /// <inheritdoc/>
         public void AddMethodWeavingStatistics(IMethodWeavingStatistics statistics)
         {
             if (statistics == null)
             {
                 throw new ArgumentNullException("statistics");
             }
-            _readOnly.Assert(false);
-            _methodStatistics.Add(statistics);
+
+            readOnly.Assert(false);
+            methodStatistics.Add(statistics);
         }
 
+        /// <inheritdoc/>
         public void AddPropertyWeavingStatistics(IPropertyWeavingStatistics statistics)
         {
             if (statistics == null)
             {
                 throw new ArgumentNullException("statistics");
             }
-            _readOnly.Assert(false);
-            _propertyStatistics.Add(statistics);
+
+            readOnly.Assert(false);
+            propertyStatistics.Add(statistics);
         }
 
+        /// <inheritdoc/>
         public void AddSwitchWeavingRecord(ISwitchWeavingRecord record)
         {
             if (record == null)
             {
                 throw new ArgumentNullException("record");
             }
-            _readOnly.Assert(false);
-            _switchWeavingRecords.Add(record);
+
+            readOnly.Assert(false);
+            switchWeavingRecords.Add(record);
         }
 
-        public IClassWeavingStatistics Convert()
+        /// <inheritdoc/>
+        public IClassWeavingStatistics Build()
         {
-            _readOnly.Apply();
+            readOnly.Apply();
             return this;
         }
     }

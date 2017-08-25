@@ -1,0 +1,28 @@
+{
+  "CrossCutterN": {
+    "sample": {
+      "AssemblyPath": "CrossCutterN.Sample.Advice.dll",
+      "Attributes": { "method": "CrossCutterN.Sample.Advice.SampleConcernMethodAttribute" },
+      "Advices": {
+        "CrossCutterN.Sample.Advice.Advices": {
+          "attributeEntry": {
+            "MethodName": "InjectByAttributeOnEntry",
+            "Parameters": [ "Execution" ]
+          },
+          "attributeExit": {
+            "MethodName": "InjectByAttributeOnExit",
+            "Parameters": [ "Return" ]
+          },
+          "expressionEntry": {
+            "MethodName": "InjectByMethodNameOnEntry",
+            "Parameters": [ "Execution" ]
+          },
+          "expressionExit": {
+            "MethodName": "InjectByMethodNameOnExit",
+            "Parameters": [ "Return" ]
+          }
+        }
+      }
+    }
+  }
+}

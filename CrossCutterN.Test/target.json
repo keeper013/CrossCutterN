@@ -1,0 +1,450 @@
+﻿{
+  "CrossCutterN": {
+    "DefaultAdviceAssemblyKey": "test",
+    "AspectBuilders": {
+      "contextEntryException": {
+        "AspectBuilderKey": "CrossCutterN.Aspect.Builder.ConcernAttributeAspectBuilder",
+        "IsSwitchedOn": true,
+        "ConcernMethodAttributeType": { "TypeKey": "contextEntryExceptionMethod" },
+        "Advices": {
+          "Entry": { "MethodKey": "contextEntry1" },
+          "Exception": { "MethodKey": "contextException1" },
+          "Exit": { "MethodKey": "contextExit2" }
+        }
+      },
+      "contextEntryExit": {
+        "AspectBuilderKey": "CrossCutterN.Aspect.Builder.ConcernAttributeAspectBuilder",
+        "IsSwitchedOn": true,
+        "ConcernMethodAttributeType": { "TypeKey": "contextEntryExitMethod" },
+        "Advices": {
+          "Entry": { "MethodKey": "contextEntry1" },
+          "Exception": { "MethodKey": "contextException2" },
+          "Exit": { "MethodKey": "contextExit1" }
+        }
+      },
+      "contextExceptionExit": {
+        "AspectBuilderKey": "CrossCutterN.Aspect.Builder.ConcernAttributeAspectBuilder",
+        "IsSwitchedOn": true,
+        "ConcernMethodAttributeType": { "TypeKey": "contextExceptionExitMethod" },
+        "Advices": {
+          "Entry": { "MethodKey": "contextEntry2" },
+          "Exception": { "MethodKey": "contextException1" },
+          "Exit": { "MethodKey": "contextExit1" }
+        }
+      },
+      "contextEntryExceptionExit": {
+        "AspectBuilderKey": "CrossCutterN.Aspect.Builder.ConcernAttributeAspectBuilder",
+        "IsSwitchedOn": true,
+        "ConcernMethodAttributeType": { "TypeKey": "contextMethod" },
+        "Advices": {
+          "Entry": { "MethodKey": "contextEntry1" },
+          "Exception": { "MethodKey": "contextException1" },
+          "Exit": { "MethodKey": "contextExit1" }
+        }
+      },
+      "mixed1": {
+        "AspectBuilderKey": "CrossCutterN.Aspect.Builder.ConcernAttributeAspectBuilder",
+        "ConcernMethodAttributeType": { "TypeKey": "mixedMethod1" },
+        "Advices": {
+          "Entry": { "MethodKey": "mixedEntryByAttribute1" },
+          "Exit": { "MethodKey": "mixedExitByAttribute1" }
+        }
+      },
+      "mixed2": {
+        "AspectBuilderKey": "CrossCutterN.Aspect.Builder.NameExpressionAspectBuilder",
+        "ConcernOptions": [ "Instance", "Method", "Public", "Static" ],
+        "Includes": [ "CrossCutterN.Test.MixedTest.*Target.*" ],
+        "Advices": {
+          "Exit": { "MethodKey": "mixedExitByNameExpression" }
+        }
+      },
+      "mixed3": {
+        "AspectBuilderKey": "CrossCutterN.Aspect.Builder.ConcernAttributeAspectBuilder",
+        "ConcernMethodAttributeType": { "TypeKey": "mixedMethod2" },
+        "Advices": {
+          "Entry": { "MethodKey": "mixedEntryByAttribute2" },
+          "Exit": { "MethodKey": "mixedExitByAttribute2" }
+        }
+      },
+      "mixed4": {
+        "AspectBuilderKey": "CrossCutterN.Aspect.Builder.ConcernAttributeAspectBuilder",
+        "ConcernOptions": [ "Instance", "Method", "Public", "Static" ],
+        "ConcernClassAttributeType": { "TypeKey": "mixedClass3" },
+        "Advices": {
+          "Entry": { "MethodKey": "mixedEntryByAttribute3" },
+          "Exit": { "MethodKey": "mixedExitByAttribute3" }
+        }
+      },
+      "nameExpression1": {
+        "AspectBuilderKey": "CrossCutterN.Aspect.Builder.NameExpressionAspectBuilder",
+        "ConcernOptions": [ "Instance", "Method", "PropertyGetter", "Public", "Static" ],
+        "Includes": [
+          "CrossCutterN.Test.NameExpressionTest.*Target*.*ToBe*",
+          "CrossCutterN.Test.NameExpressionTest.NameExpressionTestTarget.NotToBeMatchedButMatchedByExact"
+        ],
+        "Excludes": [ "CrossCutterN.Test.NameExpressionTest.*Target*.*NotToBe*" ],
+        "Advices": {
+          "Entry": { "MethodKey": "nameExpressionEntry" }
+        }
+      },
+      "optionsPublic": {
+        "AspectBuilderKey": "CrossCutterN.Aspect.Builder.ConcernAttributeAspectBuilder",
+        "ConcernOptions": [ "Constructor", "Instance", "Method", "PropertyGetter", "PropertySetter", "Public", "Static" ],
+        "ConcernClassAttributeType": { "TypeKey": "optionsClass" },
+        "Advices": {
+          "Entry": { "MethodKey": "optionPublicEntry" },
+          "Exit": { "MethodKey": "optionPublicExit" }
+        }
+      },
+      "optionsProtected": {
+        "AspectBuilderKey": "CrossCutterN.Aspect.Builder.ConcernAttributeAspectBuilder",
+        "ConcernOptions": [ "Constructor", "Instance", "Method", "PropertyGetter", "PropertySetter", "Protected", "Static" ],
+        "ConcernClassAttributeType": { "TypeKey": "optionsClass" },
+        "Advices": {
+          "Entry": { "MethodKey": "optionProtectedEntry" },
+          "Exit": { "MethodKey": "optionProtectedExit" }
+        }
+      },
+      "optionsInternal": {
+        "AspectBuilderKey": "CrossCutterN.Aspect.Builder.ConcernAttributeAspectBuilder",
+        "ConcernOptions": [ "Constructor", "Instance", "Method", "PropertyGetter", "PropertySetter", "Internal", "Static" ],
+        "ConcernClassAttributeType": { "TypeKey": "optionsClass" },
+        "Advices": {
+          "Entry": { "MethodKey": "optionInternalEntry" },
+          "Exit": { "MethodKey": "optionInternalExit" }
+        }
+      },
+      "optionsPrivate": {
+        "AspectBuilderKey": "CrossCutterN.Aspect.Builder.ConcernAttributeAspectBuilder",
+        "ConcernOptions": [ "Constructor", "Instance", "Method", "PropertyGetter", "PropertySetter", "Private", "Static" ],
+        "ConcernClassAttributeType": { "TypeKey": "optionsClass" },
+        "Advices": {
+          "Entry": { "MethodKey": "optionPrivateEntry" },
+          "Exit": { "MethodKey": "optionPrivateExit" }
+        }
+      },
+      "optionsInstance": {
+        "AspectBuilderKey": "CrossCutterN.Aspect.Builder.ConcernAttributeAspectBuilder",
+        "ConcernOptions": [ "Constructor", "Method", "PropertyGetter", "PropertySetter", "Public", "Protected", "Internal", "Private", "Instance" ],
+        "ConcernClassAttributeType": { "TypeKey": "optionsClass" },
+        "Advices": {
+          "Entry": { "MethodKey": "optionInstanceEntry" },
+          "Exit": { "MethodKey": "optionInstanceExit" }
+        }
+      },
+      "optionsStatic": {
+        "AspectBuilderKey": "CrossCutterN.Aspect.Builder.ConcernAttributeAspectBuilder",
+        "ConcernOptions": [ "Constructor", "Method", "PropertyGetter", "PropertySetter", "Public", "Protected", "Internal", "Private", "Static" ],
+        "ConcernClassAttributeType": { "TypeKey": "optionsClass" },
+        "Advices": {
+          "Entry": { "MethodKey": "optionStaticEntry" },
+          "Exit": { "MethodKey": "optionStaticExit" }
+        }
+      },
+      "optionsMethod": {
+        "AspectBuilderKey": "CrossCutterN.Aspect.Builder.ConcernAttributeAspectBuilder",
+        "ConcernOptions": [ "Constructor", "Public", "Protected", "Internal", "Private", "Instance", "Static", "Method" ],
+        "ConcernClassAttributeType": { "TypeKey": "optionsClass" },
+        "Advices": {
+          "Entry": { "MethodKey": "optionMethodEntry" },
+          "Exit": { "MethodKey": "optionMethodExit" }
+        }
+      },
+      "optionsPropertyGetter": {
+        "AspectBuilderKey": "CrossCutterN.Aspect.Builder.ConcernAttributeAspectBuilder",
+        "ConcernOptions": [ "Constructor", "Public", "Protected", "Internal", "Private", "Instance", "Static", "PropertyGetter" ],
+        "ConcernClassAttributeType": { "TypeKey": "optionsClass" },
+        "Advices": {
+          "Entry": { "MethodKey": "optionPropertyGetterEntry" },
+          "Exit": { "MethodKey": "optionPropertyGetterExit" }
+        }
+      },
+      "optionsPropertySetter": {
+        "AspectBuilderKey": "CrossCutterN.Aspect.Builder.ConcernAttributeAspectBuilder",
+        "ConcernOptions": [ "Constructor", "Public", "Protected", "Internal", "Private", "Instance", "Static", "PropertySetter" ],
+        "ConcernClassAttributeType": { "TypeKey": "optionsClass" },
+        "Advices": {
+          "Entry": { "MethodKey": "optionPropertySetterEntry" },
+          "Exit": { "MethodKey": "optionPropertySetterExit" }
+        }
+      },
+      "overwrite1": {
+        "AspectBuilderKey": "CrossCutterN.Aspect.Builder.ConcernAttributeAspectBuilder",
+        "ConcernOptions": [ "Instance", "Method", "Public", "Internal" ],
+        "ConcernClassAttributeType": { "TypeKey": "overwriteClass" },
+        "ConcernMethodAttributeType": { "TypeKey": "overwriteMethod" },
+        "ConcernPropertyAttributeType": { "TypeKey": "overwriteProperty" },
+        "NoConcernAttributeType": { "TypeKey": "overwriteNo" },
+        "Advices": {
+          "Entry": { "MethodKey": "overwriteEntry" },
+          "Exception": { "MethodKey": "overwriteException" },
+          "Exit": { "MethodKey": "overwriteExit" }
+        }
+      },
+      "parameterAll": {
+        "AspectBuilderKey": "CrossCutterN.Aspect.Builder.NameExpressionAspectBuilder",
+        "ConcernOptions": [ "Instance", "Method", "Public", "Static" ],
+        "Includes": [ "CrossCutterN.Test.ParameterTest.*Target.All*" ],
+        "Advices": {
+          "Entry": { "MethodKey": "parameterEntryExecution" },
+          "Exception": { "MethodKey": "parameterExceptionExecutionException" },
+          "Exit": { "MethodKey": "parameterExitExecutionReturnHasException" }
+        }
+      },
+      "parameterNoExecution": {
+        "AspectBuilderKey": "CrossCutterN.Aspect.Builder.NameExpressionAspectBuilder",
+        "ConcernOptions": [ "Instance", "Method", "Public", "Static" ],
+        "Includes": [ "CrossCutterN.Test.ParameterTest.*Target.NoExecution*" ],
+        "Advices": {
+          "Entry": { "MethodKey": "parameterEntryEmpty" },
+          "Exception": { "MethodKey": "parameterExceptionException" },
+          "Exit": { "MethodKey": "parameterExitReturnHasException" }
+        }
+      },
+      "parameterNoReturn": {
+        "AspectBuilderKey": "CrossCutterN.Aspect.Builder.NameExpressionAspectBuilder",
+        "ConcernOptions": [ "Instance", "Method", "Public", "Static" ],
+        "Includes": [ "CrossCutterN.Test.ParameterTest.*Target.NoReturn*" ],
+        "Advices": {
+          "Entry": { "MethodKey": "parameterEntryExecution" },
+          "Exception": { "MethodKey": "parameterExceptionExecutionException" },
+          "Exit": { "MethodKey": "parameterExitExecutionHasException" }
+        }
+      },
+      "parameterNoHasException": {
+        "AspectBuilderKey": "CrossCutterN.Aspect.Builder.NameExpressionAspectBuilder",
+        "ConcernOptions": [ "Instance", "Method", "Public", "Static" ],
+        "Includes": [ "CrossCutterN.Test.ParameterTest.*Target.NoHasException*" ],
+        "Advices": {
+          "Exit": { "MethodKey": "parameterExitExecutionReturn" }
+        }
+      },
+      "parameterNoException": {
+        "AspectBuilderKey": "CrossCutterN.Aspect.Builder.NameExpressionAspectBuilder",
+        "ConcernOptions": [ "Instance", "Method", "Public", "Static" ],
+        "Includes": [ "CrossCutterN.Test.ParameterTest.*Target.NoException*" ],
+        "Advices": {
+          "Exception": { "MethodKey": "parameterExceptionExecution" }
+        }
+      },
+      "parameterOnlyExecution": {
+        "AspectBuilderKey": "CrossCutterN.Aspect.Builder.NameExpressionAspectBuilder",
+        "ConcernOptions": [ "Instance", "Method", "Public", "Static" ],
+        "Includes": [ "CrossCutterN.Test.ParameterTest.*Target.OnlyExecution*" ],
+        "Advices": {
+          "Exception": { "MethodKey": "parameterExceptionExecution" },
+          "Exit": { "MethodKey": "parameterExitExecution" }
+        }
+      },
+      "switchAspect": {
+        "AspectBuilderKey": "CrossCutterN.Aspect.Builder.NameExpressionAspectBuilder",
+        "IsSwitchedOn": true,
+        "ConcernOptions": [ "Instance", "Method", "PropertyGetter", "propertySetter", "Public", "Static" ],
+        "Includes": [ "CrossCutterN.Test.SwitchTest.SwitchAspectTestTarget.*" ],
+        "Excludes": [ "CrossCutterN.Test.SwitchTest.SwitchExceptionTestTarget.*" ],
+        "Advices": {
+          "Entry": { "MethodKey": "switchEntry1" },
+          "Exit": { "MethodKey": "switchExit1" }
+        }
+      },
+      "switch2": {
+        "AspectBuilderKey": "CrossCutterN.Aspect.Builder.NameExpressionAspectBuilder",
+        "IsSwitchedOn": true,
+        "ConcernOptions": [ "Instance", "Method", "PropertyGetter", "propertySetter", "Public", "Static" ],
+        "Includes": [ "CrossCutterN.Test.SwitchTest.Switch*TestTarget.*" ],
+        "Excludes": [
+          "CrossCutterN.Test.SwitchTest.SwitchAspectTestTarget.*",
+          "CrossCutterN.Test.SwitchTest.SwitchExceptionTestTarget.*",
+          "CrossCutterN.Test.SwitchTest.SwitchNoReturnTestTarget.*",
+          "CrossCutterN.Test.SwitchTest.SwitchNoExecutionTestTarget.*",
+          "CrossCutterN.Test.SwitchTest.SwitchOnlyExecutionTestTarget.*"
+        ],
+        "Advices": {
+          "Entry": { "MethodKey": "switchEntry2" },
+          "Exit": { "MethodKey": "switchExit2" }
+        }
+      },
+      "switch3": {
+        "AspectBuilderKey": "CrossCutterN.Aspect.Builder.NameExpressionAspectBuilder",
+        "IsSwitchedOn": true,
+        "ConcernOptions": [ "Instance", "Method", "PropertyGetter", "propertySetter", "Public", "Static" ],
+        "Includes": [ "CrossCutterN.Test.SwitchTest.Switch*TestTarget.*" ],
+        "Excludes": [
+          "CrossCutterN.Test.SwitchTest.SwitchAspectTestTarget.*",
+          "CrossCutterN.Test.SwitchTest.SwitchExceptionTestTarget.*",
+          "CrossCutterN.Test.SwitchTest.SwitchNoReturnTestTarget.*",
+          "CrossCutterN.Test.SwitchTest.SwitchNoExecutionTestTarget.*",
+          "CrossCutterN.Test.SwitchTest.SwitchOnlyExecutionTestTarget.*"
+        ],
+        "Advices": {
+          "Entry": { "MethodKey": "switchEntry3" },
+          "Exit": { "MethodKey": "switchExit3" }
+        }
+      },
+      "switch4": {
+        "AspectBuilderKey": "CrossCutterN.Aspect.Builder.NameExpressionAspectBuilder",
+        "IsSwitchedOn": true,
+        "ConcernOptions": [ "Instance", "Method", "PropertyGetter", "propertySetter", "Public", "Static" ],
+        "Includes": [ "CrossCutterN.Test.SwitchTest.SwitchStatusLookUpTestTarget.*" ],
+        "Excludes": [ "CrossCutterN.Test.SwitchTest.SwitchExceptionTestTarget.*" ],
+        "Advices": {
+          "Entry": { "MethodKey": "switchEntry1" },
+          "Exit": { "MethodKey": "switchExit1" }
+        }
+      },
+      "switch5": {
+        "AspectBuilderKey": "CrossCutterN.Aspect.Builder.NameExpressionAspectBuilder",
+        "IsSwitchedOn": true,
+        "ConcernOptions": [ "Instance", "Method", "PropertyGetter", "propertySetter", "Public", "Static" ],
+        "Includes": [ "CrossCutterN.Test.SwitchTest.SwitchStatusLookUpTestTarget.*" ],
+        "Excludes": [ "CrossCutterN.Test.SwitchTest.SwitchExceptionTestTarget.*" ],
+        "Advices": {
+          "Entry": { "MethodKey": "switchEntry1" }
+        }
+      },
+      "switch6": {
+        "AspectBuilderKey": "CrossCutterN.Aspect.Builder.NameExpressionAspectBuilder",
+        "IsSwitchedOn": true,
+        "ConcernOptions": [ "Instance", "Method", "PropertyGetter", "propertySetter", "Public", "Static" ],
+        "Includes": [ "CrossCutterN.Test.SwitchTest.SwitchExceptionTestTarget.*" ],
+        "Advices": {
+          "Exit": { "MethodKey": "switchExit4" }
+        }
+      },
+      "switch7": {
+        "AspectBuilderKey": "CrossCutterN.Aspect.Builder.NameExpressionAspectBuilder",
+        "IsSwitchedOn": true,
+        "ConcernOptions": [ "Instance", "Method", "PropertyGetter", "propertySetter", "Public", "Static" ],
+        "Includes": [ "CrossCutterN.Test.SwitchTest.SwitchExceptionTestTarget.*" ],
+        "Advices": {
+          "Exit": { "MethodKey": "switchExit5" }
+        }
+      },
+      "switch8": {
+        "AspectBuilderKey": "CrossCutterN.Aspect.Builder.NameExpressionAspectBuilder",
+        "IsSwitchedOn": true,
+        "ConcernOptions": [ "Instance", "Method", "PropertyGetter", "propertySetter", "Public", "Static" ],
+        "Includes": [ "CrossCutterN.Test.SwitchTest.SwitchNoReturnTestTarget.*" ],
+        "Advices": {
+          "Entry": { "MethodKey": "switchEntry6" },
+          "Exit": { "MethodKey": "switchExit6" }
+        }
+      },
+      "switch9": {
+        "AspectBuilderKey": "CrossCutterN.Aspect.Builder.NameExpressionAspectBuilder",
+        "IsSwitchedOn": true,
+        "ConcernOptions": [ "Instance", "Method", "PropertyGetter", "propertySetter", "Public", "Static" ],
+        "Includes": [ "CrossCutterN.Test.SwitchTest.SwitchNoExecutionTestTarget.*" ],
+        "Advices": {
+          "Entry": { "MethodKey": "switchEntry7" },
+          "Exit": { "MethodKey": "switchExit7" }
+        }
+      },
+      "switch10": {
+        "AspectBuilderKey": "CrossCutterN.Aspect.Builder.NameExpressionAspectBuilder",
+        "IsSwitchedOn": true,
+        "ConcernOptions": [ "Instance", "Method", "PropertyGetter", "propertySetter", "Public", "Static" ],
+        "Includes": [ "CrossCutterN.Test.SwitchTest.SwitchOnlyExecutionTestTarget.*" ],
+        "Advices": {
+          "Entry": { "MethodKey": "switchEntry8" },
+          "Exit": { "MethodKey": "switchExit8" }
+        }
+      },
+      "loadAspectBuilder": {
+        "AspectAssemblyKey": "CrossCutterN.Aspect.LoadTest",
+        "AspectBuilderKey": "testBuilder",
+        "Advices": {
+          "Entry": { "MethodKey": "entry1" }
+        }
+      }
+    },
+    "Order": {
+      "Entry": [
+        "contextEntryException",
+        "contextEntryExit",
+        "contextExceptionExit",
+        "contextEntryExceptionExit",
+        "mixed1",
+        "mixed3",
+        "mixed4",
+        "nameExpression1",
+        "optionsPublic",
+        "optionsProtected",
+        "optionsInternal",
+        "optionsPrivate",
+        "optionsInstance",
+        "optionsStatic",
+        "optionsMethod",
+        "optionsPropertyGetter",
+        "optionsPropertySetter",
+        "overwrite1",
+        "parameterAll",
+        "parameterNoExecution",
+        "parameterNoReturn",
+        "switchAspect",
+        "switch2",
+        "switch3",
+        "switch4",
+        "switch5",
+        "switch8",
+        "switch9",
+        "switch10",
+        "loadAspectBuilder"
+      ],
+      "Exception": [
+        "contextEntryException",
+        "contextEntryExit",
+        "contextExceptionExit",
+        "contextEntryExceptionExit",
+        "overwrite1",
+        "parameterAll",
+        "parameterNoExecution",
+        "parameterNoReturn",
+        "parameterNoException",
+        "parameterOnlyExecution"
+      ],
+      "Exit": [
+        "contextEntryException",
+        "contextEntryExit",
+        "contextExceptionExit",
+        "contextEntryExceptionExit",
+        "mixed1",
+        "mixed2",
+        "mixed3",
+        "mixed4",
+        "optionsPropertySetter",
+        "optionsPropertyGetter",
+        "optionsMethod",
+        "optionsStatic",
+        "optionsInstance",
+        "optionsPrivate",
+        "optionsInternal",
+        "optionsProtected",
+        "optionsPublic",
+        "overwrite1",
+        "parameterAll",
+        "parameterNoExecution",
+        "parameterNoReturn",
+        "parameterNoHasException",
+        "parameterOnlyExecution",
+        "switch3",
+        "switch2",
+        "switchAspect",
+        "switch4",
+        "switch6",
+        "switch7",
+        "switch8",
+        "switch9",
+        "switch10"
+      ]
+    },
+    "Targets": [
+      {
+        "Input": "CrossCutterN.Test.dll",
+        "Output": "CrossCutterN.Test.Weaved.dll",
+        "IncludeSymbol": true,
+        "StrongNameKeyFile": "CrossCutterN.snk"
+      }
+    ]
+  }
+}

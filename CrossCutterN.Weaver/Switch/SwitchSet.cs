@@ -1,38 +1,38 @@
-﻿/**
- * Description: Switch set
- * Author: David Cui
- */
+﻿// <copyright file="SwitchSet.cs" company="Cui Ziqiang">
+// Copyright (c) 2017 Cui Ziqiang
+// </copyright>
 
 namespace CrossCutterN.Weaver.Switch
 {
     using System.Collections.Generic;
     using System.Linq;
 
+    /// <summary>
+    /// Switch set implementation.
+    /// </summary>
     internal sealed class SwitchSet : ISwitchSet
     {
-        private bool _isSwitchable;
-        private readonly HashSet<int> _switches = new HashSet<int>();
+        private readonly HashSet<int> switches = new HashSet<int>();
+        private bool isSwitchable;
 
-        public IReadOnlyList<int> Switches
-        {
-            get { return _isSwitchable ? _switches.ToList().AsReadOnly() : null; }
-        }
+        /// <inheritdoc/>
+        public IReadOnlyList<int> Switches => isSwitchable ? switches.ToList().AsReadOnly() : null;
 
+        /// <inheritdoc/>
         public void Reset()
         {
-            _isSwitchable = true;
-            _switches.Clear();
+            isSwitchable = true;
+            switches.Clear();
         }
 
-        public bool RegisterSwitch(int variableIndex)
-        {
-            return _isSwitchable && _switches.Add(variableIndex);
-        }
+        /// <inheritdoc/>
+        public bool RegisterSwitch(int variableIndex) => isSwitchable && switches.Add(variableIndex);
 
+        /// <inheritdoc/>
         public void SetUnSwitchable()
         {
-            _isSwitchable = false;
-            _switches.Clear();
+            isSwitchable = false;
+            switches.Clear();
         }
     }
 }

@@ -1,15 +1,15 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<Project ToolsVersion="14.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+<Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{439EE3AF-402F-4628-BC75-33D916FA3973}</ProjectGuid>
+    <ProjectGuid>{AAF69078-24B5-4A9B-8A5B-DCC29161668C}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>CrossCutterN.Aspect</RootNamespace>
     <AssemblyName>CrossCutterN.Aspect</AssemblyName>
-    <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
@@ -20,6 +20,7 @@
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <DocumentationFile>bin\Debug\CrossCutterN.Aspect.xml</DocumentationFile>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -28,10 +29,22 @@
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <DocumentationFile>bin\Release\CrossCutterN.Aspect.xml</DocumentationFile>
+  </PropertyGroup>
+  <PropertyGroup>
+    <ApplicationIcon>crosscuttern.ico</ApplicationIcon>
+  </PropertyGroup>
+  <PropertyGroup>
+    <SignAssembly>true</SignAssembly>
+  </PropertyGroup>
+  <PropertyGroup>
+    <CodeAnalysisRuleSet>$(SolutionDir)_stylecop\StyleCopeRules.ruleset</CodeAnalysisRuleSet>
+    <SignAssembly>true</SignAssembly>
+    <DelaySign>false</DelaySign>
+    <AssemblyOriginatorKeyFile>CrossCutterN.snk</AssemblyOriginatorKeyFile>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
-    <Reference Include="System.configuration" />
     <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
@@ -41,74 +54,75 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Aspect\AspectFactory.cs" />
+    <Compile Include="Aspect\ConcernAttributeAspect.cs" />
+    <Compile Include="Aspect\IAspect.cs" />
+    <Compile Include="Aspect\IAspectBuilder.cs" />
+    <Compile Include="Aspect\IJoinPointDefaultOptionsBuilder.cs" />
+    <Compile Include="Aspect\ISwitchableAspectWithDefaultOptions.cs" />
+    <Compile Include="Aspect\JoinPoint.cs" />
+    <Compile Include="Aspect\NameExpressionAspect.cs" />
+    <Compile Include="Aspect\PropertyConcern.cs" />
+    <Compile Include="Aspect\PropertyConcernExtensioncs.cs" />
+    <Compile Include="Aspect\SwitchableAspectWithDefaultOptions.cs" />
+    <Compile Include="Builder\Advice.cs" />
+    <Compile Include="Builder\AdviceAssembly.cs" />
+    <Compile Include="Builder\AdviceAssemblyTypeIndex.cs" />
+    <Compile Include="Builder\AdviceIndex.cs" />
+    <Compile Include="Builder\AdviceParameterType.cs" />
+    <Compile Include="Builder\AdviceUtility.cs" />
+    <Compile Include="Builder\AdviceUtilityExtension.cs" />
+    <Compile Include="Builder\AspectAssembly.cs" />
+    <Compile Include="Builder\AspectBuilder.cs" />
     <Compile Include="Builder\AspectBuilderFactory.cs" />
-    <Compile Include="Builder\SwitchableAspectBuilderWithDefaultOptions.cs" />
+    <Compile Include="Builder\AspectUtility.cs" />
+    <Compile Include="Builder\AspectUtilityExtension.cs" />
     <Compile Include="Builder\ConcernAttributeAspectBuilder.cs" />
+    <Compile Include="Builder\ConcernOption.cs" />
+    <Compile Include="Builder\IAdviceUtility.cs" />
+    <Compile Include="Builder\IAdviceUtilityBuilder.cs" />
     <Compile Include="Builder\IAspectBuilder.cs" />
-    <Compile Include="Builder\ISwitchableAspectBuilder.cs" />
-    <Compile Include="Builder\IWriteOnlyAspectBuilder.cs" />
-    <Compile Include="Builder\IWriteOnlyConcernAttributeAspectBuilder.cs" />
-    <Compile Include="Builder\IWriteOnlyJoinPointDefaultOptions.cs" />
-    <Compile Include="Builder\IWriteOnlyNameExpressionAspectBuilder.cs" />
+    <Compile Include="Builder\IAspectBuilderUtility.cs" />
+    <Compile Include="Builder\IAspectBuilderUtilityBuilder.cs" />
     <Compile Include="Builder\NameExpressionAspectBuilder.cs" />
-    <Compile Include="Concern\Accessibility.cs" />
-    <Compile Include="Concern\AttributeProperty.cs" />
-    <Compile Include="Concern\CustomAttribute.cs" />
-    <Compile Include="Concern\IAttributeProperty.cs" />
-    <Compile Include="Concern\ICanAddAttributeProperty.cs" />
-    <Compile Include="Concern\ICanAddCustomAttribute.cs" />
-    <Compile Include="Concern\IProperty.cs" />
-    <Compile Include="Concern\IWriteOnlyMethod.cs" />
-    <Compile Include="Concern\ICustomAttribute.cs" />
-    <Compile Include="Concern\IMethod.cs" />
-    <Compile Include="Concern\IParameter.cs" />
-    <Compile Include="Concern\IWriteOnlyProperty.cs" />
-    <Compile Include="Concern\Method.cs" />
-    <Compile Include="Concern\Parameter.cs" />
-    <Compile Include="Concern\ConcernFactory.cs" />
-    <Compile Include="Concern\Property.cs" />
-    <Compile Include="Configuration\AdviceElement.cs" />
-    <Compile Include="Configuration\AdviceElementExtension.cs" />
-    <Compile Include="Configuration\AdviceParameterPattern.cs" />
-    <Compile Include="Configuration\AspectBuilderElement.cs" />
-    <Compile Include="Configuration\AspectBuilderOptionsElement.cs" />
-    <Compile Include="Configuration\BaseStaticMethodElement.cs" />
-    <Compile Include="Configuration\ConcernAttributeAspectBuilderCollection.cs" />
-    <Compile Include="Configuration\ConcernAttributeAspectBuilderConstructorElement.cs" />
-    <Compile Include="Configuration\ConcernAttributeAspectBuilderElement.cs" />
-    <Compile Include="Configuration\ConcernAttributeAspectBuilderOptionsElement.cs" />
-    <Compile Include="Configuration\EnumConverter.cs" />
-    <Compile Include="Configuration\JoinPointSettingElement.cs" />
-    <Compile Include="Configuration\JoinPointSettingsCollection.cs" />
-    <Compile Include="Configuration\NameExpressionAspectBuilderCollection.cs" />
-    <Compile Include="Configuration\NameExpressionAspectBuilderConstructorElement.cs" />
-    <Compile Include="Configuration\NameExpressionAspectBuilderElement.cs" />
-    <Compile Include="Configuration\NameExpressionCollection.cs" />
-    <Compile Include="Configuration\NameExpressionElement.cs" />
-    <Compile Include="Configuration\SwitchableAspectBuilderElement.cs" />
-    <Compile Include="Configuration\SwitchElement.cs" />
-    <Compile Include="SwitchStatus.cs" />
-    <Compile Include="IAspect.cs" />
-    <Compile Include="Aspect.cs" />
-    <Compile Include="AspectFactory.cs" />
-    <Compile Include="ICanSetJoinPointAdvice.cs" />
-    <Compile Include="IPropertyAspect.cs" />
-    <Compile Include="JoinPoint.cs" />
+    <Compile Include="Metadata\Accessibility.cs" />
+    <Compile Include="Metadata\AttributeProperty.cs" />
+    <Compile Include="Metadata\CustomAttribute.cs" />
+    <Compile Include="Metadata\IAttributeProperty.cs" />
+    <Compile Include="Metadata\ICanAddAttributeProperty.cs" />
+    <Compile Include="Metadata\ICanAddCustomAttribute.cs" />
+    <Compile Include="Metadata\ICustomAttribute.cs" />
+    <Compile Include="Metadata\IMethod.cs" />
+    <Compile Include="Metadata\IMethodBuilder.cs" />
+    <Compile Include="Metadata\IParameter.cs" />
+    <Compile Include="Metadata\IProperty.cs" />
+    <Compile Include="Metadata\IPropertyBuilder.cs" />
+    <Compile Include="Metadata\MetadataFactory.cs" />
+    <Compile Include="Metadata\Method.cs" />
+    <Compile Include="Metadata\Parameter.cs" />
+    <Compile Include="Metadata\Property.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="PropertyAspect.cs" />
+    <Compile Include="Utilities\PathUtility.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\CrossCutterN.Advice\CrossCutterN.Advice.csproj">
-      <Project>{a95340d7-9ee3-4cba-aae8-6483bde21a89}</Project>
-      <Name>CrossCutterN.Advice</Name>
+    <Content Include="crosscuttern.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="CrossCutterN.snk" />
+    <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\CrossCutterN.Base\CrossCutterN.Base.csproj">
+      <Project>{7a9343a8-26b0-4591-b881-ebbeaf3ada55}</Project>
+      <Name>CrossCutterN.Base</Name>
     </ProjectReference>
   </ItemGroup>
+  <ItemGroup>
+    <AdditionalFiles Include="$(SolutionDir)_stylecop\stylecop.json" />
+  </ItemGroup>
+  <ItemGroup>
+    <Analyzer Include="..\packages\StyleCop.Analyzers.1.1.0-beta004\analyzers\dotnet\cs\StyleCop.Analyzers.CodeFixes.dll" />
+    <Analyzer Include="..\packages\StyleCop.Analyzers.1.1.0-beta004\analyzers\dotnet\cs\StyleCop.Analyzers.dll" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
-  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
-       Other similar extension points exist, see Microsoft.Common.targets.
-  <Target Name="BeforeBuild">
-  </Target>
-  <Target Name="AfterBuild">
-  </Target>
-  -->
 </Project>

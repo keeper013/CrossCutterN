@@ -1,21 +1,25 @@
-﻿/**
- * Description: test cases
- * Author: David Cui
- */
+﻿// <copyright file="OptionsTest.cs" company="Cui Ziqiang">
+// Copyright (c) 2017 Cui Ziqiang
+// </copyright>
 
 namespace CrossCutterN.Test.OptionsTest
 {
     using System;
-    using System.Text;
     using System.Linq;
+    using System.Text;
     using NUnit.Framework;
     using Utilities;
 
+    /// <summary>
+    /// Options test.
+    /// </summary>
     [TestFixture]
-    public class OptionsTest
+    public sealed class OptionsTest
     {
-        // "Aa" is a work around to make sure that this test runs first
-        // Because this test contains static constructor triggering test
+        /// <summary>
+        /// "Aa" is a work around to make sure that this test runs first because this test contains static constructor triggering test.
+        /// Tests construction injection.
+        /// </summary>
         [Test]
         public void TestAaConstructor()
         {
@@ -23,7 +27,9 @@ namespace CrossCutterN.Test.OptionsTest
             var derived = new OptionsTestTargetDerived();
             Console.Out.WriteLine(derived);
             var content = MethodAdviceContainer.Content;
+            MethodAdviceContainer.PrintContent(Console.Out);
             Assert.AreEqual(18, content.Count);
+
             // private static constructor
             Assert.AreEqual("PrivateEntry", content.ElementAt(0).Name);
             Assert.AreEqual(".cctor", content.ElementAt(0).Execution.Name);
@@ -37,6 +43,8 @@ namespace CrossCutterN.Test.OptionsTest
             Assert.AreEqual(".cctor", content.ElementAt(4).Execution.Name);
             Assert.AreEqual("PrivateExit", content.ElementAt(5).Name);
             Assert.AreEqual(".cctor", content.ElementAt(5).Execution.Name);
+
+            // base class constructor
             Assert.AreEqual("ProtectedEntry", content.ElementAt(6).Name);
             Assert.AreEqual(".ctor", content.ElementAt(6).Execution.Name);
             Assert.AreEqual("InstanceEntry", content.ElementAt(7).Name);
@@ -61,8 +69,13 @@ namespace CrossCutterN.Test.OptionsTest
             Assert.AreEqual(".ctor", content.ElementAt(16).Execution.Name);
             Assert.AreEqual("ProtectedExit", content.ElementAt(17).Name);
             Assert.AreEqual(".ctor", content.ElementAt(17).Execution.Name);
+
+            // derived class constructor is not concerned.
         }
 
+        /// <summary>
+        /// Tests internal property weaving.
+        /// </summary>
         [Test]
         public void TestInternalProperty()
         {
@@ -70,6 +83,7 @@ namespace CrossCutterN.Test.OptionsTest
             MethodAdviceContainer.Clear();
             derived.InternalInstanceFunc(1);
             var content = MethodAdviceContainer.Content;
+            MethodAdviceContainer.PrintContent(Console.Out);
             Assert.AreEqual(12, content.Count);
             Assert.AreEqual("InternalEntry", content.ElementAt(0).Name);
             Assert.AreEqual("get_InternalInstanceFunc", content.ElementAt(0).Execution.Name);
@@ -97,14 +111,18 @@ namespace CrossCutterN.Test.OptionsTest
             Assert.AreEqual("Square", content.ElementAt(11).Execution.Name);
         }
 
+        /// <summary>
+        /// Tests internal method weaving .
+        /// </summary>
         [Test]
-        public void TestInternalFunction()
+        public void TestInternalMethod()
         {
             var derived = new OptionsTestTargetDerived();
             MethodAdviceContainer.Clear();
             var strb = new StringBuilder();
             derived.InternalMultipleParameter(ref strb, 1, "str", null);
             var content = MethodAdviceContainer.Content;
+            MethodAdviceContainer.PrintContent(Console.Out);
             Assert.AreEqual(12, content.Count);
             Assert.AreEqual("InternalEntry", content.ElementAt(0).Name);
             Assert.AreEqual("InternalMultipleParameter", content.ElementAt(0).Execution.Name);
@@ -132,13 +150,17 @@ namespace CrossCutterN.Test.OptionsTest
             Assert.AreEqual("InternalMultipleParameter", content.ElementAt(11).Execution.Name);
         }
 
+        /// <summary>
+        /// Tests public method weaving.
+        /// </summary>
         [Test]
-        public void TestPublicFunction()
+        public void TestPublicMethod()
         {
             var derived = new OptionsTestTargetDerived();
             MethodAdviceContainer.Clear();
             derived.PublicReturnObj(1, "a");
             var content = MethodAdviceContainer.Content;
+            MethodAdviceContainer.PrintContent(Console.Out);
             Assert.AreEqual(12, content.Count);
             Assert.AreEqual("PublicEntry", content.ElementAt(0).Name);
             Assert.AreEqual("PublicReturnObj", content.ElementAt(0).Execution.Name);
@@ -166,6 +188,9 @@ namespace CrossCutterN.Test.OptionsTest
             Assert.AreEqual("PublicReturnObj", content.ElementAt(11).Execution.Name);
         }
 
+        /// <summary>
+        /// Tests Not weaved method.
+        /// </summary>
         [Test]
         public void TestNotWeaved()
         {
@@ -173,16 +198,21 @@ namespace CrossCutterN.Test.OptionsTest
             MethodAdviceContainer.Clear();
             derived.Square(10);
             var content = MethodAdviceContainer.Content;
+            MethodAdviceContainer.PrintContent(Console.Out);
             Assert.AreEqual(0, content.Count);
         }
 
+        /// <summary>
+        /// Tests abstract method weaving.
+        /// </summary>
         [Test]
-        public void TestAbstractFunction()
+        public void TestAbstractMethod()
         {
             var derived = new OptionsTestTargetDerived();
             MethodAdviceContainer.Clear();
             derived.TestAbstract(1);
             var content = MethodAdviceContainer.Content;
+            MethodAdviceContainer.PrintContent(Console.Out);
             Assert.AreEqual(12, content.Count);
             Assert.AreEqual("ProtectedEntry", content.ElementAt(0).Name);
             Assert.AreEqual("ProtectedReturnString", content.ElementAt(0).Execution.Name);
@@ -210,12 +240,16 @@ namespace CrossCutterN.Test.OptionsTest
             Assert.AreEqual("ProtectedReturnString", content.ElementAt(11).Execution.Name);
         }
 
+        /// <summary>
+        /// Tests static property weaving.
+        /// </summary>
         [Test]
         public void TestStatic()
         {
             MethodAdviceContainer.Clear();
             Console.Out.WriteLine(OptionsTestTargetBase.PublicStaticInt);
             var content = MethodAdviceContainer.Content;
+            MethodAdviceContainer.PrintContent(Console.Out);
             Assert.AreEqual(content.Count, 6);
             Assert.AreEqual("PublicEntry", content.ElementAt(0).Name);
             Assert.AreEqual("get_PublicStaticInt", content.ElementAt(0).Execution.Name);

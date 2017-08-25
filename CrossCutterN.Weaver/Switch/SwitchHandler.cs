@@ -1,7 +1,6 @@
-﻿/**
- * Description: Switchable advice handler implementation
- * Author: David Cui
- */
+﻿// <copyright file="SwitchHandler.cs" company="Cui Ziqiang">
+// Copyright (c) 2017 Cui Ziqiang
+// </copyright>
 
 namespace CrossCutterN.Weaver.Switch
 {
@@ -9,101 +8,87 @@ namespace CrossCutterN.Weaver.Switch
     using System.Collections.Generic;
     using System.Linq;
     using System.Text;
+    using CrossCutterN.Base.Common;
     using Mono.Cecil;
-    using Advice.Common;
 
-    internal sealed class SwitchHandler : ISwitchHandler, IWriteOnlySwitchHandler
+    /// <summary>
+    /// Switch handler implementation.
+    /// </summary>
+    internal sealed class SwitchHandler : ISwitchHandler, ISwitchHandlerBuilder
     {
         private static readonly Random Random = new Random();
-        private readonly IrreversibleOperation _readOnly = new IrreversibleOperation();
-        private string _property;
-        private readonly IDictionary<string, IDictionary<string, SwitchInfo>> _switches 
+        private readonly IrreversibleOperation readOnly = new IrreversibleOperation();
+        private readonly IDictionary<string, IDictionary<string, SwitchInfo>> switches
             = new Dictionary<string, IDictionary<string, SwitchInfo>>();
 
-        private readonly TypeDefinition _type;
-        private readonly TypeReference _reference;
+        private readonly TypeDefinition type;
+        private readonly TypeReference reference;
 
-        public string Property
-        {
-            private get { return _property; }
-            set
-            {
-                _readOnly.Assert(false);
-                _property = value;
-            }
-        }
-
+        /// <summary>
+        /// Initializes a new instance of the <see cref="SwitchHandler"/> class.
+        /// </summary>
+        /// <param name="type">Class that switchhandler is for.</param>
+        /// <param name="reference">Reference to type of the switch field.</param>
         public SwitchHandler(TypeDefinition type, TypeReference reference)
         {
-            if (type == null)
-            {
-                throw new ArgumentNullException("type");
-            }
-            if (reference == null)
-            {
-                throw new ArgumentNullException("reference");
-            }
-            _type = type;
-            _reference = reference;
+            this.type = type ?? throw new ArgumentNullException("type");
+            this.reference = reference ?? throw new ArgumentNullException("reference");
         }
 
+        /// <inheritdoc/>
         public IEnumerable<SwitchInitializingData> GetData()
         {
-            _readOnly.Assert(true);
+            readOnly.Assert(true);
             var result = new List<SwitchInitializingData>();
-            foreach (var method in _switches)
+            foreach (var method in switches)
             {
                 foreach (var aspect in method.Value)
                 {
                     result.Add(SwitchFactory.InitializeSwitchData(aspect.Value.Property, method.Key, aspect.Key, aspect.Value.Field, aspect.Value.Value));
                 }
             }
+
             return result;
         }
 
-        public FieldReference GetSwitchField(string method, string aspect, bool value)
+        /// <inheritdoc/>
+        public FieldReference GetSwitchField(string property, string methodSignature, string aspect, bool value)
         {
-            _readOnly.Assert(false);
-            if (string.IsNullOrWhiteSpace(method))
+#if DEBUG
+            if (string.IsNullOrWhiteSpace(methodSignature))
             {
-                throw new ArgumentNullException("method");
+                throw new ArgumentNullException("methodSignature");
             }
+
             if (string.IsNullOrWhiteSpace(aspect))
             {
                 throw new ArgumentNullException("aspect");
             }
-            if (!_switches.ContainsKey(method))
+#endif
+            readOnly.Assert(false);
+            if (!switches.ContainsKey(methodSignature))
             {
                 var field = GetField(8);
-                _switches.Add(method, new Dictionary<string, SwitchInfo> { { aspect, new SwitchInfo(Property, field, value) } });
+                switches.Add(methodSignature, new Dictionary<string, SwitchInfo> { { aspect, new SwitchInfo(property, field, value) } });
                 return field;
             }
-            var aspects = _switches[method];
+
+            var aspects = switches[methodSignature];
             if (!aspects.ContainsKey(aspect))
             {
                 var field = GetField(8);
-                aspects.Add(aspect, new SwitchInfo(Property, field, value));
+                aspects.Add(aspect, new SwitchInfo(property, field, value));
                 return field;
             }
-            return _switches[method][aspect].Field;
+
+            return switches[methodSignature][aspect].Field;
         }
 
-        public ISwitchHandler Convert()
+        /// <inheritdoc/>
+        public ISwitchHandler Build()
         {
-            _readOnly.Apply();
+            readOnly.Apply();
             return this;
-        }
-
-        private FieldReference GetField(int length)
-        {
-            var fieldName = string.Format("_{0}_", RandomSwitchFieldName(length));
-            while (_type.Fields.Any(fld => fld.Name.Equals(fieldName)))
-            {
-                fieldName = string.Format("_{0}_", RandomSwitchFieldName(length));
-            }
-            var field = new FieldDefinition(fieldName, FieldAttributes.Static | FieldAttributes.Private, _reference);
-            _type.Fields.Add(field);
-            return field;
         }
 
         private static string RandomSwitchFieldName(int length)
@@ -115,25 +100,37 @@ namespace CrossCutterN.Weaver.Switch
             {
                 strb.Append(chars[Random.Next(charsLength)]);
             }
+
             return strb.ToString();
+        }
+
+        private FieldReference GetField(int length)
+        {
+            var fieldName = $"_{RandomSwitchFieldName(length)}_";
+            while (type.Fields.Any(fld => fld.Name.Equals(fieldName)))
+            {
+                fieldName = $"_{RandomSwitchFieldName(length)}_";
+            }
+
+            var field = new FieldDefinition(fieldName, FieldAttributes.Static | FieldAttributes.Private, reference);
+            type.Fields.Add(field);
+            return field;
         }
 
         private class SwitchInfo
         {
-            public string Property { get; private set; }
-            public FieldReference Field { get; private set; }
-            public bool Value { get; private set; }
-
             public SwitchInfo(string property, FieldReference field, bool value)
             {
-                if (field == null)
-                {
-                    throw new ArgumentNullException("field");
-                }
                 Property = property;
-                Field = field;
+                Field = field ?? throw new ArgumentNullException("field");
                 Value = value;
             }
+
+            public string Property { get; private set; }
+
+            public FieldReference Field { get; private set; }
+
+            public bool Value { get; private set; }
         }
     }
 }

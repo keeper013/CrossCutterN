@@ -1,25 +1,33 @@
-﻿/**
- * Description: Aspect builder factory
- * Author: David Cui
- */
+﻿// <copyright file="AspectBuilderFactory.cs" company="Cui Ziqiang">
+// Copyright (c) 2017 Cui Ziqiang
+// </copyright>
+
 namespace CrossCutterN.Aspect.Builder
 {
-    using System;
-    using System.Collections.Generic;
-
+    /// <summary>
+    /// Aspect builder factory.
+    /// </summary>
     public static class AspectBuilderFactory
     {
-        public static IWriteOnlyConcernAttributeAspectBuilder InitializeConcernAttributeAspectBuilder(Type classConcernAttributeType, 
-            Type methodConcernAttributeType, Type propertyConcernAttributeType, Type noConcernAttributeType)
+        /// <summary>
+        /// Initializes a new instance of of <see cref="IAspectBuilderUtilityBuilder"/>.
+        /// </summary>
+        /// <returns>The initialized <see cref="IAspectBuilderUtilityBuilder"/>.</returns>
+        public static IAspectBuilderUtilityBuilder InitializeAspectBuilderUtility()
         {
-            return new ConcernAttributeAspectBuilder(classConcernAttributeType, methodConcernAttributeType, 
-                propertyConcernAttributeType, noConcernAttributeType);
+            var utility = new AspectUtility();
+            utility.AddAspectBuilderConstructor("CrossCutterN.Aspect", "CrossCutterN.Aspect.Builder.ConcernAttributeAspectBuilder", () => new ConcernAttributeAspectBuilder());
+            utility.AddAspectBuilderConstructor("CrossCutterN.Aspect", "CrossCutterN.Aspect.Builder.NameExpressionAspectBuilder", () => new NameExpressionAspectBuilder());
+            return utility;
         }
 
-        public static IWriteOnlyNameExpressionAspectBuilder InitializeNameExpressionAspectBuilder(
-            ICollection<string> includes, ICollection<string> excludes)
+        /// <summary>
+        /// Initializes a new instance of of <see cref="IAdviceUtilityBuilder"/>.
+        /// </summary>
+        /// <returns>The initialized <see cref="IAdviceUtilityBuilder"/>.</returns>
+        public static IAdviceUtilityBuilder InitializeAdviceUtility()
         {
-            return new NameExpressionAspectBuilder(includes, excludes);
+            return new AdviceUtility();
         }
     }
 }

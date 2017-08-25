@@ -1,67 +1,86 @@
-﻿/**
-* Description: method weaving statistics
-* Author: David Cui
-*/
+﻿// <copyright file="MethodWeavingStatistics.cs" company="Cui Ziqiang">
+// Copyright (c) 2017 Cui Ziqiang
+// </copyright>
 
 namespace CrossCutterN.Weaver.Statistics
 {
     using System;
     using System.Collections.Generic;
-    using Advice.Common;
+    using CrossCutterN.Base.Common;
 
+    /// <summary>
+    /// Method weaving statistics implementation.
+    /// </summary>
     internal sealed class MethodWeavingStatistics : ICanAddMethodWeavingRecord<IMethodWeavingStatistics>, IMethodWeavingStatistics
     {
-        private readonly List<IWeavingRecord> _records = new List<IWeavingRecord>();
-        private readonly IrreversibleOperation _readOnly = new IrreversibleOperation();
+        private readonly List<IWeavingRecord> records = new List<IWeavingRecord>();
+        private readonly IrreversibleOperation readOnly = new IrreversibleOperation();
 
-        public string Name { get; private set; }
-        public string Signature { get; private set; }
-
-        public int JoinPointCount
-        {
-            get
-            {
-                _readOnly.Assert(true);
-                return _records.Count;
-            }
-        }
-
+        /// <summary>
+        /// Initializes a new instance of the <see cref="MethodWeavingStatistics"/> class.
+        /// </summary>
+        /// <param name="name">Name of the method.</param>
+        /// <param name="signature">Signature of the method.</param>
         public MethodWeavingStatistics(string name, string signature)
         {
-            if(string.IsNullOrWhiteSpace(name))
+#if DEBUG
+            if (string.IsNullOrWhiteSpace(name))
             {
                 throw new ArgumentNullException("name");
             }
-            if(string.IsNullOrWhiteSpace(signature))
+
+            if (string.IsNullOrWhiteSpace(signature))
             {
                 throw new ArgumentNullException("signature");
             }
+#endif
             Name = name;
             Signature = signature;
         }
 
+        /// <inheritdoc/>
+        public string Name { get; private set; }
+
+        /// <inheritdoc/>
+        public string Signature { get; private set; }
+
+        /// <inheritdoc/>
+        public int JoinPointCount
+        {
+            get
+            {
+                readOnly.Assert(true);
+                return records.Count;
+            }
+        }
+
+        /// <inheritdoc/>
         public IReadOnlyCollection<IWeavingRecord> Records
         {
             get
             {
-                _readOnly.Assert(true);
-                return _records.AsReadOnly();
+                readOnly.Assert(true);
+                return records.AsReadOnly();
             }
         }
 
+        /// <inheritdoc/>
         public void AddWeavingRecord(IWeavingRecord record)
         {
-            if(record == null)
+#if DEBUG
+            if (record == null)
             {
                 throw new ArgumentNullException("record");
             }
-            _readOnly.Assert(false);
-            _records.Add(record);
+#endif
+            readOnly.Assert(false);
+            records.Add(record);
         }
 
-        public IMethodWeavingStatistics Convert()
+        /// <inheritdoc/>
+        public IMethodWeavingStatistics Build()
         {
-            _readOnly.Apply();
+            readOnly.Apply();
             return this;
         }
     }

@@ -1,15 +1,15 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<Project ToolsVersion="14.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+<Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{FF510B46-E092-4D25-B23E-4A11A2BC17FA}</ProjectGuid>
+    <ProjectGuid>{96DD14B3-679F-41E6-8DFD-044ED2E9D9B3}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>CrossCutterN.Weaver</RootNamespace>
     <AssemblyName>CrossCutterN.Weaver</AssemblyName>
-    <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
@@ -20,6 +20,7 @@
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <DocumentationFile>bin\Debug\CrossCutterN.Weaver.xml</DocumentationFile>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -28,26 +29,34 @@
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <DocumentationFile>bin\Release\CrossCutterN.Weaver.xml</DocumentationFile>
+  </PropertyGroup>
+  <PropertyGroup>
+    <ApplicationIcon>crosscuttern.ico</ApplicationIcon>
+  </PropertyGroup>
+  <PropertyGroup>
+    <SignAssembly>true</SignAssembly>
+  </PropertyGroup>
+  <PropertyGroup>
+    <CodeAnalysisRuleSet>$(SolutionDir)_stylecop\StyleCopeRules.ruleset</CodeAnalysisRuleSet>
+    <SignAssembly>true</SignAssembly>
+    <DelaySign>false</DelaySign>
+    <AssemblyOriginatorKeyFile>CrossCutterN.snk</AssemblyOriginatorKeyFile>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Mono.Cecil, Version=0.9.6.0, Culture=neutral, PublicKeyToken=0738eb9f132ed756, processorArchitecture=MSIL">
-      <HintPath>..\packages\Mono.Cecil.0.9.6.4\lib\net45\Mono.Cecil.dll</HintPath>
-      <Private>True</Private>
+    <Reference Include="Mono.Cecil, Version=0.10.0.0, Culture=neutral, PublicKeyToken=50cebf1cceb9d05e, processorArchitecture=MSIL">
+      <HintPath>..\packages\Mono.Cecil.0.10.0-beta6\lib\net40\Mono.Cecil.dll</HintPath>
     </Reference>
-    <Reference Include="Mono.Cecil.Mdb, Version=0.9.6.0, Culture=neutral, PublicKeyToken=0738eb9f132ed756, processorArchitecture=MSIL">
-      <HintPath>..\packages\Mono.Cecil.0.9.6.4\lib\net45\Mono.Cecil.Mdb.dll</HintPath>
-      <Private>True</Private>
+    <Reference Include="Mono.Cecil.Mdb, Version=0.10.0.0, Culture=neutral, PublicKeyToken=50cebf1cceb9d05e, processorArchitecture=MSIL">
+      <HintPath>..\packages\Mono.Cecil.0.10.0-beta6\lib\net40\Mono.Cecil.Mdb.dll</HintPath>
     </Reference>
-    <Reference Include="Mono.Cecil.Pdb, Version=0.9.6.0, Culture=neutral, PublicKeyToken=0738eb9f132ed756, processorArchitecture=MSIL">
-      <HintPath>..\packages\Mono.Cecil.0.9.6.4\lib\net45\Mono.Cecil.Pdb.dll</HintPath>
-      <Private>True</Private>
+    <Reference Include="Mono.Cecil.Pdb, Version=0.10.0.0, Culture=neutral, PublicKeyToken=50cebf1cceb9d05e, processorArchitecture=MSIL">
+      <HintPath>..\packages\Mono.Cecil.0.10.0-beta6\lib\net40\Mono.Cecil.Pdb.dll</HintPath>
     </Reference>
-    <Reference Include="Mono.Cecil.Rocks, Version=0.9.6.0, Culture=neutral, PublicKeyToken=0738eb9f132ed756, processorArchitecture=MSIL">
-      <HintPath>..\packages\Mono.Cecil.0.9.6.4\lib\net45\Mono.Cecil.Rocks.dll</HintPath>
-      <Private>True</Private>
+    <Reference Include="Mono.Cecil.Rocks, Version=0.10.0.0, Culture=neutral, PublicKeyToken=50cebf1cceb9d05e, processorArchitecture=MSIL">
+      <HintPath>..\packages\Mono.Cecil.0.10.0-beta6\lib\net40\Mono.Cecil.Rocks.dll</HintPath>
     </Reference>
     <Reference Include="System" />
-    <Reference Include="System.configuration" />
     <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
@@ -57,124 +66,125 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Utilities\AdviceParameterFlagExtension.cs" />
-    <Compile Include="AssemblyHandler\IlUtilities.cs" />
-    <Compile Include="Reference\Advice\Parameter\IExecutionContextWriteOnlyReference.cs" />
-    <Compile Include="Statistics\ISwitchWeavingRecord.cs" />
-    <Compile Include="Statistics\SwitchWeavingRecord.cs" />
-    <Compile Include="Switch\ISwitchableSection.cs" />
-    <Compile Include="Switch\ISwitchSet.cs" />
-    <Compile Include="Switch\SwitchableSection.cs" />
-    <Compile Include="Switch\SwitchSet.cs" />
-    <Compile Include="Utilities\DefinitionUtility.cs" />
-    <Compile Include="Switch\ISwitchHandler.cs" />
-    <Compile Include="AssemblyHandler\IWeavingContext.cs" />
-    <Compile Include="AssemblyHandler\IlHandler.cs" />
-    <Compile Include="Switch\IWriteOnlySwitchHandler.cs" />
-    <Compile Include="Switch\SwitchFactory.cs" />
-    <Compile Include="Utilities\FieldReferenceComparer.cs" />
-    <Compile Include="Switch\SwitchHandler.cs" />
-    <Compile Include="Switch\SwitchInitializingData.cs" />
-    <Compile Include="AssemblyHandler\WeavingFactory.cs" />
-    <Compile Include="AssemblyHandler\Processor.cs" />
-    <Compile Include="AssemblyHandler\WeavingContext.cs" />
-    <Compile Include="AssemblyHandler\WeavingPlanExtension.cs" />
-    <Compile Include="Batch\AdviceInfo.cs" />
-    <Compile Include="Batch\AdviceParameterFlag.cs" />
-    <Compile Include="Batch\BatchFactory.cs" />
-    <Compile Include="Batch\IAdviceInfo.cs" />
-    <Compile Include="Batch\ICanAddAspectBuilder.cs" />
-    <Compile Include="Batch\IPropertyWeavingPlan.cs" />
-    <Compile Include="Batch\IWeavingBatch.cs" />
-    <Compile Include="Batch\IWeavingPlan.cs" />
-    <Compile Include="Batch\ICanAddJoinPoint.cs" />
-    <Compile Include="Batch\PropertyWeavingPlan.cs" />
-    <Compile Include="Batch\WeavingBatch.cs" />
-    <Compile Include="Batch\WeavingPlan.cs" />
-    <Compile Include="ICanAddAspectBuilder.cs" />
-    <Compile Include="IWeaver.cs" />
-    <Compile Include="Reference\AdviceReference.cs" />
-    <Compile Include="Reference\AdviceReferenceFactory.cs" />
-    <Compile Include="Reference\Advice\Switch\AdviceSwitchBuildUpReference.cs" />
-    <Compile Include="Reference\Advice\Switch\SwitchBackStageReference.cs" />
-    <Compile Include="Reference\Advice\Switch\AdviceSwitchLookUpReference.cs" />
-    <Compile Include="Reference\Advice\Switch\IAdviceSwitchBuildUpReference.cs" />
-    <Compile Include="Reference\Advice\Switch\IAdviceSwitchBuildUpWriteOnlyReference.cs" />
-    <Compile Include="Reference\Advice\Switch\ISwitchBackStageReference.cs" />
-    <Compile Include="Reference\Advice\Switch\ISwitchBackStageWriteOnlyReference.cs" />
-    <Compile Include="Reference\Advice\Switch\IAdviceSwitchLookUpReference.cs" />
-    <Compile Include="Reference\Advice\Switch\IAdviceSwitchLookUpWriteOnlyReference.cs" />
-    <Compile Include="Reference\IAdviceReference.cs" />
-    <Compile Include="Reference\ReferenceBase.cs" />
-    <Compile Include="Statistics\IPropertyMethodWeavingRecords.cs" />
-    <Compile Include="Statistics\PropertyMethodWeavingRecords.cs" />
-    <Compile Include="Utilities\AddBuilderByConfiguration.cs" />
-    <Compile Include="Utilities\ICanReset.cs" />
-    <Compile Include="Weaver.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Reference\Advice\Parameter\AttributePropertyReference.cs" />
-    <Compile Include="Reference\Advice\Parameter\IAttributePropertyWriteOnlyReference.cs" />
-    <Compile Include="Reference\Advice\Parameter\IAttributePropertyReference.cs" />
-    <Compile Include="Reference\Advice\Parameter\ParameterFactoryReference.cs" />
-    <Compile Include="Reference\Advice\Parameter\ExecutionContextReference.cs" />
-    <Compile Include="Reference\Advice\Parameter\IParameterFactoryReference.cs" />
-    <Compile Include="Reference\Advice\Parameter\IParameterFactoryWriteOnlyReference.cs" />
-    <Compile Include="Reference\Advice\Parameter\IExecutionContextReference.cs" />
-    <Compile Include="Reference\Advice\Parameter\ICanAddAttributePropertyReference.cs" />
-    <Compile Include="Reference\Advice\Parameter\ICanAddAttributePropertyWriteOnlyReference.cs" />
-    <Compile Include="Reference\Advice\Parameter\ICanAddParameterReference.cs" />
-    <Compile Include="Reference\Advice\Parameter\ICanAddParameterWriteOnlyReference.cs" />
-    <Compile Include="Reference\Advice\Parameter\ICanAddCustomAttributeReference.cs" />
-    <Compile Include="Reference\Advice\Parameter\ICanAddCustomAttributeWriteOnlyReference.cs" />
-    <Compile Include="Reference\Advice\Parameter\IWriteOnlyReturnReference.cs" />
-    <Compile Include="Reference\Advice\Parameter\IWriteOnlyReturnWriteOnlyReference.cs" />
-    <Compile Include="Reference\Advice\Parameter\WriteOnlyCustomAttributeReference.cs" />
-    <Compile Include="Reference\Advice\Parameter\WriteOnlyExecutionReference.cs" />
-    <Compile Include="Reference\Advice\Parameter\WriteOnlyParameterReference.cs" />
-    <Compile Include="Reference\Advice\Parameter\WriteOnlyReturnReference.cs" />
+    <Compile Include="Reference\BaseReference.cs" />
+    <Compile Include="Reference\BaseReferenceFactory.cs" />
+    <Compile Include="Reference\Base\Metadata\AttributePropertyReference.cs" />
+    <Compile Include="Reference\Base\Metadata\CustomAttributeBuilderReference.cs" />
+    <Compile Include="Reference\Base\Metadata\ExecutionBuilderReference.cs" />
+    <Compile Include="Reference\Base\Metadata\ExecutionContextReference.cs" />
+    <Compile Include="Reference\Base\Metadata\IAttributePropertyReference.cs" />
+    <Compile Include="Reference\Base\Metadata\IAttributePropertyReferenceBuilder.cs" />
+    <Compile Include="Reference\Base\Metadata\ICustomAttributeBuilderReference.cs" />
+    <Compile Include="Reference\Base\Metadata\ICustomAttributeBuilderReferenceBuilder.cs" />
+    <Compile Include="Reference\Base\Metadata\IExecutionBuilderReference.cs" />
+    <Compile Include="Reference\Base\Metadata\IExecutionBuilderReferenceBuilder.cs" />
+    <Compile Include="Reference\Base\Metadata\IExecutionContextReference.cs" />
+    <Compile Include="Reference\Base\Metadata\IExecutionContextReferenceBuilder.cs" />
+    <Compile Include="Reference\Base\Metadata\IMetadataFactoryReference.cs" />
+    <Compile Include="Reference\Base\Metadata\IMetadataFactoryReferenceBuilder.cs" />
+    <Compile Include="Reference\Base\Metadata\IParameterBuilderReference.cs" />
+    <Compile Include="Reference\Base\Metadata\IParameterBuilderReferenceBuilder.cs" />
+    <Compile Include="Reference\Base\Metadata\IReturnBuilderReference.cs" />
+    <Compile Include="Reference\Base\Metadata\IReturnBuilderReferenceBuilder.cs" />
+    <Compile Include="Reference\Base\Metadata\MetadataFactoryReference.cs" />
+    <Compile Include="Reference\Base\Metadata\ParameterBuilderReference.cs" />
+    <Compile Include="Reference\Base\Metadata\ReturnBuilderReference.cs" />
+    <Compile Include="Reference\Base\Switch\AspectSwitchBuilderReference.cs" />
+    <Compile Include="Reference\Base\Switch\AspectSwitchGlancerReference.cs" />
+    <Compile Include="Reference\Base\Switch\IAspectSwitchBuilderReference.cs" />
+    <Compile Include="Reference\Base\Switch\IAspectSwitchBuilderReferenceBuilder.cs" />
+    <Compile Include="Reference\Base\Switch\IAspectSwitchGlancerReference.cs" />
+    <Compile Include="Reference\Base\Switch\IAspectSwitchGlancerReferenceBuilder.cs" />
+    <Compile Include="Reference\Base\Switch\ISwitchBackStageReference.cs" />
+    <Compile Include="Reference\Base\Switch\ISwitchBackStageReferenceBuilder.cs" />
+    <Compile Include="Reference\Base\Switch\SwitchBackStageReference.cs" />
+    <Compile Include="Reference\IBaseReference.cs" />
+    <Compile Include="Reference\ReferenceBase.cs" />
+    <Compile Include="Reference\ReferenceFactory.cs" />
     <Compile Include="Statistics\AssemblyWeavingStatistics.cs" />
     <Compile Include="Statistics\ClassWeavingStatistics.cs" />
-    <Compile Include="Statistics\ICanAddClassWeavingStatistics.cs" />
-    <Compile Include="Statistics\IWriteOnlyAssemblyWeavingStatistics.cs" />
+    <Compile Include="Statistics\IAssemblyWeavingStatistics.cs" />
+    <Compile Include="Statistics\IAssemblyWeavingStatisticsBuilder.cs" />
+    <Compile Include="Statistics\ICanAddMethodWeavingRecord.cs" />
     <Compile Include="Statistics\ICanAddPropertyWeavingRecord.cs" />
     <Compile Include="Statistics\IClassWeavingStatistics.cs" />
+    <Compile Include="Statistics\IClassWeavingStatisticsBuilder.cs" />
     <Compile Include="Statistics\IMethodWeavingStatistics.cs" />
     <Compile Include="Statistics\IModuleWeavingStatistics.cs" />
+    <Compile Include="Statistics\IModuleWeavingStatisticsBuilder.cs" />
+    <Compile Include="Statistics\IPropertyMethodWeavingRecords.cs" />
     <Compile Include="Statistics\IPropertyWeavingStatistics.cs" />
+    <Compile Include="Statistics\ISwitchWeavingRecord.cs" />
     <Compile Include="Statistics\IWeavingRecord.cs" />
-    <Compile Include="Statistics\IAssemblyWeavingStatistics.cs" />
-    <Compile Include="Statistics\ICanAddMethodWeavingRecord.cs" />
-    <Compile Include="Statistics\IWriteOnlyClassWeavingStatistics.cs" />
     <Compile Include="Statistics\MethodWeavingStatistics.cs" />
     <Compile Include="Statistics\ModuleWeavingStatistics.cs" />
+    <Compile Include="Statistics\PropertyMethodWeavingRecords.cs" />
     <Compile Include="Statistics\PropertyWeavingStatistics.cs" />
     <Compile Include="Statistics\StatisticsFactory.cs" />
+    <Compile Include="Statistics\SwitchWeavingRecord.cs" />
     <Compile Include="Statistics\WeavingRecord.cs" />
+    <Compile Include="Switch\ISwitchableSection.cs" />
+    <Compile Include="Switch\ISwitchHandler.cs" />
+    <Compile Include="Switch\ISwitchHandlerBuilder.cs" />
+    <Compile Include="Switch\ISwitchSet.cs" />
+    <Compile Include="Switch\SwitchableSection.cs" />
+    <Compile Include="Switch\SwitchFactory.cs" />
+    <Compile Include="Switch\SwitchHandler.cs" />
+    <Compile Include="Switch\SwitchInitializingData.cs" />
+    <Compile Include="Switch\SwitchSet.cs" />
     <Compile Include="Utilities\AdviceValidator.cs" />
-    <Compile Include="Utilities\Comparer.cs" />
     <Compile Include="Utilities\ConcernAdapter.cs" />
-    <Compile Include="WeaverFactory.cs" />
+    <Compile Include="Utilities\DefinitionUtility.cs" />
+    <Compile Include="Utilities\FieldReferenceComparer.cs" />
+    <Compile Include="Utilities\IResetable.cs" />
+    <Compile Include="Utilities\JoinPointCollectionComparer.cs" />
+    <Compile Include="Utilities\ReflectionUtility.cs" />
+    <Compile Include="Weaver\AdviceInfo.cs" />
+    <Compile Include="Weaver\AdviceParameterFlag.cs" />
+    <Compile Include="Weaver\AdviceParameterFlagExtension.cs" />
+    <Compile Include="Weaver\IAdviceInfo.cs" />
+    <Compile Include="Weaver\ICanAddAspect.cs" />
+    <Compile Include="Weaver\ICanAddJoinPoint.cs" />
+    <Compile Include="Weaver\IlUtilities.cs" />
+    <Compile Include="Weaver\IPropertyWeavingPlan.cs" />
+    <Compile Include="Weaver\IWeaver.cs" />
+    <Compile Include="Weaver\IWeavingContext.cs" />
+    <Compile Include="Weaver\IWeavingPlan.cs" />
+    <Compile Include="Weaver\IWeavingPlanner.cs" />
+    <Compile Include="Weaver\MethodWeaver.cs" />
+    <Compile Include="Weaver\PropertyWeavingPlan.cs" />
+    <Compile Include="Weaver\SwitchInitializationWeaver.cs" />
+    <Compile Include="Weaver\Weaver.cs" />
+    <Compile Include="Weaver\WeaverFactory.cs" />
+    <Compile Include="Weaver\WeavingContext.cs" />
+    <Compile Include="Weaver\WeavingPlan.cs" />
+    <Compile Include="Weaver\WeavingPlanExtension.cs" />
+    <Compile Include="Weaver\WeavingPlanner.cs" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="crosscuttern.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="CrossCutterN.snk" />
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\CrossCutterN.Advice\CrossCutterN.Advice.csproj">
-      <Project>{a95340d7-9ee3-4cba-aae8-6483bde21a89}</Project>
-      <Name>CrossCutterN.Advice</Name>
-    </ProjectReference>
+    <AdditionalFiles Include="$(SolutionDir)_stylecop\stylecop.json" />
+  </ItemGroup>
+  <ItemGroup>
     <ProjectReference Include="..\CrossCutterN.Aspect\CrossCutterN.Aspect.csproj">
-      <Project>{439ee3af-402f-4628-bc75-33d916fa3973}</Project>
+      <Project>{aaf69078-24b5-4a9b-8a5b-dcc29161668c}</Project>
       <Name>CrossCutterN.Aspect</Name>
     </ProjectReference>
+    <ProjectReference Include="..\CrossCutterN.Base\CrossCutterN.Base.csproj">
+      <Project>{7a9343a8-26b0-4591-b881-ebbeaf3ada55}</Project>
+      <Name>CrossCutterN.Base</Name>
+    </ProjectReference>
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Analyzer Include="..\packages\StyleCop.Analyzers.1.1.0-beta004\analyzers\dotnet\cs\StyleCop.Analyzers.CodeFixes.dll" />
+    <Analyzer Include="..\packages\StyleCop.Analyzers.1.1.0-beta004\analyzers\dotnet\cs\StyleCop.Analyzers.dll" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
-  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
-       Other similar extension points exist, see Microsoft.Common.targets.
-  <Target Name="BeforeBuild">
-  </Target>
-  <Target Name="AfterBuild">
-  </Target>
-  -->
 </Project>

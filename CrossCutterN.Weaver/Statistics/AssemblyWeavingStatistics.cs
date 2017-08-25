@@ -1,157 +1,185 @@
-﻿/**
-* Description: assembly weaving statistics
-* Author: David Cui
-*/
+﻿// <copyright file="AssemblyWeavingStatistics.cs" company="Cui Ziqiang">
+// Copyright (c) 2017 Cui Ziqiang
+// </copyright>
 
 namespace CrossCutterN.Weaver.Statistics
 {
     using System;
     using System.Collections.Generic;
     using System.Linq;
-    using Advice.Common;
+    using CrossCutterN.Base.Common;
 
-    internal sealed class AssemblyWeavingStatistics : IAssemblyWeavingStatistics, IWriteOnlyAssemblyWeavingStatistics
+    /// <summary>
+    /// Assembly weaving statistics.
+    /// </summary>
+    internal sealed class AssemblyWeavingStatistics : IAssemblyWeavingStatistics, IAssemblyWeavingStatisticsBuilder
     {
-        private readonly List<IModuleWeavingStatistics> _statistics = new List<IModuleWeavingStatistics>();
-        private readonly IrreversibleOperation _readOnly = new IrreversibleOperation();
-        private Exception _exception;
+        private readonly List<IModuleWeavingStatistics> statistics = new List<IModuleWeavingStatistics>();
+        private readonly IrreversibleOperation readOnly = new IrreversibleOperation();
+        private Exception exception;
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="AssemblyWeavingStatistics"/> class.
+        /// </summary>
+        /// <param name="assemblyName">Name of the assembly.</param>
+        public AssemblyWeavingStatistics(string assemblyName)
+        {
+#if DEBUG
+            if (string.IsNullOrWhiteSpace(assemblyName))
+            {
+                throw new ArgumentNullException("assemblyName");
+            }
+#endif
+            AssemblyName = assemblyName;
+        }
+
+        /// <inheritdoc/>
         public string AssemblyName { get; private set; }
+
+        /// <summary>
+        /// Gets or sets exceptions happened during weaving.
+        /// </summary>
         public Exception Exception
         {
             get
             {
-                _readOnly.Assert(true);
-                return _exception;
+                readOnly.Assert(true);
+                return exception;
             }
+
             set
             {
-                _readOnly.Assert(false);
-                _exception = value;
+                readOnly.Assert(false);
+                exception = value;
             }
         }
 
+        /// <inheritdoc/>
         public IReadOnlyCollection<IModuleWeavingStatistics> ModuleWeavingStatistics
         {
             get
             {
-                _readOnly.Assert(true);
-                return _statistics.AsReadOnly();
+                readOnly.Assert(true);
+                return statistics.AsReadOnly();
             }
         }
 
+        /// <inheritdoc/>
         public int MethodJoinPointCount
         {
             get
             {
-                _readOnly.Assert(true);
-                return _statistics.Sum(statistics => statistics.MethodJoinPointCount);
+                readOnly.Assert(true);
+                return statistics.Sum(moduleStatistics => moduleStatistics.MethodJoinPointCount);
             }
         }
 
+        /// <inheritdoc/>
         public int PropertyGetterJoinPointCount
         {
             get
             {
-                _readOnly.Assert(true);
-                return _statistics.Sum(statistics => statistics.PropertyGetterJoinPointCount);
+                readOnly.Assert(true);
+                return statistics.Sum(statistics => statistics.PropertyGetterJoinPointCount);
             }
         }
 
+        /// <inheritdoc/>
         public int PropertyJoinPointCount
         {
             get
             {
-                _readOnly.Assert(true);
-                return _statistics.Sum(statistics => statistics.PropertyJoinPointCount);
+                readOnly.Assert(true);
+                return statistics.Sum(statistics => statistics.PropertyJoinPointCount);
             }
         }
 
+        /// <inheritdoc/>
         public int PropertySetterJoinPointCount
         {
             get
             {
-                _readOnly.Assert(true);
-                return _statistics.Sum(statistics => statistics.PropertySetterJoinPointCount);
+                readOnly.Assert(true);
+                return statistics.Sum(statistics => statistics.PropertySetterJoinPointCount);
             }
         }
 
+        /// <inheritdoc/>
         public int WeavedClassCount
         {
             get
             {
-                _readOnly.Assert(true);
-                return _statistics.Sum(statistics => statistics.WeavedClassCount);
+                readOnly.Assert(true);
+                return statistics.Sum(statistics => statistics.WeavedClassCount);
             }
         }
 
+        /// <inheritdoc/>
         public int WeavedMethodPropertyCount
         {
             get
             {
-                _readOnly.Assert(true);
-                return _statistics.Sum(statistics => statistics.WeavedMethodPropertyCount);
+                readOnly.Assert(true);
+                return statistics.Sum(statistics => statistics.WeavedMethodPropertyCount);
             }
         }
 
+        /// <inheritdoc/>
         public int WeavedMethodCount
         {
             get
             {
-                _readOnly.Assert(true);
-                return _statistics.Sum(statistics => statistics.WeavedMethodCount);
+                readOnly.Assert(true);
+                return statistics.Sum(statistics => statistics.WeavedMethodCount);
             }
         }
 
+        /// <inheritdoc/>
         public int WeavedModuleCount
         {
             get
             {
-                _readOnly.Assert(true);
-                return _statistics.Count;
+                readOnly.Assert(true);
+                return statistics.Count;
             }
         }
 
+        /// <inheritdoc/>
         public int WeavedPropertyCount
         {
             get
             {
-                _readOnly.Assert(true);
-                return _statistics.Sum(statistics => statistics.WeavedPropertyCount);
+                readOnly.Assert(true);
+                return statistics.Sum(statistics => statistics.WeavedPropertyCount);
             }
         }
 
+        /// <inheritdoc/>
         public int WeavedSwitchCount
         {
             get
             {
-                _readOnly.Assert(true);
-                return _statistics.Sum(statistics => statistics.WeavedSwitchCount);
+                readOnly.Assert(true);
+                return statistics.Sum(statistics => statistics.WeavedSwitchCount);
             }
         }
 
-        public AssemblyWeavingStatistics(string assemblyName)
-        {
-            if(string.IsNullOrWhiteSpace(assemblyName))
-            {
-                throw new ArgumentNullException("assemblyName");
-            }
-            AssemblyName = assemblyName;
-        }
-
+        /// <inheritdoc/>
         public void AddModuleWeavingStatistics(IModuleWeavingStatistics statistics)
         {
-            _readOnly.Assert(false);
+            readOnly.Assert(false);
             if (statistics == null)
             {
                 throw new ArgumentNullException("statistics");
             }
-            _statistics.Add(statistics);
+
+            this.statistics.Add(statistics);
         }
 
-        public IAssemblyWeavingStatistics Convert()
+        /// <inheritdoc/>
+        public IAssemblyWeavingStatistics Build()
         {
-            _readOnly.Apply();
+            readOnly.Apply();
             return this;
         }
     }

@@ -1,7 +1,6 @@
-﻿/**
- * Description: Mono.Cecil definition key getter
- * Author: David Cui
- */
+﻿// <copyright file="DefinitionUtility.cs" company="Cui Ziqiang">
+// Copyright (c) 2017 Cui Ziqiang
+// </copyright>
 
 namespace CrossCutterN.Weaver.Utilities
 {
@@ -10,14 +9,18 @@ namespace CrossCutterN.Weaver.Utilities
     using System.Text;
     using Mono.Cecil;
 
-    public static class DefinitionUtility
+    /// <summary>
+    /// Utility to retrieve assembly content information from Mono.Cecil form.
+    /// </summary>
+    internal static class DefinitionUtility
     {
+        /// <summary>
+        /// Gets method signature which is generally recognized and used in CrossCutterN.
+        /// </summary>
+        /// <param name="method">Method definition.</param>
+        /// <returns>Signature of the method which will be recognized and used in CrossCutterN.</returns>
         public static string GetSignature(this MethodDefinition method)
         {
-            if (method == null)
-            {
-                throw new ArgumentNullException("method");
-            }
             var buffer = new StringBuilder();
             buffer.Append(method.Name);
             buffer.Append('(');
@@ -29,28 +32,26 @@ namespace CrossCutterN.Weaver.Utilities
                     buffer.Append(parameterInfo.ParameterType.FullName);
                     buffer.Append(',');
                 }
+
                 buffer.Remove(buffer.Length - 1, 1);
             }
+
             buffer.Append(")");
             return buffer.ToString();
         }
 
-        public static string GetFullName(this TypeDefinition type)
-        {
-            if (type == null)
-            {
-                throw new ArgumentNullException("type");
-            }
-            return string.Format("{0}.{1}", type.Namespace, type.Name);
-        }
+        /// <summary>
+        /// Gets full name of a class which will be generally recognized and used in CrossCutterN.
+        /// </summary>
+        /// <param name="type">The class full name of which will be retrieved.</param>
+        /// <returns>Full name of a class which will be generally recognized and used in CrossCutterN</returns>
+        public static string GetFullName(this TypeDefinition type) => $"{type.Namespace}.{type.Name}";
 
-        public static bool IsVoidReturn(this MethodDefinition method)
-        {
-            if (method == null)
-            {
-                throw new ArgumentNullException("method");
-            }
-            return method.ReturnType.FullName.Equals(typeof (void).FullName);
-        }
+        /// <summary>
+        /// Finds out if a method is of void return type.
+        /// </summary>
+        /// <param name="method">The method to be checked.</param>
+        /// <returns>True if the method does have void return type, false elsewise.</returns>
+        public static bool IsVoidReturn(this MethodDefinition method) => method.ReturnType.FullName.Equals(typeof(void).FullName);
     }
 }

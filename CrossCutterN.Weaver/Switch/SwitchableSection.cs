@@ -1,7 +1,6 @@
-﻿/**
- * Description: Switchable section
- * Author: David Cui
- */
+﻿// <copyright file="SwitchableSection.cs" company="Cui Ziqiang">
+// Copyright (c) 2017 Cui Ziqiang
+// </copyright>
 
 namespace CrossCutterN.Weaver.Switch
 {
@@ -9,23 +8,56 @@ namespace CrossCutterN.Weaver.Switch
     using System.Collections.Generic;
     using Mono.Cecil.Cil;
 
+    /// <summary>
+    /// Switchable section implementation.
+    /// </summary>
     internal sealed class SwitchableSection : ISwitchableSection
     {
-        public int StartIndex { set; private get; }
-        public int EndIndex { set; private get; }
+        /// <inheritdoc/>
+        public int StartIndex { private get; set; }
+
+        /// <inheritdoc/>
+        public int EndIndex { private get; set; }
+
+        /// <inheritdoc/>
         public Instruction StartInstruction { get; private set; }
+
+        /// <inheritdoc/>
         public Instruction EndInstruction { get; private set; }
 
-        public bool CanSetInstructions
+        /// <inheritdoc/>
+        public bool HasSetStartEndInstruction => StartInstruction != null && EndInstruction != null;
+
+        /// <inheritdoc/>
+        public void SetInstructions(IList<Instruction> instructions, Instruction defaultInstruction)
         {
-            get { return StartIndex >= 0 && EndIndex >= 0; }
+            if (StartIndex == -1)
+            {
+                return;
+            }
+#if DEBUG
+            if (EndIndex == -1)
+            {
+                throw new InvalidOperationException("End index not set yet");
+            }
+
+            if (EndIndex <= StartIndex)
+            {
+                throw new InvalidOperationException("End index should be above start index");
+            }
+
+            if (StartIndex >= instructions.Count)
+            {
+                throw new ArgumentException("Instruction list not correctly populated");
+            }
+#endif
+            StartInstruction = instructions[StartIndex];
+            EndInstruction = EndIndex >= instructions.Count ? defaultInstruction : instructions[EndIndex];
+            StartIndex = -1;
+            EndIndex = -1;
         }
 
-        public bool HasContent
-        {
-            get { return StartInstruction != null && EndInstruction != null; }
-        }
-
+        /// <inheritdoc/>
         public void Reset()
         {
             StartIndex = -1;
@@ -34,45 +66,16 @@ namespace CrossCutterN.Weaver.Switch
             EndInstruction = null;
         }
 
-        public void SetInstructions(IList<Instruction> instructions, Instruction defaultInstruction)
-        {
-            if (StartIndex == -1)
-            {
-                return;
-            }
-            if (instructions == null)
-            {
-                throw new ArgumentNullException("instructions");
-            }
-            if (defaultInstruction == null)
-            {
-                throw new ArgumentNullException("defaultInstruction");
-            }
-            if (EndIndex == -1)
-            {
-                throw new InvalidOperationException("End index not set yet");
-            }
-            if (EndIndex <= StartIndex)
-            {
-                throw new InvalidOperationException("End index should be above start index");
-            }
-            if (StartIndex >= instructions.Count)
-            {
-                throw new ArgumentException("Instruction list not correctly populated");
-            }
-            StartInstruction = instructions[StartIndex];
-            EndInstruction = EndIndex >= instructions.Count ? defaultInstruction : instructions[EndIndex];
-            StartIndex = -1;
-            EndIndex = -1;
-        }
-
+        /// <inheritdoc/>
         public void AdjustEndInstruction(Instruction originalEnd, Instruction newEnd)
         {
-            if(newEnd == null)
+#if DEBUG
+            if (newEnd == null)
             {
                 throw new ArgumentNullException("newEnd");
             }
-            if(EndInstruction != null && EndInstruction == originalEnd)
+#endif
+            if (EndInstruction != null && EndInstruction == originalEnd)
             {
                 EndInstruction = newEnd;
             }

@@ -1,45 +1,72 @@
-﻿/**
-* Description: Switch weaving record implementation
-* Author: David Cui
-*/
+﻿// <copyright file="SwitchWeavingRecord.cs" company="Cui Ziqiang">
+// Copyright (c) 2017 Cui Ziqiang
+// </copyright>
 
 namespace CrossCutterN.Weaver.Statistics
 {
     using System;
 
-    internal class SwitchWeavingRecord : ISwitchWeavingRecord
+    /// <summary>
+    /// Switch weaving record implementation.
+    /// </summary>
+    internal sealed class SwitchWeavingRecord : ISwitchWeavingRecord
     {
-        public string Class { get; private set; }
-        public string Property { get; private set; }
-        public string Method { get; private set; }
-        public string Aspect { get; private set; }
-        public string StaticVariableName { get; private set; }
-        public bool Value { get; private set; }
-
-        public SwitchWeavingRecord(string clazz, string property, string method, string aspect, string variable, bool value)
+        /// <summary>
+        /// Initializes a new instance of the <see cref="SwitchWeavingRecord"/> class.
+        /// </summary>
+        /// <param name="clazz">Class that the aspect switch is injected in.</param>
+        /// <param name="property">Property that the aspect switch is injected in.</param>
+        /// <param name="methodSignature">Signature of method that the aspect switch is injected in.</param>
+        /// <param name="aspect">Name of aspect of the switch.</param>
+        /// <param name="field">Static field name of the aspect switch.</param>
+        /// <param name="value">Value of the aspect switch.</param>
+        public SwitchWeavingRecord(string clazz, string property, string methodSignature, string aspect, string field, bool value)
         {
+#if DEBUG
             if (string.IsNullOrWhiteSpace(clazz))
             {
                 throw new ArgumentNullException("clazz");
             }
-            if (string.IsNullOrWhiteSpace(method))
+
+            if (string.IsNullOrWhiteSpace(methodSignature))
             {
-                throw new ArgumentNullException("method");
+                throw new ArgumentNullException("methodSignature");
             }
+
             if (string.IsNullOrWhiteSpace(aspect))
             {
                 throw new ArgumentNullException("aspect");
             }
-            if (string.IsNullOrWhiteSpace(variable))
+
+            if (string.IsNullOrWhiteSpace(field))
             {
-                throw new ArgumentNullException("variable");
+                throw new ArgumentNullException("field");
             }
+#endif
             Class = clazz;
             Property = property;
-            Method = method;
+            MethodSignature = methodSignature;
             Aspect = aspect;
-            StaticVariableName = variable;
+            StaticFieldName = field;
             Value = value;
         }
+
+        /// <inheritdoc/>
+        public string Class { get; private set; }
+
+        /// <inheritdoc/>
+        public string Property { get; private set; }
+
+        /// <inheritdoc/>
+        public string MethodSignature { get; private set; }
+
+        /// <inheritdoc/>
+        public string Aspect { get; private set; }
+
+        /// <inheritdoc/>
+        public string StaticFieldName { get; private set; }
+
+        /// <inheritdoc/>
+        public bool Value { get; private set; }
     }
 }

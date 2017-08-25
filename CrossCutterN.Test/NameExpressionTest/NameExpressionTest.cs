@@ -1,7 +1,6 @@
-﻿/**
- * Description: mixed test
- * Author: David Cui
- */
+﻿// <copyright file="NameExpressionTest.cs" company="Cui Ziqiang">
+// Copyright (c) 2017 Cui Ziqiang
+// </copyright>
 
 namespace CrossCutterN.Test.NameExpressionTest
 {
@@ -10,9 +9,15 @@ namespace CrossCutterN.Test.NameExpressionTest
     using NUnit.Framework;
     using Utilities;
 
+    /// <summary>
+    /// Name expression weaving test.
+    /// </summary>
     [TestFixture]
-    public class NameExpressionTest
+    public sealed class NameExpressionTest
     {
+        /// <summary>
+        /// Test case that not mentioned methods are not weaved.
+        /// </summary>
         [Test]
         public void TestNotMentioned()
         {
@@ -20,31 +25,39 @@ namespace CrossCutterN.Test.NameExpressionTest
             MethodAdviceContainer.Clear();
             NameExpressionTestTarget.MethodNotMentioned();
             var content = MethodAdviceContainer.Content;
+            MethodAdviceContainer.PrintContent(Console.Out);
             Assert.AreEqual(0, content.Count);
 
             // not mentioned property
             MethodAdviceContainer.Clear();
             NameExpressionTestTarget.PropertyNotMentioned = 1;
-            content = MethodAdviceContainer.Content;
+            MethodAdviceContainer.PrintContent(Console.Out);
             Assert.AreEqual(0, content.Count);
         }
 
+        /// <summary>
+        /// Test case that excluded methods are not weaved.
+        /// </summary>
         [Test]
-        public void TextEcluded()
+        public void TextExcluded()
         {
             // excluded method
             MethodAdviceContainer.Clear();
             NameExpressionTestTarget.MethodNotToBeConcerned();
             var content = MethodAdviceContainer.Content;
+            MethodAdviceContainer.PrintContent(Console.Out);
             Assert.AreEqual(0, content.Count);
 
             // excluded property
             MethodAdviceContainer.Clear();
             NameExpressionTestTarget.PropertyNotToBeConcerned = 2;
-            content = MethodAdviceContainer.Content;
+            MethodAdviceContainer.PrintContent(Console.Out);
             Assert.AreEqual(0, content.Count);
         }
 
+        /// <summary>
+        /// Test case that included methods are weaved.
+        /// </summary>
         [Test]
         public void TestIncluded()
         {
@@ -52,6 +65,7 @@ namespace CrossCutterN.Test.NameExpressionTest
             MethodAdviceContainer.Clear();
             NameExpressionTestTarget.MethodToBeConcerned();
             var content = MethodAdviceContainer.Content;
+            MethodAdviceContainer.PrintContent(Console.Out);
             Assert.AreEqual(1, content.Count);
             Assert.AreEqual("Entry", content.ElementAt(0).Name);
 
@@ -59,11 +73,14 @@ namespace CrossCutterN.Test.NameExpressionTest
             MethodAdviceContainer.Clear();
             NameExpressionTestTarget.PropertyToBeConcerned = 3;
             Console.Out.WriteLine(NameExpressionTestTarget.PropertyToBeConcerned);
-            content = MethodAdviceContainer.Content;
+            MethodAdviceContainer.PrintContent(Console.Out);
             Assert.AreEqual(1, content.Count);
             Assert.AreEqual("Entry", content.ElementAt(0).Name);
         }
 
+        /// <summary>
+        /// Test case that methods included by exact match will be weaved even though excluded by not exact match.
+        /// </summary>
         [Test]
         public void TestExactMatch()
         {
@@ -71,6 +88,7 @@ namespace CrossCutterN.Test.NameExpressionTest
             MethodAdviceContainer.Clear();
             NameExpressionTestTarget.NotMentionedToTestExactOverwrite();
             var content = MethodAdviceContainer.Content;
+            MethodAdviceContainer.PrintContent(Console.Out);
             Assert.AreEqual(1, content.Count);
             Assert.AreEqual("Entry", content.ElementAt(0).Name);
         }

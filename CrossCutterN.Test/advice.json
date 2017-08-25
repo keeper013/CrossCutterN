@@ -1,0 +1,283 @@
+{
+  "CrossCutterN": {
+    "test": {
+      "AssemblyPath": "CrossCutterN.Test.dll",
+      "Attributes": {
+        "contextEntryExceptionMethod": "CrossCutterN.Test.ContextTest.ContextEntryExceptionConcernMethodAttribute",
+        "contextEntryExitMethod": "CrossCutterN.Test.ContextTest.ContextEntryExitConcernMethodAttribute",
+        "contextExceptionExitMethod": "CrossCutterN.Test.ContextTest.ContextExceptionExitConcernMethodAttribute",
+        "contextMethod": "CrossCutterN.Test.ContextTest.ContextConcernMethodAttribute",
+        "mixedMethod1": "CrossCutterN.Test.MixedTest.MixedConcernMethod1Attribute",
+        "mixedMethod2": "CrossCutterN.Test.MixedTest.MixedConcernMethod2Attribute",
+        "mixedClass3": "CrossCutterN.Test.MixedTest.MixedConcernClass3Attribute",
+        "optionsClass": "CrossCutterN.Test.OptionsTest.OptionsConcernClassAttribute",
+        "overwriteClass": "CrossCutterN.Test.OverwriteTest.OverwriteConcernClassAttribute",
+        "overwriteMethod": "CrossCutterN.Test.OverwriteTest.OverwriteConcernMethodAttribute",
+        "overwriteProperty": "CrossCutterN.Test.OverwriteTest.OverwriteConcernPropertyAttribute",
+        "overwriteNo": "CrossCutterN.Test.OverwriteTest.OverwriteNoConcernAttribute"
+      },
+      "Advices": {
+        "CrossCutterN.Test.ContextTest.ContextTestAdvice": {
+          "contextEntry1": {
+            "MethodName": "Entry1",
+            "Parameters": [ "Context", "Execution" ]
+          },
+          "contextException1": {
+            "MethodName": "Exception1",
+            "Parameters": [ "Context", "Exception" ]
+          },
+          "contextExit1": {
+            "MethodName": "Exit1",
+            "Parameters": [ "Context", "Execution", "Return", "HasException" ]
+          },
+          "contextEntry2": {
+            "MethodName": "Entry2",
+            "Parameters": [ "Execution" ]
+          },
+          "contextException2": {
+            "MethodName": "Exception2",
+            "Parameters": [ "Exception" ]
+          },
+          "contextExit2": {
+            "MethodName": "Exit2",
+            "Parameters": [ "HasException" ]
+          }
+        },
+        "CrossCutterN.Test.MixedTest.MixedTestAdvice": {
+          "mixedEntryByAttribute1": {
+            "MethodName": "EntryByAttribute1",
+            "Parameters": [ "Execution" ]
+          },
+          "mixedEntryByAttribute2": {
+            "MethodName": "EntryByAttribute2",
+            "Parameters": [ "Execution" ]
+          },
+          "mixedEntryByAttribute3": {
+            "MethodName": "EntryByAttribute3",
+            "Parameters": [ "Execution" ]
+          },
+          "mixedExitByAttribute1": {
+            "MethodName": "ExitByAttribute1"
+          },
+          "mixedExitByAttribute2": {
+            "MethodName": "ExitByAttribute2"
+          },
+          "mixedExitByAttribute3": {
+            "MethodName": "ExitByAttribute3"
+          },
+          "mixedExitByNameExpression": {
+            "MethodName": "ExitByNameExpression",
+            "Parameters": [ "Execution" ]
+          }
+        },
+        "CrossCutterN.Test.NameExpressionTest.NameExpressionTestAdvice": {
+          "nameExpressionEntry": {
+            "MethodName": "Entry"
+          }
+        },
+        "CrossCutterN.Test.OptionsTest.OptionsTestAdvice": {
+          "optionPublicEntry": {
+            "MethodName": "PublicEntry",
+            "Parameters": [ "Execution" ]
+          },
+          "optionPublicExit": {
+            "MethodName": "PublicExit",
+            "Parameters": [ "Execution", "Return", "HasException" ]
+          },
+          "optionProtectedEntry": {
+            "MethodName": "ProtectedEntry",
+            "Parameters": [ "Execution" ]
+          },
+          "optionProtectedExit": {
+            "MethodName": "ProtectedExit",
+            "Parameters": [ "Execution", "Return", "HasException" ]
+          },
+          "optionInternalEntry": {
+            "MethodName": "InternalEntry",
+            "Parameters": [ "Execution" ]
+          },
+          "optionInternalExit": {
+            "MethodName": "InternalExit",
+            "Parameters": [ "Execution", "Return", "HasException" ]
+          },
+          "optionPrivateEntry": {
+            "MethodName": "PrivateEntry",
+            "Parameters": [ "Execution" ]
+          },
+          "optionPrivateExit": {
+            "MethodName": "PrivateExit",
+            "Parameters": [ "Execution", "Return", "HasException" ]
+          },
+          "optionInstanceEntry": {
+            "MethodName": "InstanceEntry",
+            "Parameters": [ "Execution" ]
+          },
+          "optionInstanceExit": {
+            "MethodName": "InstanceExit",
+            "Parameters": [ "Execution", "Return", "HasException" ]
+          },
+          "optionStaticEntry": {
+            "MethodName": "StaticEntry",
+            "Parameters": [ "Execution" ]
+          },
+          "optionStaticExit": {
+            "MethodName": "StaticExit",
+            "Parameters": [ "Execution", "Return", "HasException" ]
+          },
+          "optionMethodEntry": {
+            "MethodName": "MethodEntry",
+            "Parameters": [ "Execution" ]
+          },
+          "optionMethodExit": {
+            "MethodName": "MethodExit",
+            "Parameters": [ "Execution", "Return", "HasException" ]
+          },
+          "optionPropertyGetterEntry": {
+            "MethodName": "PropertyGetterEntry",
+            "Parameters": [ "Execution" ]
+          },
+          "optionPropertyGetterExit": {
+            "MethodName": "PropertyGetterExit",
+            "Parameters": [ "Execution", "Return", "HasException" ]
+          },
+          "optionPropertySetterEntry": {
+            "MethodName": "PropertySetterEntry",
+            "Parameters": [ "Execution" ]
+          },
+          "optionPropertySetterExit": {
+            "MethodName": "PropertySetterExit",
+            "Parameters": [ "Execution", "Return", "HasException" ]
+          }
+        },
+        "CrossCutterN.Test.OverwriteTest.OverwriteTestAdvice": {
+          "overwriteEntry": {
+            "MethodName": "Entry"
+          },
+          "overwriteException": {
+            "MethodName": "Exception"
+          },
+          "overwriteExit": {
+            "MethodName": "Exit"
+          }
+        },
+        "CrossCutterN.Test.ParameterTest.ParameterTestAdvice": {
+          "parameterEntryEmpty": {
+            "MethodName": "EntryEmpty"
+          },
+          "parameterEntryExecution": {
+            "MethodName": "EntryExecution",
+            "Parameters": [ "Execution" ]
+          },
+          "parameterExceptionEmpty": {
+            "MethodName": "ExceptionEmpty"
+          },
+          "parameterExceptionExecution": {
+            "MethodName": "ExceptionExecution",
+            "Parameters": [ "Execution" ]
+          },
+          "parameterExceptionException": {
+            "MethodName": "ExceptionException",
+            "Parameters": [ "Exception" ]
+          },
+          "parameterExceptionExecutionException": {
+            "MethodName": "ExceptionExecutionException",
+            "Parameters": [ "Execution", "Exception" ]
+          },
+          "parameterExitEmpty": {
+            "MethodName": "ExitEmpty"
+          },
+          "parameterExitExecution": {
+            "MethodName": "ExitExecution",
+            "Parameters": [ "Execution" ]
+          },
+          "parameterExitReturn": {
+            "MethodName": "ExitReturn",
+            "Parameters": [ "Return" ]
+          },
+          "parameterExitHasException": {
+            "MethodName": "ExitHasException",
+            "Parameters": [ "HasException" ]
+          },
+          "parameterExitExecutionReturn": {
+            "MethodName": "ExitExecutionReturn",
+            "Parameters": [ "Execution", "Return" ]
+          },
+          "parameterExitExecutionHasException": {
+            "MethodName": "ExitExecutionHasException",
+            "Parameters": [ "Execution", "HasException" ]
+          },
+          "parameterExitReturnHasException": {
+            "MethodName": "ExitReturnHasException",
+            "Parameters": [ "Return", "HasException" ]
+          },
+          "parameterExitExecutionReturnHasException": {
+            "MethodName": "ExitExecutionReturnHasException",
+            "Parameters": [ "Execution", "Return", "HasException" ]
+          }
+        },
+        "CrossCutterN.Test.SwitchTest.SwitchTestAdvice": {
+          "switchEntry1": {
+            "MethodName": "Entry1",
+            "Parameters": [ "Context", "Execution" ]
+          },
+          "switchEntry2": {
+            "MethodName": "Entry2",
+            "Parameters": [ "Execution" ]
+          },
+          "switchEntry3": {
+            "MethodName": "Entry3",
+            "Parameters": [ "Execution" ]
+          },
+          "switchExit1": {
+            "MethodName": "Exit1",
+            "Parameters": [ "Context", "Execution", "Return" ]
+          },
+          "switchExit2": {
+            "MethodName": "Exit2",
+            "Parameters": [ "Execution", "Return" ]
+          },
+          "switchExit3": {
+            "MethodName": "Exit3",
+            "Parameters": [ "Execution", "Return" ]
+          },
+          "switchExit4": {
+            "MethodName": "Exit4",
+            "Parameters": [ "Execution", "Return", "HasException" ]
+          },
+          "switchExit5": {
+            "MethodName": "Exit5",
+            "Parameters": [ "HasException" ]
+          },
+          "switchEntry6": {
+            "MethodName": "Entry6",
+            "Parameters": [ "Execution" ]
+          },
+          "switchExit6": {
+            "MethodName": "Exit6",
+            "Parameters": [ "HasException" ]
+          },
+          "switchEntry7": {
+            "MethodName": "Entry7"
+          },
+          "switchExit7": {
+            "MethodName": "Exit7",
+            "Parameters": [ "Return", "HasException" ]
+          },
+          "switchEntry8": {
+            "MethodName": "Entry8",
+            "Parameters": [ "Execution" ]
+          },
+          "switchExit8": {
+            "MethodName": "Exit8",
+            "Parameters": [ "Execution" ]
+          }
+        },
+        "CrossCutterN.Test.LoadAspectBuilderTest.LoadAspectBuilderTestAdvice": {
+          "entry1": {
+            "MethodName":  "Entry"
+          }
+        }
+      }
+    }
+  }
+}

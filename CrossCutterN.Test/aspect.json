@@ -1,0 +1,10 @@
+{
+  "CrossCutterN": {
+    "CrossCutterN.Aspect.LoadTest": {
+      "AssemblyPath": "CrossCutterN.Test.dll",
+      "AspectBuilders": {
+        "testBuilder": "CrossCutterN.Test.LoadAspectBuilderTest.TestAspectBuilder"
+      }
+    }
+  }
+}
