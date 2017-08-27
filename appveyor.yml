@@ -1,0 +1,23 @@
+version: 0.1.0.{build}
+pull_requests:  
+    do_not_increment_build_number: true
+environment:  
+    DOTNET_SKIP_FIRST_TIME_EXPERIENCE: true
+    DOTNET_CLI_TELEMETRY_OPTOUT: true
+branches:  
+    only:
+        - master
+image: Visual Studio 2017 Preview
+clone_depth: 1  
+nuget:  
+    disable_publish_on_pr: true
+platform: Any CPU
+configuration: Release
+before_build:
+    - nuget restore CrossCutterN.sln
+build_script:  
+    - cmd: msbuild CrossCutterN.sln
+before_test:
+    - cmd: CrossCutterN.Console\bin\Release\CrossCutterN.Console.exe /s:CrossCutterN.Test\bin\Release\aspect.json /d:CrossCutterN.Test\bin\Release\advice.json /t:CrossCutterN.Test\bin\Release\target.json
+test_script:
+    - cmd: nunit3-console CrossCutterN.Test\bin\Release\CrossCutterN.Test.dll --result=CrossCutterNResults.xml;format=AppVeyor
