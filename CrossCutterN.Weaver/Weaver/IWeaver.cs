@@ -4,7 +4,6 @@
 
 namespace CrossCutterN.Weaver.Weaver
 {
-    using System.IO;
     using CrossCutterN.Weaver.Statistics;
 
     /// <summary>
@@ -14,12 +13,14 @@ namespace CrossCutterN.Weaver.Weaver
     {
         /// <summary>
         /// Weaves a new assembly according to input assembly and output it according to output path.
+        /// Currently Mono.Cecil implementation isn't complete, that we can't totally use stream to replace file name.
+        /// So we use file name for interface parameter types.
         /// </summary>
-        /// <param name="inputAssembly">Stream of input assembly.</param>
-        /// <param name="outputAssembly">Stream of output assembly.</param>
-        /// <param name="includeSymbol">Whether to include symbols (simply known as pdb files).</param>
+        /// <param name="inputAssemblyPath">Path of input assembly.</param>
+        /// <param name="includeSymbol">Whether to include symbol file (simply known as pdb files).</param>
+        /// <param name="outputAssemblyPath">Output assembly path</param>
         /// <param name="strongNameKeyFile">Strong name key file.</param>
         /// <returns>Weaving statistics of the assembly.</returns>
-        IAssemblyWeavingStatistics Weave(Stream inputAssembly, Stream outputAssembly, bool includeSymbol, string strongNameKeyFile);
+        IAssemblyWeavingStatistics Weave(string inputAssemblyPath, bool includeSymbol, string outputAssemblyPath, string strongNameKeyFile);
     }
 }

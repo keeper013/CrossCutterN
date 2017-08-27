@@ -4,21 +4,17 @@
 
 namespace CrossCutterN.Base.Metadata
 {
+    using CrossCutterN.Base.Common;
+
     /// <summary>
     /// Interface for custom attribute metadata being built up.
     /// </summary>
-    public interface ICustomAttributeBuilder
+    public interface ICustomAttributeBuilder : IBuilder<ICustomAttribute>
     {
         /// <summary>
         /// Adds property metadata to this attribute metadata.
         /// </summary>
         /// <param name="property">Property metadata to be added.</param>
         void AddAttributeProperty(IAttributeProperty property);
-
-        /// <summary>
-        /// Builds to <see cref="ICustomAttribute"/>, which is immutable.
-        /// </summary>
-        /// <returns>The <see cref="ICustomAttribute"/> built to.</returns>
-        ICustomAttribute Build();
     }
 }

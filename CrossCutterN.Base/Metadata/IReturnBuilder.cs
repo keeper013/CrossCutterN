@@ -4,10 +4,12 @@
 
 namespace CrossCutterN.Base.Metadata
 {
+    using CrossCutterN.Base.Common;
+
     /// <summary>
     /// Return value metadata being built.
     /// </summary>
-    public interface IReturnBuilder
+    public interface IReturnBuilder : IBuilder<IReturn>
     {
         /// <summary>
         /// Sets a value indicating whether there is a return value, if the return type is void or an uncaught exception happened during the execution, this value will be false.
@@ -18,11 +20,5 @@ namespace CrossCutterN.Base.Metadata
         /// Sets value of the return value.
         /// </summary>
         object Value { set; }
-
-        /// <summary>
-        /// Builds to <see cref="IReturn"/>, which is immutable.
-        /// </summary>
-        /// <returns>The <see cref="IReturn"/> built to.</returns>
-        IReturn Build();
     }
 }

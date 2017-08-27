@@ -22,8 +22,7 @@ namespace CrossCutterN.Console.Application
             if (statistics.Exception != null)
             {
                 writer.WriteLine(statistics.Exception.Message);
-                writer.Write(statistics.Exception.StackTrace);
-                writer.WriteLine();
+                writer.WriteLine(statistics.Exception.StackTrace);
                 writer.WriteLine();
             }
 

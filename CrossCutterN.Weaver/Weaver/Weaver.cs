@@ -36,24 +36,30 @@ namespace CrossCutterN.Weaver.Weaver
         }
 
         /// <inheritdoc/>
-        public IAssemblyWeavingStatistics Weave(Stream inputAssembly, Stream outputAssembly, bool includeSymbol, string strongNameKeyFile)
+        public IAssemblyWeavingStatistics Weave(string inputAssemblyPath, bool includeSymbol, string outputAssemblyPath, string strongNameKeyFile)
         {
-            if (inputAssembly == null)
+            if (string.IsNullOrWhiteSpace(inputAssemblyPath))
             {
-                throw new ArgumentNullException("inputAssembly");
+                throw new ArgumentNullException("inputAssemblyPath");
             }
 
-            if (outputAssembly == null)
+            if (string.IsNullOrWhiteSpace(outputAssemblyPath))
             {
-                throw new ArgumentNullException("outputAssembly");
+                throw new ArgumentNullException("outputAssemblyPath");
             }
 
-            var readerParameters = new ReaderParameters
+            // Mono.Cecil implementation has issues that if we directly pass file name for input assembly,
+            // the assembly can't be overwritten if we give the same file name for output assembly,
+            // So here we directly convert input assembly file to memory stream to ensure that input assembly file handle is release when outputing.
+            var readerParameters = new ReaderParameters();
+            if (includeSymbol)
             {
-                ReadSymbols = includeSymbol,
-                SymbolReaderProvider = includeSymbol ? new PdbReaderProvider() : null,
-            };
-            var assembly = AssemblyDefinition.ReadAssembly(inputAssembly, readerParameters);
+                readerParameters.ReadSymbols = true;
+                readerParameters.SymbolReaderProvider = new PdbReaderProvider();
+                readerParameters.SymbolStream = new MemoryStream(File.ReadAllBytes(Path.ChangeExtension(inputAssemblyPath, "pdb")));
+            }
+
+            var assembly = AssemblyDefinition.ReadAssembly(new MemoryStream(File.ReadAllBytes(inputAssemblyPath)), readerParameters);
             var assemblyStatistics = StatisticsFactory.InitializeAssemblyWeavingRecord(assembly.FullName);
 
             try
@@ -92,13 +98,19 @@ namespace CrossCutterN.Weaver.Weaver
                     }
                 }
 
-                var writerParameters = new WriterParameters
+                var writerParameters = new WriterParameters();
+                if (includeSymbol)
                 {
-                    WriteSymbols = includeSymbol,
-                    SymbolWriterProvider = includeSymbol ? new PdbWriterProvider() : null,
-                    StrongNameKeyPair = string.IsNullOrWhiteSpace(strongNameKeyFile) ? null : new StrongNameKeyPair(File.ReadAllBytes(strongNameKeyFile)),
-                };
-                assembly.Write(outputAssembly, writerParameters);
+                    writerParameters.WriteSymbols = true;
+                    writerParameters.SymbolWriterProvider = new PdbWriterProvider();
+                }
+
+                if (!string.IsNullOrWhiteSpace(strongNameKeyFile))
+                {
+                    writerParameters.StrongNameKeyPair = new StrongNameKeyPair(File.ReadAllBytes(strongNameKeyFile));
+                }
+
+                assembly.Write(outputAssemblyPath, writerParameters);
             }
             catch (Exception e)
             {

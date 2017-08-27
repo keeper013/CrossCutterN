@@ -12,6 +12,7 @@ namespace CrossCutterN.Console.Application
     using CrossCutterN.Aspect.Builder;
     using CrossCutterN.Aspect.Utilities;
     using CrossCutterN.Console.Configuration;
+    using CrossCutterN.Weaver.Statistics;
     using CrossCutterN.Weaver.Weaver;
     using Microsoft.Extensions.Configuration;
 
@@ -180,25 +181,23 @@ namespace CrossCutterN.Console.Application
             foreach (var target in targets)
             {
                 Directory.SetCurrentDirectory(configurationDirectory);
-                Console.Out.WriteLine($"Starting to load {target.Input}, weaving into {target.Output}");
                 var inputPath = PathUtility.ProcessPath(target.Input);
-                using (var inputAssembly = File.Open(inputPath, FileMode.Open, FileAccess.Read))
-                using (var outputAssembly = File.Open(PathUtility.ProcessPath(target.Output), FileMode.Create, FileAccess.Write))
+                var snkFilePath = string.IsNullOrWhiteSpace(target.StrongNameKeyFile) ? null : PathUtility.ProcessPath(target.StrongNameKeyFile);
+                var outputPath = string.IsNullOrWhiteSpace(target.Output) ? target.Input : target.Output;
+                Console.Out.WriteLine($"Starting to load {target.Input}, weaving into {outputPath}");
+                outputPath = PathUtility.ProcessPath(outputPath);
+                var statistics = weaver.Weave(inputPath, target.IncludeSymbol, outputPath, snkFilePath);
+                Directory.SetCurrentDirectory(currentDirectory);
+                var assemblyName = ProcessAssemblyName(statistics.AssemblyName);
+                var fileName = $"{assemblyName}_{DateTime.Now.ToString("yyyy_MM_dd_HH_mm_ss_fff")}.log";
+                using (var output = new StreamWriter(fileName, true))
                 {
-                    var snkFilePath = string.IsNullOrWhiteSpace(target.StrongNameKeyFile) ? null : PathUtility.ProcessPath(target.StrongNameKeyFile);
-                    var statistics = weaver.Weave(inputAssembly, outputAssembly, target.IncludeSymbol, snkFilePath);
-                    Directory.SetCurrentDirectory(currentDirectory);
-                    var assemblyName = ProcessAssemblyName(statistics.AssemblyName);
-                    var fileName = $"{assemblyName}_{DateTime.Now.ToString("yyyy_MM_dd_HH_mm_ss_fff")}.log";
-                    using (var output = new StreamWriter(fileName, true))
-                    {
-                        statistics.Log(output);
-                        output.Close();
-                    }
-
-                    processed.Add(inputPath);
-                    Console.Out.WriteLine($"Weaving of assembly {statistics.AssemblyName} in {target.Input} finished, output as {target.Output}");
+                    statistics.Log(output);
+                    output.Close();
                 }
+
+                processed.Add(inputPath);
+                Console.Out.WriteLine($"Weaving of assembly {statistics.AssemblyName} in {target.Input} finished, output as {target.Output}");
             }
 
             Console.Out.WriteLine("Weaving finished");
