@@ -1,5 +1,5 @@
 # CrossCutterN: A Light Weight AOP Tool for .NET
-[![Build status](https://ci.appveyor.com/api/projects/status/f2up0iv7yadh5tj7?svg=true)](https://ci.appveyor.com/project/keeper013/crosscuttern)
+[![Build status](https://ci.appveyor.com/api/projects/status/f2up0iv7yadh5tj7/branch/master?svg=true)](https://ci.appveyor.com/project/keeper013/crosscuttern/branch/master)
 
 ## Introduction
 
