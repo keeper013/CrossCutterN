@@ -8,7 +8,6 @@
 The advantages of **_CrossCutterN_** comparing with other AOP technologies include:
 
 * **Free**: **_CrossCutterN_** is open source and free under MIT license.
-* **Platform Independency**: Base support module of **_CrossCutterN_** is implemented based on .net standard 2.0, and all code injection are at MSIL level, so as long as target project runs on a platform that supports .net standard 2.0, it's platform dependency is not affected. The weaver tool that injects AOP code into project assemblies provided by **_CrossCutterN_** can be run under .net framework and .net core environments.
 * **Light Weight**: Instead of adding compile time dependency to projects, **_CrossCutterN_** injects AOP code after project assemblies are built. This approach allows AOP code injection into assemblies whose source code are not available, and decouples project code from AOP code as much as possible.
 * **Out of the box aspect switching support**: **_CrossCutterN_** allows users to switch on/off AOP code that is injected to methods/properties during project run-time at multiple granularity levels.
 * **Designed for optimized performance**: **_CrossCutterN_** uses IL weaving technology to make the injected AOP code work as efficient as directly coded in target projects, and the implementation is optimized to avoid unnecessary local variable initializations and method calls.
@@ -202,7 +201,7 @@ The following is a complete sample of target assembly configuration:
           "Entry": { "AdviceAssemblyKey": "sample", "MethodKey": "attributeEntry" },
           "Exit": { "AdviceAssemblyKey": "sample", "MethodKey": "attributeExit" }
         },
-        "SwitchStatus": "NotSwitchable"
+        "IsSwitchedOn": true
       },
       "aspectByMethodName": {
       	"AspectAssemblyKey": "CrossCutterN.Aspect",
@@ -213,8 +212,7 @@ The following is a complete sample of target assembly configuration:
         "Advices": {
           "Entry": { "AdviceAssemblyKey": "sample", "MethodKey": "expressionEntry" },
           "Exit": { "AdviceAssemblyKey": "sample", "MethodKey": "expressionExit" }
-        },
-	"SwitchStatus": "On"
+        }
       }
     },
     "Order": {
@@ -227,13 +225,13 @@ The following is a complete sample of target assembly configuration:
         "aspectByAttribute"
       ]
     },
-    "Targets": [
-      {
-        "Input": "CrossCutterN.Sample.Target.dll",
+    "Targets": {
+      "CrossCutterN.Sample.Target.dll": {
         "Output": "CrossCutterN.Sample.Target.Weaved.dll",
-        "IncludeSymbol": true
+        "IncludeSymbol": true,
+	"StrongNameKeyFile": "CrossCutterN.snk"
       }
-    ]
+    }
   }
 }
 ```
@@ -242,7 +240,7 @@ For the several sub elements contained in root element:
 "DefaultAdviceAssemblyKey" is the default advice assembly key that will be applied to all advice assembly reference if not set.
 "AspectBuilders" element contains a dictionary structure with key as aspect builder name and value as aspect builder configuration.
 "Orders" element contains the order of injected methods to be called at each join point for a method.
-"Targets" element contains all assemblies that are to be injected with AOP code. For each target assembly, "Input" and "Output" are relevant or absolute paths of input and output assemblies, while "IncludeSymbol" suggests whether to generate pdb file for weaved assembly, please note that if this value is set to true, original pdb file of the input assembly must exist and be put at the same location as the target assembly.
+"Targets" element is a dictionary structure that contains information and settings of all assemblies that are to be injected with AOP code.
 
 #### Aspect Builder configuration
 
@@ -254,7 +252,7 @@ For each advice configuratoin, in this example, "AdviceAssemblyKey" can be ignor
 
 For both **ConcernAttributeAspectBuilder** and **NameExpressionAspectBuilder**, "ConcernOptions" and "SwitchStatus" are configurable elements.
 
-All available options of "ConcernOptions" are listed below. This element may be ignored in configuration, if ignored, the values of each option will follow the default value listed below. For **ConcernAttributeAspectBuilder**, if not ignored, these settings will overwrite the property settings written in **CrossCutterN.Base.Concern.ConcernClassAttribute** attribute.
+All available options of "ConcernOptions" are listed below. This element may be ignored in configuration, if ignored, the values of each option will follow the default value listed below. For **ConcernAttributeAspectBuilder**, these settings **cannot** overwrite the corresponding property settings written in **CrossCutterN.Base.Concern.ConcernClassAttribute** or **CrossCutterN.Base.Concern.ConcernPropertyAttribute** attribute.
 
 | Option | Description | Default Value |
 | --- | --- | --- |
@@ -269,13 +267,7 @@ All available options of "ConcernOptions" are listed below. This element may be 
 | PropertyGetter | if not set, all property getters won't be injected | false |
 | PropertySetter | if not set, all property setters won't be injected | false |
 
-"SwitchStatus" specifies the default switch status of the advice methods injected by the aspect built by the aspect builder. It's available values and descriptions are listed below:
-
-| Value | Description |
-| --- | --- |
-| On | The advices injected are switchable, by default switched on |
-| Off | The advices injected are switchable, by default switched off |
-| NotSwitchable | The advices injected are not switchable, injected advice methods will always be called |
+"IsSwitchedOn" specifies the default switch status of the advice methods injected by the aspect built by the aspect builder. It's a boolean value. "true" meaning the aspects are switched on by default, "false" meaning the aspects are switched off by default. If not specified, then the aspect injected will not be switchable, which means always executed.
 
 **ConcernAttributeAspectBuilder** has 4 attributes that can be configured, as introduced previously. For **NameExpressionAspectBuilder**, include patterns and exclude patterns can be specified, which will be used to filter methods/properties. Currently the only wild card character supported is asterisk "\*", which is used to represent 0 to any number of any characters. The way **NameExpressionAspectBuilder** uses to identify methods/properties to be injected is:
 
@@ -284,7 +276,17 @@ All available options of "ConcernOptions" are listed below. This element may be 
 * Else if a method/property's full name is matched by one of the include patterns, it is a subject of injection.
 * Else the method/property is **not** a subject of injection.
 
-#### Ordering Advice methods
+#### Switching
+
+This switching feature is used for switch on and off injected advice methods at runtime. Developers can call the **CrossCutterN.Base.Switch.IAspectSwitch** interface returned by **CrossCutterN.Base.Switch.SwitchFacade.Controller** method to to switch on and off injected advice methods at multiple granularity levels. If under some circumstances some injected advice methods shouldn't be called, and under some other circumstances they should, this switching feature is designed specifically for this purpose.
+
+:exclamation: Please note that in one method/property getter/property setter, advice methods injected by one aspect can only be switched on or off simultaneously. For example, if aspect builder AB builds aspect A, and aspect A injects method Entry1 at entry join point, Exit1 at exit point of target method T, then if aspect A is switched off for T, then when calling T, neither Entry1 nor Exit1 will be called; If later aspect A is switched on for T, then when calling T, both Entry1 and Exit 1 will be called; There will be no way to only call Entry1 or Exit1 without calling the other when calling T, because they are both injected by aspect A, hence the switch status is the same.
+
+:exclamation: Aspect switching feature depends on read-write lock for thread safty, comparing with non-switchable aspects its implementation may affect performance a bit and consume some extra memory resource. So please don't abuse the usage of the switching feature, only use it when necessary.
+
+:exclamation: Aspect switching feature handles the case then when switching, some classes may not have been loaded. **CrossCutterN.Base** module will keep some optimized switching operation history internally to apply the operations once certain class is loaded, to make sure no switching operation is lost for any class or any module. This mechanism consumes extra computing resource, and contributes to the argument that the usage of aspect switching should not be abused.
+
+#### Ordering Advice Methods
 
 Why do we need the "Order" section? Here is an example:
 
@@ -302,15 +304,14 @@ Entry injected by A -> Entry injected by B -> T -> Exit injected by B, Exit inje
 
 :exclamation: Please note that if there are more than 1 aspect builders configured in the target configuration file, then "Order" section is compulsory, or else if there is only one aspect builder configured, the "Order" section can be ignored.
 
-#### Switching
+#### Output
 
-This switching feature is used for switch on and off injected advice methods at runtime. Developers can call the **CrossCutterN.Base.Switch.IAspectSwitch** interface returned by **CrossCutterN.Base.Switch.SwitchFacade.Controller** method to to switch on and off injected advice methods at multiple granularity levels. If under some circumstances some injected advice methods shouldn't be called, and under some other circumstances they should, this switching feature is designed specifically for this purpose.
+In "Targets" section, for each entry of the dictionary structure:
 
-:exclamation: Please note that in one method/property getter/property setter, advice methods injected by one aspect can only be switched on or off simultaneously. For example, if aspect builder AB builds aspect A, and aspect A injects method Entry1 at entry join point, Exit1 at exit point of target method T, then if aspect A is switched off for T, then when calling T, neither Entry1 nor Exit1 will be called; If later aspect A is switched on for T, then when calling T, both Entry1 and Exit 1 will be called; There will be no way to only call Entry1 or Exit1 without calling the other when calling T, because they are both injected by aspect A, hence the switch status is the same.
-
-:exclamation: Aspect switching feature depends on read-write lock for thread safty, comparing with non-switchable aspects its implementation may affect performance a bit and consume some extra memory resource. So please don't abuse the usage of the switching feature, only use it when necessary.
-
-:exclamation: Aspect switching feature handles the case then when switching, some classes may not have been loaded. **CrossCutterN.Base** module will keep some optimized switching operation history internally to apply the operations once certain class is loaded, to make sure no switching operation is lost for any class or any module. This mechanism consumes extra computing resource, and contributes to the argument that the usage of aspect switching should not be abused.
+* Key is the absolute or relevant path of the assembly that will be weaved to the configuration file. Value of the entry is the settings for weaving that assembly.
+* Output is the absolute or relevant path of the weaved assembly to be output as. This configuration item is optional. If not specified, **_CrossCutterN_** will output the weaved assembly as the input assembly, meaning overwrite the original input assembly with weaved result.
+* includeSymble meaning whether to output the symbol file (simply meaning the pdb file), if this configuration value is set to true, user should make sure that the pdb file for the weaved assembly is available in the same folder as the assembly, then pdb file for the weaved assembly will be output together with the weaved assembly. This configuration item is optional, if not specified, the value is defaulted to false.
+* StrongNameKeyFile is the absolute or relevant path of strong name key file used to give the weaved assembly a strong name. This configuration item is optional. If not specified, the output assembly will not be strong named.
 
 ## Project Structure
 * **CrossCutterN.Base**: Basic support assembly for **_CrossCutterN_** tool. Please make sure that this assembly is copied over to the directories where injected assemblies are deployed. It contains pre-defined advice parameters, common supports, base attributes and so on.
@@ -318,8 +319,6 @@ This switching feature is used for switch on and off injected advice methods at 
 * **CrossCutterN.Weaver**: the module contains the weaving log using _Mono.Cecil_ IL weaving technologies, which is not supposed to be extended.
 * **CrossCutterN.Console**: Console application of **_CrossCutterN_** tool to weave assemblies.
 * **CrossCutterN.Test**: Unit test project.
-* **CrossCutterN.Sample.Advice**: Sample AOP code for a quick demonstration of the tool.
-* **CrossCutterN.Sample.Target**: Sample assembly to be injected for a quick demonstration of the tool.
 
 ## Usage Attention
 
@@ -337,11 +336,11 @@ Please refer to [AOP Wikipedia](https://en.wikipedia.org/wiki/Aspect-oriented_pr
 
 Please refer to [Mono.Cecil web site](http://www.mono-project.com/docs/tools+libraries/libraries/Mono.Cecil/) for more information about Mono.Cecil which _CrossCutterN_ depends on for IL weaving.
 
-## Known Issues:
+## Considerations:
 
-* Custom MsBuild task doesn't work, this is due to assembly binding redirection issue, needs msbuild to fix it.
-* Strong name support is missing in this tool currently, needs Mono.Cecil to provide the support.
-* Unit test will require nunit to support .netstandard 2.0, which is not implemented for now.
+* **Custom MsBuild Task**: Having an msbuild task certainly helps the tool to be integrated into projects much easier. The situation is that currently msbuild tool has a assembly binding redirection issue that custom msbuild tasks won't work with certain assembly binding redirection, and unfortunately **_CrossCutterN_** is one of them (mostly for the json configuration feature). Either msbuild solves this issue or **_CrossCutterN_** tries to fix the issue otherwise can this feature be provided.
+* **To migrate to DotNetCore and DotNetStandard**: The source code is almost compilable in dotnet core environment except that currently some features needed from Mono.Cecil isn't completed yet, including referencing interfaces with generic patterns and outputing strong named assemblies. After that Mono.Cecil completes the relevant features, the code can be easily migrated to dotnet core and dotnet standard environments.
+* **Weaver Interface Design**: Currently **CrossCutterN.Weaver.Weaver.IWeaver** interface requires file names instead of streams for input and output assemblies. This is because current Mono.Cecil support for outputing weaved assemblies with pdb files using stream completely, which leads to the current design. This can be approved after Mono.Cecil is updated.
 
 ## Contact Author
 
