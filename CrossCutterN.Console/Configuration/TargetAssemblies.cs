@@ -30,6 +30,6 @@ namespace CrossCutterN.Console.Configuration
         /// <summary>
         /// Gets or sets target assemblies configuration.
         /// </summary>
-        public List<AssemblySetting> Targets { get; set; }
+        public Dictionary<string, AssemblySetting> Targets { get; set; }
     }
 }

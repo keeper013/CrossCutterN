@@ -10,11 +10,6 @@ namespace CrossCutterN.Console.Configuration
     public sealed class AssemblySetting
     {
         /// <summary>
-        /// Gets or sets input assembly path.
-        /// </summary>
-        public string Input { get; set; }
-
-        /// <summary>
         /// Gets or sets output assembly path.
         /// </summary>
         public string Output { get; set; }

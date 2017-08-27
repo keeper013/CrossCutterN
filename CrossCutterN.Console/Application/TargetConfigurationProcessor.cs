@@ -175,18 +175,20 @@ namespace CrossCutterN.Console.Application
             return aspects;
         }
 
-        private void Weave(IWeaver weaver, List<AssemblySetting> targets, string configurationFullPath, string currentDirectory)
+        private void Weave(IWeaver weaver, Dictionary<string, AssemblySetting> targets, string configurationFullPath, string currentDirectory)
         {
             var configurationDirectory = Path.GetDirectoryName(configurationFullPath);
             foreach (var target in targets)
             {
                 Directory.SetCurrentDirectory(configurationDirectory);
-                var inputPath = PathUtility.ProcessPath(target.Input);
-                var snkFilePath = string.IsNullOrWhiteSpace(target.StrongNameKeyFile) ? null : PathUtility.ProcessPath(target.StrongNameKeyFile);
-                var outputPath = string.IsNullOrWhiteSpace(target.Output) ? target.Input : target.Output;
-                Console.Out.WriteLine($"Starting to load {target.Input}, weaving into {outputPath}");
+                var inputAssembly = target.Key;
+                var inputPath = PathUtility.ProcessPath(inputAssembly);
+                var settings = target.Value;
+                var snkFilePath = string.IsNullOrWhiteSpace(settings.StrongNameKeyFile) ? null : PathUtility.ProcessPath(settings.StrongNameKeyFile);
+                var outputPath = string.IsNullOrWhiteSpace(settings.Output) ? inputAssembly : settings.Output;
+                Console.Out.WriteLine($"Starting to load {inputAssembly}, weaving into {outputPath}");
                 outputPath = PathUtility.ProcessPath(outputPath);
-                var statistics = weaver.Weave(inputPath, target.IncludeSymbol, outputPath, snkFilePath);
+                var statistics = weaver.Weave(inputPath, settings.IncludeSymbol, outputPath, snkFilePath);
                 Directory.SetCurrentDirectory(currentDirectory);
                 var assemblyName = ProcessAssemblyName(statistics.AssemblyName);
                 var fileName = $"{assemblyName}_{DateTime.Now.ToString("yyyy_MM_dd_HH_mm_ss_fff")}.log";
@@ -197,7 +199,7 @@ namespace CrossCutterN.Console.Application
                 }
 
                 processed.Add(inputPath);
-                Console.Out.WriteLine($"Weaving of assembly {statistics.AssemblyName} in {target.Input} finished, output as {target.Output}");
+                Console.Out.WriteLine($"Weaving of assembly {statistics.AssemblyName} in {inputAssembly} finished, output as {outputPath}");
             }
 
             Console.Out.WriteLine("Weaving finished");

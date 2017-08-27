@@ -438,12 +438,11 @@
         "switch10"
       ]
     },
-    "Targets": [
-      {
-        "Input": "CrossCutterN.Test.dll",
+    "Targets": {
+      "CrossCutterN.Test.dll": {
         "IncludeSymbol": true,
         "StrongNameKeyFile": "CrossCutterN.snk"
       }
-    ]
+    }
   }
 }
