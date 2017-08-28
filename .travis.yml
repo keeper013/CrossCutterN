@@ -4,6 +4,6 @@ install:
   - nuget restore CrossCutterN.sln
   - nuget install NUnit.Runners -Version 3.7.0 -OutputDirectory testrunner
 script:
-  - xbuild /p:Configuration=Release CrossCutterN.sln
+  - msbuild /p:Configuration=Release CrossCutterN.sln
   - mono ./CrossCutterN.Console/bin/Release/CrossCutterN.Console.exe /s:./CrossCutterN.Test/bin/Release/aspect.json /d:./CrossCutterN.Test/bin/Release/advice.json /t:./CrossCutterN.Test/bin/Release/target.json
   - mono ./testrunner/NUnit.ConsoleRunner.3.7.0/tools/nunit3-console.exe ./CrossCutterN.Test/bin/Release/CrossCutterN.Test.dll
