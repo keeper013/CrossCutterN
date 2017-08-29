@@ -283,7 +283,7 @@ In **Attributes** section an attribute of type "**CrossCutterN.Sample.Advice.Sam
           "Entry": { "MethodKey": "entry1" },
           "Exit": { "MethodKey": "exit1" }
         }
-        //,"IsSwitchedOn": true
+        //,"IsSwitchedOn": false
       }
     },
     "Targets": {
@@ -332,6 +332,31 @@ One thing to mentioned though, for multiple aspect builders to work together, AO
 ```
 
 It means when applying multiple aspect builders to one target method, upon entry, method call injected by aspect builder referred to as "**aspectByAttribute**" is applied first, and method call injected by aspect builder referred to as **aspectByMethodName** will be applied after the former. And before exiting the target method call, the injected AOP method call ordering is reversed according to the configuration. Please note that "**Order**" section can be ignored for single aspect builder in target configuration files, but is mandatory for multiple aspect builders in target configuration files.
+
+### Runtime Aspect Switching
+
+In case sometimes users intend to temporarily disable some of the injected code and enable them on later, **_CrossCutterN_** provides a way to switch on and off injected AOP method calls at program run time.
+
+Note the "//,"IsSwitchedOn": false" configuration item in the sample, it is the configuration entry for such switching.
+
+* If not specified, the AOP method calls injected by the aspect builder will not be switchable, which means they always get executed when the target methods are triggered.
+* If set to false, the AOP method calss injected by the aspect builder will be switchable, but by default not executed, unless switched on at runtime. They can be switched on and off during the program run time.
+* If set to true, the AOP method calls injected by the aspect builder will be switchable, and by default executed, unless switche off at run time. They can be switched off and on during the program run time.
+
+So we uncommand this configuration entry, save the configuration file, and go through the "Using Custom Attributes to Mark Target Methods to Be Injected" example again, the output of the weaved assembly will not include the AOP output:
+
+```
+Add starting
+Add ending
+```
+
+In the program, execute the following statement before calling the Add method:
+
+```C#
+CrossCutterN.Base.Switch.SwitchFacade.Controller.SwitchOn("aspectByAttribute");
+```
+
+Note that "**aspectByAttribute**" is the key we used to refer to the aspect builder in target configuration. Go through with the "Using Custom Attributes to Mark Target Methods to Be Injected" example again, the output of the weaved assembly will include the AOP output again.
 
 ## Configuration Details
 
