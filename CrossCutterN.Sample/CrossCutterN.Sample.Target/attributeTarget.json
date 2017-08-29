@@ -9,7 +9,7 @@
           "Entry": { "MethodKey": "entry1" },
           "Exit": { "MethodKey": "exit1" }
         }
-        ,"IsSwitchedOn": false
+        //,"IsSwitchedOn": false
       }
     },
     "Targets": {
