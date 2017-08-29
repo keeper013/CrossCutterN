@@ -333,11 +333,11 @@ One thing to mentioned though, for multiple aspect builders to work together, AO
 
 It means when applying multiple aspect builders to one target method, upon entry, method call injected by aspect builder referred to as "**aspectByAttribute**" is applied first, and method call injected by aspect builder referred to as **aspectByMethodName** will be applied after the former. And before exiting the target method call, the injected AOP method call ordering is reversed according to the configuration. Please note that "**Order**" section can be ignored for single aspect builder in target configuration files, but is mandatory for multiple aspect builders in target configuration files.
 
-### Runtime Aspect Switching
+### Runtime AOP Methods Calls Switching
 
-In case sometimes users intend to temporarily disable some of the injected code and enable them on later, **_CrossCutterN_** provides a way to switch on and off injected AOP method calls at program run time.
+In case sometimes users intend to temporarily disable some of the AOP methods calls and enable them on later, **_CrossCutterN_** provides a way to switch on and off injected AOP methods calls during program run time.
 
-Note the "//,"IsSwitchedOn": false" configuration item in the sample, it is the configuration entry for such switching.
+Note the "//,"IsSwitchedOn": false" configuration item in the samples, it is the configuration entry for such switching:
 
 * If not specified, the AOP method calls injected by the aspect builder will not be switchable, which means they always get executed when the target methods are triggered.
 * If set to false, the AOP method calss injected by the aspect builder will be switchable, but by default not executed, unless switched on at runtime. They can be switched on and off during the program run time.
