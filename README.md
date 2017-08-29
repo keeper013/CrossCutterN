@@ -12,6 +12,327 @@ The advantages of **_CrossCutterN_** comparing with other AOP technologies inclu
 * **Out of the box aspect switching support**: **_CrossCutterN_** allows users to switch on/off AOP code that is injected to methods/properties during project run-time at multiple granularity levels.
 * **Designed for optimized performance**: **_CrossCutterN_** uses IL weaving technology to make the injected AOP code work as efficient as directly coded in target projects, and the implementation is optimized to avoid unnecessary local variable initializations and method calls.
 
+## Quick Examples:
+
+To perform weave AOP code into an assembly, **_CrossCutterN_** requires the following process:
+
+* Prepare the AOP code module following **_CrossCutterN_** convention. The AOP code content is fully customizable by developers.
+* Prepare the configuration file for the AOP module. The configuration file format is quite simple which will be explained in following sections.
+* Prepare the configuration file for the target module, which requires the AOP code to be injected to. The configuration file format is quite simple which will be explained in following sections.
+* Execute console application tool to weave the original assembly together with the AOP code information into a new assembly.
+
+And it's done.
+
+Let's take a very simple C# method for example:
+
+```C#
+namespace CrossCutterN.Sample.Target
+{
+    using System;
+
+    internal class Target
+    {
+        public static int Add(int x, int y)
+        {
+            Console.Out.WriteLine("Add starting");
+            var z = x + y;
+            Console.Out.WriteLine("Add ending");
+            return z;
+        }
+    }
+}
+```
+
+When executed, the output to console would be:
+
+```
+Add starting
+Add ending
+```
+
+What if I want to inject some AOP code to the Add method? For example, log the function call and all it's parameter values upon entering the method call, and log the return value before the method returns?
+
+### Using Name of Methods to Find Target Methods to Be Injected
+
+By following the steps listed:
+
+#### Implement AOP Module
+
+Implement some utility properties and methods first:
+
+```C#
+namespace CrossCutterN.Sample.Advice
+{
+    using System;
+    using System.Text;
+    using CrossCutterN.Base.Metadata;
+
+    internal sealed class Utility
+    {
+        internal static string CurrentTime => DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss.fff tt");
+
+        internal static string GetMethodInfo(IExecution execution)
+        {
+            var strb = new StringBuilder(execution.Name);
+            strb.Append("(");
+            if (execution.Parameters.Count > 0)
+            {
+                foreach (var parameter in execution.Parameters)
+                {
+                    strb.Append(parameter.Name).Append("=").Append(parameter.Value).Append(",");
+                }
+
+                strb.Remove(strb.Length - 1, 1);
+            }
+
+            strb.Append(")");
+            return strb.ToString();
+        }
+
+        internal static string GetReturnInfo(IReturn rReturn) 
+            => rReturn.HasReturn ? $"returns {rReturn.Value}" : "no return";
+    }
+}
+```
+Please note that IExecution and IReturn interfaces are provided by **CrossCutterN.Base.dll** assembly. For **_CrossCutterN_** tool to work, developers must follow it's conventions and provided interfaces.
+
+Now implement methods to output logs upon entry and before return of a method:
+
+```C#
+namespace CrossCutterN.Sample.Advice
+{
+    using System;
+    using CrossCutterN.Base.Metadata;
+
+    public static class AdviceByNameExpression
+    {
+        public static void OnEntry(IExecution execution)
+            => Console.Out.WriteLine($"{Utility.CurrentTime} Injected by method name on entry: {Utility.GetMethodInfo(execution)}");
+
+        public static void OnExit(IReturn rReturn)
+            => Console.Out.WriteLine($"{Utility.CurrentTime} Injected by method name on exit: {Utility.GetReturnInfo(rReturn)}");
+    }
+}
+```
+
+Just for easy demonstration purpose we directly output the log to console. AOP module implementation is done.
+
+#### Prepare AOP Module Configuration
+
+Add a json file to the AOP module project, make sure it's copied together with the assembly. Name the json file as "adviceByNameExpression.json".
+
+```json
+{
+  "CrossCutterN": {
+    "sample": {
+      "AssemblyPath": "CrossCutterN.Sample.Advice.dll",
+      "Advices": {
+        "CrossCutterN.Sample.Advice.AdviceByNameExpression": {
+          "testEntry": {
+            "MethodName": "OnEntry",
+            "Parameters": [ "Execution" ]
+          },
+          "testExit": {
+            "MethodName": "OnExit",
+            "Parameters": [ "Return" ]
+          }
+        }
+      }
+    }
+  }
+}
+```
+
+Meaning of the configuration file is like the following:
+
+* I have an assembly which contains AOP code to be injected, the key used to refer to this assembly is "**sample**".
+* Path of this assembly is "**CrossCutterN.Sample.Advice.dll**"; it's not an absolute path, so the assembly path is relevant to the path of configuration file, in this case it's in the same folder with the configuration file.
+* It has the following AOP methods (Namely "**Advices**") to be injected in class "**CrossCutterN.Sample.Advice.AdviceByNameExpression**".
+* One method named "**OnEntry**", with one parameter type marked as "**Execution**" (which is the "IExecution" type in C# code). This method will be referred to as "**testEntry**" in target assembly configuration.
+* One method named "**OnExit**", with one parameter type marked as "**Return**" (which is the "IReturn" type in C# code). This method will be referred to as "**testExit**" in target assembly configuration.
+
+#### Prepare Target Module Configuration
+
+Add a json file to the target module project, and make sure it's copied together with the assembly to be injected with AOP method call. Name the json file as "nameExpressionTarget.json".
+
+```json
+{
+  "CrossCutterN": {
+    "DefaultAdviceAssemblyKey": "sample",
+    "AspectBuilders": {
+      "aspectByMethodName": {
+        "AspectBuilderKey": "CrossCutterN.Aspect.Builder.NameExpressionAspectBuilder",
+        "Includes": [ "CrossCutterN.Sample.Target.Target.Ad*" ],
+        "Advices": {
+          "Entry": { "MethodKey": "testEntry" },
+          "Exit": { "MethodKey": "testExit" }
+        }
+      }
+    },
+    "Targets": {
+      "CrossCutterN.Sample.Target.exe": { "Output": "CrossCutterN.Sample.Target.exe" }
+    }
+  }
+}
+
+```
+
+Meaning of the configuration file is like the following:
+
+* I have a default AOP code module which can be referred to as "**sample**"
+* The following **AspectBuilders** are defined to help me to do the injection.
+* One aspect builder can be referred to as "**CrossCutterN.Aspect.Builder.NameExpressionAspectBuilder**". This reference is implemented and provided by **_CrossCutterN_** tool which will find methods to inject AOP code into by checking the methods' names.
+* This aspect builder will inject all methods whose full name is like "**CrossCutterN.Sample.Target.Target.Ad\***"
+* This aspect builder will inject a method call to a method which can be referred to as "**testEntry**" upon "**Entry**" of the target method call.
+* This aspect builder will inject a method call to a method which can be referred to as "**testExit**" before "**Exit**" of the target method call.
+* AOP code added by this aspect builder can be referred to as "**aspectByMethodName**" in configuration for ordering and C# code to switch on/off.
+* One assembly is in the **Targets** assemblies to be injected. The assembly is "**CrossCutterN.Sample.Target.exe**". It's not an absolute path, so the path is relevant to the configuration file, in this case it's in the same folder of the configuration file. The weaved assembly will be saved as "CrossCutterN.Sample.Target.exe", path relevant to the configuration file, in this case also the same folder of the configuration file. The file name of the output assembly is exactly the same with the target assembly, so the original assembly will be overwritten by the weaved one.
+
+#### Execute Console Application Tool
+
+Build the AOP and target assemblies with Release configuration, navigate to CrossCutterN.Sample\CrossCutterN.Console\, execute:
+```batch
+CrossCutterN.Console.exe /d:..\CrossCutterN.Sample.Advice\bin\Release\adviceByNameExpression.json /t:..\CrossCutterN.Sample.Target\bin\Release\nameExpressionTarget.json
+```
+
+Meaning of the command is:
+
+Execute console application of **_CrossCutterN_**, using **..\CrossCutterN.Sample.Advice\bin\Release\adviceByNameExpression.json** file as AOP code assembly configuration, and using **..\CrossCutterN.Sample.Target\bin\Release\nameExpressionTarget.json** file as target assembly configuration.
+
+If the execution is successful, the original CrossCutterN.Sample.Target.exe file is replaced with newly generated one. Execute the new assembly, something like the following output is expected:
+
+```
+yyyy-MM-dd HH:mm:ss fff tt Injected by method name on entry: Add(x=1,y=2)
+Add starting
+Add ending
+yyyy-MM-dd HH:mm:ss fff tt Injected by method name on exit: returns 3
+```
+
+The result suggests that the AOP method calls have been successfully injected.
+
+To keep the original target assembly for comparation or other purposes, just change the "**Output**" configuration in "**Targets**" section in target assembly configuration to other values than the assembly name of the original, in this case maybe "CrossCutterN.Sample.Target.Weaved.exe" or something else.
+
+### Using Custom Attributes to Mark Target Methods to Be Injected
+
+**_CrossCutterN_** tool also provides a way to mark target methods to be injected using customzed attributes. And the process is similar to the previous:
+
+#### Implement AOP Module
+
+```C#
+namespace CrossCutterN.Sample.Advice
+{
+    using System;
+    using CrossCutterN.Base.Concern;
+    using CrossCutterN.Base.Metadata;
+
+    public static class AdviceByAttribute
+    {
+        public static void OnEntry(IExecution execution) 
+            => Console.Out.WriteLine($"{Utility.CurrentTime} Injected by attribute on entry: {Utility.GetMethodInfo(execution)}");
+
+        public static void OnExit(IReturn rReturn) 
+            => Console.Out.WriteLine($"{Utility.CurrentTime} Injected by attribute on exit: {Utility.GetReturnInfo(rReturn)}");
+    }
+
+    public sealed class SampleConcernMethodAttribute : ConcernMethodAttribute
+    {
+    }
+}
+```
+
+Note that this time there is an attribute "**SampleConcernMethodAttribute**" declared for marking target methods.
+
+#### Prepare AOP Module Configuration
+
+```json
+{
+  "CrossCutterN": {
+    "sample": {
+      "AssemblyPath": "CrossCutterN.Sample.Advice.dll",
+      "Attributes": { "method": "CrossCutterN.Sample.Advice.SampleConcernMethodAttribute" },
+      "Advices": {
+        "CrossCutterN.Sample.Advice.AdviceByAttribute": {
+          "entry1": {
+            "MethodName": "OnEntry",
+            "Parameters": [ "Execution" ]
+          },
+          "exit1": {
+            "MethodName": "OnExit",
+            "Parameters": [ "Return" ]
+          }
+        }
+      }
+    }
+  }
+}
+```
+
+In **Attributes** section an attribute of type "**CrossCutterN.Sample.Advice.SampleConcernMethodAttribute**" is defined to mark target methods. It can be referred to as "**method**" in target configurations. The configuration file name is adviceByAttribute.json.
+
+#### Prepare Target Module Configuration
+
+```json
+{
+  "CrossCutterN": {
+    "DefaultAdviceAssemblyKey": "sample",
+    "AspectBuilders": {
+      "aspectByAttribute": {
+        "AspectBuilderKey": "CrossCutterN.Aspect.Builder.ConcernAttributeAspectBuilder",
+        "ConcernMethodAttributeType": { "TypeKey": "method" },
+        "Advices": {
+          "Entry": { "MethodKey": "entry1" },
+          "Exit": { "MethodKey": "exit1" }
+        }
+        //,"IsSwitchedOn": true
+      }
+    },
+    "Targets": {
+      "CrossCutterN.Sample.Target.exe": { "Output": "CrossCutterN.Sample.Target.exe" }
+    }
+  }
+}
+```
+
+Here **AspectBuilderKey** is changed to "**CrossCutterN.Aspect.Builder.ConcernAttributeAspectBuilder**", which is also implemented and provided by **_CrossCutterN_** tool, it will find methods marked by checking predefined attributes. The configuration file is attributeTarget.json.
+
+#### Execute Console Application Tool
+
+Build the AOP and target assemblies with Release configuration, navigate to CrossCutterN.Sample\CrossCutterN.Console\, execute:
+
+```batch
+CrossCutterN.Console.exe /d:..\CrossCutterN.Sample.Advice\bin\Release\adviceByAttribute.json /t:..\CrossCutterN.Sample.Target\bin\Release\attributeTarget.json
+```
+
+The expected result is similar with previous example when executing the weaved assembly:
+
+```
+yyyy-MM-dd HH:mm:ss fff tt Injected by attribute name on entry: Add(x=1,y=2)
+Add starting
+Add ending
+yyyy-MM-dd HH:mm:ss fff tt Injected by attribute name on exit: returns 3
+```
+
+### Perform AOP Code Injection Using Multiple Aspect Builders
+
+Surely to inject multiple AOP method calls, multiple aspect builders can be declared in single AOP assemlby configuration files and single target assembly configuration files. Please check the "advice.json" and "target.json" configuration files in the sample project. Detailed processes and results are ignored to reduce text redundancy.
+
+One thing to mentioned though, for multiple aspect builders to work together, AOP method call order must be specified, like the "**Order**" section in "target.json":
+
+```json
+"Order": {
+  "Entry": [
+    "aspectByAttribute",
+    "aspectByMethodName"
+  ],
+  "Exit": [
+    "aspectByMethodName",
+    "aspectByAttribute"
+  ]
+}
+```
+
+It means when applying multiple aspect builders to one target method, upon entry, method call injected by aspect builder referred to as "**aspectByAttribute**" is applied first, and method call injected by aspect builder referred to as **aspectByMethodName** will be applied after the former. And before exiting the target method call, the injected AOP method call ordering is reversed according to the configuration. Please note that "**Order**" section can be ignored for single aspect builder in target configuration files, but is mandatory for multiple aspect builders in target configuration files.
+
 ## Configuration Details
 
 To maximize re-usage of AOP code assemblies, **_CrossCutterN_** defines 3 categories of assemblies:
@@ -309,7 +630,7 @@ Entry injected by A -> Entry injected by B -> T -> Exit injected by B, Exit inje
 In "Targets" section, for each entry of the dictionary structure:
 
 * Key is the absolute or relevant path of the assembly that will be weaved to the configuration file. Value of the entry is the settings for weaving that assembly.
-* Output is the absolute or relevant path of the weaved assembly to be output as. This configuration item is optional. If not specified, **_CrossCutterN_** will output the weaved assembly as the input assembly, meaning overwrite the original input assembly with weaved result.
+* Output is the absolute or relevant path of the weaved assembly to be output as. This configuration item is mandatory. It can be set to be the same file as the input assembly, then **_CrossCutterN_** will output the weaved assembly as the input assembly, meaning overwrite the original input assembly with weaved result.
 * includeSymble meaning whether to output the symbol file (simply meaning the pdb file), if this configuration value is set to true, user should make sure that the pdb file for the weaved assembly is available in the same folder as the assembly, then pdb file for the weaved assembly will be output together with the weaved assembly. This configuration item is optional, if not specified, the value is defaulted to false.
 * StrongNameKeyFile is the absolute or relevant path of strong name key file used to give the weaved assembly a strong name. This configuration item is optional. If not specified, the output assembly will not be strong named.
 
