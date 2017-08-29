@@ -52,6 +52,8 @@ Add ending
 
 What if I want to inject some AOP code to the Add method? For example, log the function call and all it's parameter values upon entering the method call, and log the return value before the method returns?
 
+Before going through with the examples, please build of CrossCutterN.Console project, and copy the output binaries to CrossCutterN.Sample\CrossCutterN.Console\ folder.
+
 ### Using Name of Methods to Find Target Methods to Be Injected
 
 By following the steps listed:
@@ -190,14 +192,14 @@ Meaning of the configuration file is like the following:
 
 #### Execute Console Application Tool
 
-Build the AOP and target assemblies with Release configuration, navigate to CrossCutterN.Sample\CrossCutterN.Console\, execute:
+Build the AOP and target assemblies with Release configuration, navigate to CrossCutterN.Sample\ folder, execute:
 ```batch
-CrossCutterN.Console.exe /d:..\CrossCutterN.Sample.Advice\bin\Release\adviceByNameExpression.json /t:..\CrossCutterN.Sample.Target\bin\Release\nameExpressionTarget.json
+CrossCutterN.Console\CrossCutterN.Console.exe /d:CrossCutterN.Sample.Advice\bin\Release\adviceByNameExpression.json /t:CrossCutterN.Sample.Target\bin\Release\nameExpressionTarget.json
 ```
 
 Meaning of the command is:
 
-Execute console application of **_CrossCutterN_**, using **..\CrossCutterN.Sample.Advice\bin\Release\adviceByNameExpression.json** file as AOP code assembly configuration, and using **..\CrossCutterN.Sample.Target\bin\Release\nameExpressionTarget.json** file as target assembly configuration.
+Execute console application of **_CrossCutterN_**, using **CrossCutterN.Sample.Advice\bin\Release\adviceByNameExpression.json** file as AOP code assembly configuration, and using **CrossCutterN.Sample.Target\bin\Release\nameExpressionTarget.json** file as target assembly configuration.
 
 If the execution is successful, the original CrossCutterN.Sample.Target.exe file is replaced with newly generated one. Execute the new assembly, something like the following output is expected:
 
@@ -297,10 +299,10 @@ Here **AspectBuilderKey** is changed to "**CrossCutterN.Aspect.Builder.ConcernAt
 
 #### Execute Console Application Tool
 
-Build the AOP and target assemblies with Release configuration, navigate to CrossCutterN.Sample\CrossCutterN.Console\, execute:
+Build the AOP and target assemblies with Release configuration, navigate to CrossCutterN.Sample\ folder, execute:
 
 ```batch
-CrossCutterN.Console.exe /d:..\CrossCutterN.Sample.Advice\bin\Release\adviceByAttribute.json /t:..\CrossCutterN.Sample.Target\bin\Release\attributeTarget.json
+CrossCutterN.Console\CrossCutterN.Console.exe /d:CrossCutterN.Sample.Advice\bin\Release\adviceByAttribute.json /t:CrossCutterN.Sample.Target\bin\Release\attributeTarget.json
 ```
 
 The expected result is similar with previous example when executing the weaved assembly:
