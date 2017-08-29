@@ -181,11 +181,21 @@ namespace CrossCutterN.Console.Application
             foreach (var target in targets)
             {
                 Directory.SetCurrentDirectory(configurationDirectory);
+                if (string.IsNullOrWhiteSpace(target.Key))
+                {
+                    throw new ApplicationException($"Input assembly must be specified, found empty in Targets section in {configurationFullPath}");
+                }
+
                 var inputAssembly = target.Key;
                 var inputPath = PathUtility.ProcessPath(inputAssembly);
                 var settings = target.Value;
+                if (settings == null || string.IsNullOrWhiteSpace(settings.Output))
+                {
+                    throw new ApplicationException($"Output must be specified, found empty in Targets section in {configurationFullPath}");
+                }
+
+                var outputPath = settings.Output;
                 var snkFilePath = string.IsNullOrWhiteSpace(settings.StrongNameKeyFile) ? null : PathUtility.ProcessPath(settings.StrongNameKeyFile);
-                var outputPath = string.IsNullOrWhiteSpace(settings.Output) ? inputAssembly : settings.Output;
                 Console.Out.WriteLine($"Starting to load {inputAssembly}, weaving into {outputPath}");
                 outputPath = PathUtility.ProcessPath(outputPath);
                 var statistics = weaver.Weave(inputPath, settings.IncludeSymbol, outputPath, snkFilePath);

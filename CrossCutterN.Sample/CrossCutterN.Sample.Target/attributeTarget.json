@@ -1,0 +1,19 @@
+﻿{
+  "CrossCutterN": {
+    "DefaultAdviceAssemblyKey": "sample",
+    "AspectBuilders": {
+      "aspectByAttribute": {
+        "AspectBuilderKey": "CrossCutterN.Aspect.Builder.ConcernAttributeAspectBuilder",
+        "ConcernMethodAttributeType": { "TypeKey": "method" },
+        "Advices": {
+          "Entry": { "MethodKey": "entry1" },
+          "Exit": { "MethodKey": "exit1" }
+        }
+        ,"IsSwitchedOn": false
+      }
+    },
+    "Targets": {
+      "CrossCutterN.Sample.Target.exe": { "Output": "CrossCutterN.Sample.Target.exe" }
+    }
+  }
+}

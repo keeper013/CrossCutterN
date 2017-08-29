@@ -31,6 +31,11 @@ namespace CrossCutterN.Weaver.Switch
         int EndIndex { set; }
 
         /// <summary>
+        /// Gets the value of the section length, which matters when deciding to use br_s or br
+        /// </summary>
+        int SectionLength { get; }
+
+        /// <summary>
         /// Gets start instruction of this switchable section.
         /// </summary>
         Instruction StartInstruction { get; }

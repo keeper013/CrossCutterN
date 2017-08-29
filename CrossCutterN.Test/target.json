@@ -440,6 +440,7 @@
     },
     "Targets": {
       "CrossCutterN.Test.dll": {
+        "Output": "CrossCutterN.Test.dll",
         "IncludeSymbol": true,
         "StrongNameKeyFile": "CrossCutterN.snk"
       }

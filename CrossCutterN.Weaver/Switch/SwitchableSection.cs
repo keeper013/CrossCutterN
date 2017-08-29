@@ -20,6 +20,9 @@ namespace CrossCutterN.Weaver.Switch
         public int EndIndex { private get; set; }
 
         /// <inheritdoc/>
+        public int SectionLength { get; private set; }
+
+        /// <inheritdoc/>
         public Instruction StartInstruction { get; private set; }
 
         /// <inheritdoc/>
@@ -53,6 +56,7 @@ namespace CrossCutterN.Weaver.Switch
 #endif
             StartInstruction = instructions[StartIndex];
             EndInstruction = EndIndex >= instructions.Count ? defaultInstruction : instructions[EndIndex];
+            SectionLength = EndIndex - StartIndex;
             StartIndex = -1;
             EndIndex = -1;
         }

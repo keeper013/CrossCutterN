@@ -1,0 +1,1451 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>CrossCutterN.Aspect</name>
+    </assembly>
+    <members>
+        <member name="T:CrossCutterN.Aspect.Aspect.AspectFactory">
+            <summary>
+            Aspect factory.
+            </summary>
+        </member>
+        <member name="M:CrossCutterN.Aspect.Aspect.AspectFactory.InitializeConcernAttributeAspect(System.Type,System.Type,System.Type,System.Type)">
+            <summary>
+            Initializes a new instance of of aspect which identifies target methods and properties using customized attributes.
+            </summary>
+            <param name="classConcernAttributeType">Type of class concern attribute.</param>
+            <param name="methodConcernAttributeType">Type of method concern attribute.</param>
+            <param name="propertyConcernAttributeType">Type of property concern attribute.</param>
+            <param name="noConcernAttributeType">Type of no concern attribute.</param>
+            <returns>The <see cref="T:CrossCutterN.Aspect.Aspect.ISwitchableAspectWithDefaultOptions"/> initialized.</returns>
+        </member>
+        <member name="M:CrossCutterN.Aspect.Aspect.AspectFactory.InitializeNameExpressionAspect(System.Collections.Generic.ICollection{System.String},System.Collections.Generic.ICollection{System.String})">
+            <summary>
+            Initializes a new instance of of aspect which identifies target methods and properties using method/property name expression.
+            </summary>
+            <param name="includes">Patterns used to include target methods/properties.</param>
+            <param name="excludes">Patterns used to exclude target methods/properties.</param>
+            <returns>The <see cref="T:CrossCutterN.Aspect.Aspect.ISwitchableAspectWithDefaultOptions"/> initialized.</returns>
+        </member>
+        <member name="T:CrossCutterN.Aspect.Aspect.ConcernAttributeAspect">
+            <summary>
+            Aspect which recognizes injection target methods and properties by attributes.
+            </summary>
+        </member>
+        <member name="M:CrossCutterN.Aspect.Aspect.ConcernAttributeAspect.#ctor(System.Type,System.Type,System.Type,System.Type)">
+            <summary>
+            Initializes a new instance of the <see cref="T:CrossCutterN.Aspect.Aspect.ConcernAttributeAspect"/> class.
+            </summary>
+            <param name="classConcernAttributeType">Type of class concern attribute.</param>
+            <param name="methodConcernAttributeType">Type of method concern attribute.</param>
+            <param name="propertyConcernAttributeType">Type of property concern attribute.</param>
+            <param name="noConcernAttributeType">Type of no concern attribute.</param>
+        </member>
+        <member name="P:CrossCutterN.Aspect.Aspect.ConcernAttributeAspect.ClassConcernAttributeType">
+            <summary>
+            Gets type of class concern attribute.
+            </summary>
+        </member>
+        <member name="P:CrossCutterN.Aspect.Aspect.ConcernAttributeAspect.MethodConcernAttributeType">
+            <summary>
+            Gets type of method concern attribute.
+            </summary>
+        </member>
+        <member name="P:CrossCutterN.Aspect.Aspect.ConcernAttributeAspect.PropertyConcernAttributeType">
+            <summary>
+            Gets type of property concern attribute.
+            </summary>
+        </member>
+        <member name="P:CrossCutterN.Aspect.Aspect.ConcernAttributeAspect.NoConcernAttributeType">
+            <summary>
+            Gets type of no concern attribute.
+            </summary>
+        </member>
+        <member name="P:CrossCutterN.Aspect.Aspect.ConcernAttributeAspect.ConcernConstructor">
+            <inheritdoc/>
+        </member>
+        <member name="P:CrossCutterN.Aspect.Aspect.ConcernAttributeAspect.ConcernInstance">
+            <inheritdoc/>
+        </member>
+        <member name="P:CrossCutterN.Aspect.Aspect.ConcernAttributeAspect.ConcernInternal">
+            <inheritdoc/>
+        </member>
+        <member name="P:CrossCutterN.Aspect.Aspect.ConcernAttributeAspect.ConcernMethod">
+            <inheritdoc/>
+        </member>
+        <member name="P:CrossCutterN.Aspect.Aspect.ConcernAttributeAspect.ConcernPrivate">
+            <inheritdoc/>
+        </member>
+        <member name="P:CrossCutterN.Aspect.Aspect.ConcernAttributeAspect.ConcernPropertyGetter">
+            <inheritdoc/>
+        </member>
+        <member name="P:CrossCutterN.Aspect.Aspect.ConcernAttributeAspect.ConcernPropertySetter">
+            <inheritdoc/>
+        </member>
+        <member name="P:CrossCutterN.Aspect.Aspect.ConcernAttributeAspect.ConcernProtected">
+            <inheritdoc/>
+        </member>
+        <member name="P:CrossCutterN.Aspect.Aspect.ConcernAttributeAspect.ConcernPublic">
+            <inheritdoc/>
+        </member>
+        <member name="P:CrossCutterN.Aspect.Aspect.ConcernAttributeAspect.ConcernStatic">
+            <inheritdoc/>
+        </member>
+        <member name="M:CrossCutterN.Aspect.Aspect.ConcernAttributeAspect.CanApplyTo(CrossCutterN.Aspect.Metadata.IMethod)">
+            <inheritdoc/>
+        </member>
+        <member name="M:CrossCutterN.Aspect.Aspect.ConcernAttributeAspect.CanApplyTo(CrossCutterN.Aspect.Metadata.IProperty)">
+            <inheritdoc/>
+        </member>
+        <member name="T:CrossCutterN.Aspect.Aspect.IAspect">
+            <summary>
+            Aspect interface.
+            </summary>
+        </member>
+        <member name="P:CrossCutterN.Aspect.Aspect.IAspect.PointCut">
+            <summary>
+            Gets all join points this aspect build may add advice to.
+            </summary>
+        </member>
+        <member name="P:CrossCutterN.Aspect.Aspect.IAspect.IsSwitchedOn">
+            <summary>
+            Gets a value indicating whether the aspect is switched on by default.
+            </summary>
+        </member>
+        <member name="M:CrossCutterN.Aspect.Aspect.IAspect.GetAdvice(CrossCutterN.Aspect.Aspect.JoinPoint)">
+            <summary>
+            Gets advice for a join point.
+            </summary>
+            <param name="joinPoint">The join point, <see cref="T:CrossCutterN.Aspect.Aspect.JoinPoint"/></param>
+            <returns>The advice retrieved.</returns>
+        </member>
+        <member name="M:CrossCutterN.Aspect.Aspect.IAspect.CanApplyTo(CrossCutterN.Aspect.Metadata.IMethod)">
+            <summary>
+            Gets a value indicating whether this aspect can apply to the input method.
+            </summary>
+            <param name="method">Target method.</param>
+            <returns>The value indicating whether this aspect can apply to the input method.</returns>
+        </member>
+        <member name="M:CrossCutterN.Aspect.Aspect.IAspect.CanApplyTo(CrossCutterN.Aspect.Metadata.IProperty)">
+            <summary>
+            Gets a value indicating whether this aspect can apply to the input property.
+            </summary>
+            <param name="property">The target property.</param>
+            <returns>Item 1 indicates whether the aspect can be applied to getter method, Item 2 indicates whether the aspect can be applied to setter method.</returns>
+        </member>
+        <member name="T:CrossCutterN.Aspect.Aspect.IAspectBuilder">
+            <summary>
+            Interface for aspect to be built.
+            </summary>
+        </member>
+        <member name="P:CrossCutterN.Aspect.Aspect.IAspectBuilder.IsSwitchedOn">
+            <summary>
+            Sets a valud indicating the default switch status.
+            </summary>
+        </member>
+        <member name="M:CrossCutterN.Aspect.Aspect.IAspectBuilder.SetAdvice(CrossCutterN.Aspect.Aspect.JoinPoint,System.Reflection.MethodInfo)">
+            <summary>
+            Adds an advice method to a join point.
+            Advice verification will happen in weaver, since this extention point is not under weaver's control
+            </summary>
+            <param name="joinPoint">Join point to call advice</param>
+            <param name="advice">advice method to be called</param>
+        </member>
+        <member name="T:CrossCutterN.Aspect.Aspect.IJoinPointDefaultOptionsBuilder">
+            <summary>
+            These flags are default behaviors which may be overwritten by implementation
+            </summary>
+        </member>
+        <member name="P:CrossCutterN.Aspect.Aspect.IJoinPointDefaultOptionsBuilder.ConcernConstructor">
+            <summary>
+            Sets a value indicating whether constructors are concerned.
+            </summary>
+        </member>
+        <member name="P:CrossCutterN.Aspect.Aspect.IJoinPointDefaultOptionsBuilder.ConcernInstance">
+            <summary>
+            Sets a value indicating whether instance methods and properties are concerned.
+            </summary>
+        </member>
+        <member name="P:CrossCutterN.Aspect.Aspect.IJoinPointDefaultOptionsBuilder.ConcernInternal">
+            <summary>
+            Sets a value indicating whether internal methods and properties are concerned.
+            </summary>
+        </member>
+        <member name="P:CrossCutterN.Aspect.Aspect.IJoinPointDefaultOptionsBuilder.ConcernMethod">
+            <summary>
+            Sets a value indicating whether methods are concerned.
+            </summary>
+        </member>
+        <member name="P:CrossCutterN.Aspect.Aspect.IJoinPointDefaultOptionsBuilder.ConcernPropertyGetter">
+            <summary>
+            Sets a value indicating whether property getters are concerned.
+            </summary>
+        </member>
+        <member name="P:CrossCutterN.Aspect.Aspect.IJoinPointDefaultOptionsBuilder.ConcernPropertySetter">
+            <summary>
+            Sets a value indicating whether property setters are concerned.
+            </summary>
+        </member>
+        <member name="P:CrossCutterN.Aspect.Aspect.IJoinPointDefaultOptionsBuilder.ConcernPrivate">
+            <summary>
+            Sets a value indicating whether private methods and properties are concerned.
+            </summary>
+        </member>
+        <member name="P:CrossCutterN.Aspect.Aspect.IJoinPointDefaultOptionsBuilder.ConcernProtected">
+            <summary>
+            Sets a value indicating whether protected methods and properties are concerned.
+            </summary>
+        </member>
+        <member name="P:CrossCutterN.Aspect.Aspect.IJoinPointDefaultOptionsBuilder.ConcernPublic">
+            <summary>
+            Sets a value indicating whether public methods and properties are concerned.
+            </summary>
+        </member>
+        <member name="P:CrossCutterN.Aspect.Aspect.IJoinPointDefaultOptionsBuilder.ConcernStatic">
+            <summary>
+            Sets a value indicating whether static methods and properties are concerned.
+            </summary>
+        </member>
+        <member name="T:CrossCutterN.Aspect.Aspect.ISwitchableAspectWithDefaultOptions">
+            <summary>
+            Interface of switchable aspect with default concern options.
+            </summary>
+        </member>
+        <member name="T:CrossCutterN.Aspect.Aspect.JoinPoint">
+            <summary>
+            Thoughts about extensibility for using enumeration:
+            Weaving for each join point type is fixed and happens in weaver, which can't be open for extension
+            Even validation must happen in weaver because validation without weaving process doesn't make sense
+            So extending join point will cause core business of CrossCutterN to be updated
+            Then users meant to extend from CrossCutterN should be able to add new join points
+            So we use non-extendable enumeration as interface to extending users to reduce complexity of the code
+            </summary>
+        </member>
+        <member name="F:CrossCutterN.Aspect.Aspect.JoinPoint.Entry">
+            <summary>
+            Upon entering method.
+            </summary>
+        </member>
+        <member name="F:CrossCutterN.Aspect.Aspect.JoinPoint.Exception">
+            <summary>
+            Upon uncaught exception is thrown.
+            </summary>
+        </member>
+        <member name="F:CrossCutterN.Aspect.Aspect.JoinPoint.Exit">
+            <summary>
+            Right before exiting the method.
+            </summary>
+        </member>
+        <member name="T:CrossCutterN.Aspect.Aspect.NameExpressionAspect">
+            <summary>
+            Aspect that identifies target methods and properties by method/property name expression.
+            </summary>
+        </member>
+        <member name="M:CrossCutterN.Aspect.Aspect.NameExpressionAspect.#ctor(System.Collections.Generic.ICollection{System.String},System.Collections.Generic.ICollection{System.String})">
+            <summary>
+            Initializes a new instance of the <see cref="T:CrossCutterN.Aspect.Aspect.NameExpressionAspect"/> class.
+            </summary>
+            <param name="includes">Patterns used to include target methods/properties.</param>
+            <param name="excludes">Patterns used to exclude target methods/properties.</param>
+        </member>
+        <member name="M:CrossCutterN.Aspect.Aspect.NameExpressionAspect.CanApplyTo(CrossCutterN.Aspect.Metadata.IMethod)">
+            <inheritdoc/>
+        </member>
+        <member name="M:CrossCutterN.Aspect.Aspect.NameExpressionAspect.CanApplyTo(CrossCutterN.Aspect.Metadata.IProperty)">
+            <inheritdoc/>
+        </member>
+        <member name="T:CrossCutterN.Aspect.Aspect.PropertyConcern">
+            <summary>
+            Concern status for getter and setter of a property
+            </summary>
+        </member>
+        <member name="F:CrossCutterN.Aspect.Aspect.PropertyConcern.None">
+            <summary>
+            Not concerning getter or setter.
+            </summary>
+        </member>
+        <member name="F:CrossCutterN.Aspect.Aspect.PropertyConcern.Getter">
+            <summary>
+            Concerns getter method.
+            </summary>
+        </member>
+        <member name="F:CrossCutterN.Aspect.Aspect.PropertyConcern.Setter">
+            <summary>
+            Concerns setter method.
+            </summary>
+        </member>
+        <member name="T:CrossCutterN.Aspect.Aspect.PropertyConcernExtensioncs">
+            <summary>
+            Extension of <see cref="T:CrossCutterN.Aspect.Aspect.PropertyConcern"/>.
+            </summary>
+        </member>
+        <member name="M:CrossCutterN.Aspect.Aspect.PropertyConcernExtensioncs.IsGetterConcerned(CrossCutterN.Aspect.Aspect.PropertyConcern)">
+            <summary>
+            Gets a value indicating whether the property conern concerns getter method.
+            </summary>
+            <param name="concern">The property concern.</param>
+            <returns>True if the property concern concerns getter, false elsewise.</returns>
+        </member>
+        <member name="M:CrossCutterN.Aspect.Aspect.PropertyConcernExtensioncs.IsSetterConcerned(CrossCutterN.Aspect.Aspect.PropertyConcern)">
+            <summary>
+            Gets a value indicating whether the property conern concerns setter method.
+            </summary>
+            <param name="concern">The property concern.</param>
+            <returns>True if the property concern concerns setter, false elsewise.</returns>
+        </member>
+        <member name="M:CrossCutterN.Aspect.Aspect.PropertyConcernExtensioncs.ConcernGetter(CrossCutterN.Aspect.Aspect.PropertyConcern)">
+            <summary>
+            Apply concern getter to a <see cref="T:CrossCutterN.Aspect.Aspect.PropertyConcern"/>
+            </summary>
+            <param name="concern">The property concern.</param>
+            <returns>The new value with concern getter method value applied.</returns>
+        </member>
+        <member name="M:CrossCutterN.Aspect.Aspect.PropertyConcernExtensioncs.ConcernSetter(CrossCutterN.Aspect.Aspect.PropertyConcern)">
+            <summary>
+            Apply concern setter to a <see cref="T:CrossCutterN.Aspect.Aspect.PropertyConcern"/>
+            </summary>
+            <param name="concern">The property concern.</param>
+            <returns>The new value with concern setter method value applied.</returns>
+        </member>
+        <member name="M:CrossCutterN.Aspect.Aspect.PropertyConcernExtensioncs.IsConcerned(CrossCutterN.Aspect.Aspect.PropertyConcern)">
+            <summary>
+            Gets a value indicating whether the concern value concerns at least one method in the property.
+            </summary>
+            <param name="concern">The concern value.</param>
+            <returns>True if the concern value concerns at least one of the methods in the property, false elsewise.</returns>
+        </member>
+        <member name="T:CrossCutterN.Aspect.Aspect.SwitchableAspectWithDefaultOptions">
+            <summary>
+            Switchable aspect with default options, supposed to be base class for all aspects.
+            </summary>
+        </member>
+        <member name="M:CrossCutterN.Aspect.Aspect.SwitchableAspectWithDefaultOptions.#ctor">
+            <summary>
+            Initializes a new instance of the <see cref="T:CrossCutterN.Aspect.Aspect.SwitchableAspectWithDefaultOptions"/> class.
+            </summary>
+        </member>
+        <member name="P:CrossCutterN.Aspect.Aspect.SwitchableAspectWithDefaultOptions.ConcernConstructor">
+            <inheritdoc/>
+        </member>
+        <member name="P:CrossCutterN.Aspect.Aspect.SwitchableAspectWithDefaultOptions.ConcernInstance">
+            <inheritdoc/>
+        </member>
+        <member name="P:CrossCutterN.Aspect.Aspect.SwitchableAspectWithDefaultOptions.ConcernInternal">
+            <inheritdoc/>
+        </member>
+        <member name="P:CrossCutterN.Aspect.Aspect.SwitchableAspectWithDefaultOptions.ConcernMethod">
+            <inheritdoc/>
+        </member>
+        <member name="P:CrossCutterN.Aspect.Aspect.SwitchableAspectWithDefaultOptions.ConcernPropertyGetter">
+            <inheritdoc/>
+        </member>
+        <member name="P:CrossCutterN.Aspect.Aspect.SwitchableAspectWithDefaultOptions.ConcernPropertySetter">
+            <inheritdoc/>
+        </member>
+        <member name="P:CrossCutterN.Aspect.Aspect.SwitchableAspectWithDefaultOptions.ConcernPrivate">
+            <inheritdoc/>
+        </member>
+        <member name="P:CrossCutterN.Aspect.Aspect.SwitchableAspectWithDefaultOptions.ConcernProtected">
+            <inheritdoc/>
+        </member>
+        <member name="P:CrossCutterN.Aspect.Aspect.SwitchableAspectWithDefaultOptions.ConcernPublic">
+            <inheritdoc/>
+        </member>
+        <member name="P:CrossCutterN.Aspect.Aspect.SwitchableAspectWithDefaultOptions.ConcernStatic">
+            <inheritdoc/>
+        </member>
+        <member name="P:CrossCutterN.Aspect.Aspect.SwitchableAspectWithDefaultOptions.PointCut">
+            <inheritdoc/>
+        </member>
+        <member name="P:CrossCutterN.Aspect.Aspect.SwitchableAspectWithDefaultOptions.IsSwitchedOn">
+            <inheritdoc/>
+        </member>
+        <member name="P:CrossCutterN.Aspect.Aspect.SwitchableAspectWithDefaultOptions.ReadOnly">
+            <summary>
+            Gets irreversible operation for readonly convertion.
+            </summary>
+        </member>
+        <member name="M:CrossCutterN.Aspect.Aspect.SwitchableAspectWithDefaultOptions.SetAdvice(CrossCutterN.Aspect.Aspect.JoinPoint,System.Reflection.MethodInfo)">
+            <inheritdoc/>
+        </member>
+        <member name="M:CrossCutterN.Aspect.Aspect.SwitchableAspectWithDefaultOptions.Build">
+            <inheritdoc/>
+        </member>
+        <member name="M:CrossCutterN.Aspect.Aspect.SwitchableAspectWithDefaultOptions.GetAdvice(CrossCutterN.Aspect.Aspect.JoinPoint)">
+            <inheritdoc/>
+        </member>
+        <member name="M:CrossCutterN.Aspect.Aspect.SwitchableAspectWithDefaultOptions.CanApplyTo(CrossCutterN.Aspect.Metadata.IMethod)">
+            <inheritdoc/>
+        </member>
+        <member name="M:CrossCutterN.Aspect.Aspect.SwitchableAspectWithDefaultOptions.CanApplyTo(CrossCutterN.Aspect.Metadata.IProperty)">
+            <inheritdoc/>
+        </member>
+        <member name="T:CrossCutterN.Aspect.Builder.Advice">
+            <summary>
+            Definition of advice method.
+            </summary>
+        </member>
+        <member name="P:CrossCutterN.Aspect.Builder.Advice.MethodName">
+            <summary>
+            Gets or sets method name;
+            </summary>
+        </member>
+        <member name="P:CrossCutterN.Aspect.Builder.Advice.Parameters">
+            <summary>
+            Gets or sets advice parameter types of the advice method.
+            </summary>
+        </member>
+        <member name="T:CrossCutterN.Aspect.Builder.AdviceAssembly">
+            <summary>
+            Advice assembly definition.
+            </summary>
+        </member>
+        <member name="P:CrossCutterN.Aspect.Builder.AdviceAssembly.AssemblyPath">
+            <summary>
+            Gets or sets path of the assembly, can be absolute path or relative path.
+            </summary>
+        </member>
+        <member name="P:CrossCutterN.Aspect.Builder.AdviceAssembly.Attributes">
+            <summary>
+            Gets or sets concern attributes in the assembly.
+            </summary>
+        </member>
+        <member name="P:CrossCutterN.Aspect.Builder.AdviceAssembly.Advices">
+            <summary>
+            Gets or sets advices in the assembly.
+            </summary>
+        </member>
+        <member name="T:CrossCutterN.Aspect.Builder.AdviceAssemblyTypeIndex">
+            <summary>
+            Index for attributes in advice assembly.
+            </summary>
+        </member>
+        <member name="P:CrossCutterN.Aspect.Builder.AdviceAssemblyTypeIndex.AdviceAssemblyKey">
+            <summary>
+            Gets or sets advice assembly key.
+            </summary>
+        </member>
+        <member name="P:CrossCutterN.Aspect.Builder.AdviceAssemblyTypeIndex.TypeKey">
+            <summary>
+            Gets or sets attribute type key.
+            </summary>
+        </member>
+        <member name="T:CrossCutterN.Aspect.Builder.AdviceIndex">
+            <summary>
+            Index of advice in advice assembly.
+            </summary>
+        </member>
+        <member name="P:CrossCutterN.Aspect.Builder.AdviceIndex.AdviceAssemblyKey">
+            <summary>
+            Gets or sets advice assembly key.
+            </summary>
+        </member>
+        <member name="P:CrossCutterN.Aspect.Builder.AdviceIndex.MethodKey">
+            <summary>
+            Gets or sets method key of advice.
+            </summary>
+        </member>
+        <member name="T:CrossCutterN.Aspect.Builder.AdviceParameterType">
+            <summary>
+            Definition of advice parameter type.
+            </summary>
+        </member>
+        <member name="F:CrossCutterN.Aspect.Builder.AdviceParameterType.Context">
+            <summary>
+            Context parameter.
+            </summary>
+        </member>
+        <member name="F:CrossCutterN.Aspect.Builder.AdviceParameterType.Execution">
+            <summary>
+            Method execution parameter.
+            </summary>
+        </member>
+        <member name="F:CrossCutterN.Aspect.Builder.AdviceParameterType.Exception">
+            <summary>
+            Exception parameter.
+            </summary>
+        </member>
+        <member name="F:CrossCutterN.Aspect.Builder.AdviceParameterType.Return">
+            <summary>
+            Return parameter.
+            </summary>
+        </member>
+        <member name="F:CrossCutterN.Aspect.Builder.AdviceParameterType.HasException">
+            <summary>
+            Has exception parameter.
+            </summary>
+        </member>
+        <member name="T:CrossCutterN.Aspect.Builder.AdviceUtility">
+            <summary>
+            Utility class to store advice assembly contents, including attributes and advices.
+            </summary>
+        </member>
+        <member name="M:CrossCutterN.Aspect.Builder.AdviceUtility.AddAttribute(System.String,System.String,System.Type)">
+            <inheritdoc/>
+        </member>
+        <member name="M:CrossCutterN.Aspect.Builder.AdviceUtility.AddAdvice(System.String,System.String,System.Reflection.MethodInfo)">
+            <inheritdoc/>
+        </member>
+        <member name="M:CrossCutterN.Aspect.Builder.AdviceUtility.GetMethod(System.String,System.String)">
+            <inheritdoc/>
+        </member>
+        <member name="M:CrossCutterN.Aspect.Builder.AdviceUtility.GetAttribute(System.String,System.String)">
+            <inheritdoc/>
+        </member>
+        <member name="M:CrossCutterN.Aspect.Builder.AdviceUtility.Build">
+            <inheritdoc/>
+        </member>
+        <member name="T:CrossCutterN.Aspect.Builder.AdviceUtilityExtension">
+            <summary>
+            Extension to <see cref="T:CrossCutterN.Aspect.Builder.AdviceUtility"/>.
+            </summary>
+        </member>
+        <member name="M:CrossCutterN.Aspect.Builder.AdviceUtilityExtension.Import(CrossCutterN.Aspect.Builder.IAdviceUtilityBuilder,System.String,CrossCutterN.Aspect.Builder.AdviceAssembly)">
+            <summary>
+            Imports an advice assembly content into this advice utility according to it's configuration.
+            </summary>
+            <param name="utility">The <see cref="T:CrossCutterN.Aspect.Builder.IAdviceUtilityBuilder"/>.</param>
+            <param name="assemblyKey">Key of the advice assembly.</param>
+            <param name="configuration">Configuration of advice assembly.</param>
+        </member>
+        <member name="T:CrossCutterN.Aspect.Builder.AspectAssembly">
+            <summary>
+            Aspect assembly definition.
+            </summary>
+        </member>
+        <member name="P:CrossCutterN.Aspect.Builder.AspectAssembly.AssemblyPath">
+            <summary>
+            Gets or sets path of assembly.
+            </summary>
+        </member>
+        <member name="P:CrossCutterN.Aspect.Builder.AspectAssembly.AspectBuilders">
+            <summary>
+            Gets or sets configuration for aspect builders.
+            </summary>
+        </member>
+        <member name="T:CrossCutterN.Aspect.Builder.AspectBuilder">
+            <summary>
+            Aspect configuration.
+            </summary>
+        </member>
+        <member name="P:CrossCutterN.Aspect.Builder.AspectBuilder.ConcernOptions">
+            <summary>
+            Gets or sets concern options.
+            </summary>
+        </member>
+        <member name="P:CrossCutterN.Aspect.Builder.AspectBuilder.Advices">
+            <summary>
+            Gets or sets advices.
+            </summary>
+        </member>
+        <member name="P:CrossCutterN.Aspect.Builder.AspectBuilder.IsSwitchedOn">
+            <summary>
+            Gets or sets a value indicating switch status.
+            </summary>
+        </member>
+        <member name="M:CrossCutterN.Aspect.Builder.AspectBuilder.Build(CrossCutterN.Aspect.Builder.IAdviceUtility,System.String)">
+            <inheritdoc/>
+        </member>
+        <member name="M:CrossCutterN.Aspect.Builder.AspectBuilder.Build(CrossCutterN.Aspect.Aspect.ISwitchableAspectWithDefaultOptions,CrossCutterN.Aspect.Builder.IAdviceUtility,System.String)">
+            <summary>
+            builds a switchable aspect builder with default options according to internal configuration.
+            </summary>
+            <param name="builder">Switchable aspect builder with default options.</param>
+            <param name="utility">Advice utility.</param>
+            <param name="defaultAdviceAssemblyKey">default advice assembly key.</param>
+            <returns>The built aspect.</returns>
+        </member>
+        <member name="T:CrossCutterN.Aspect.Builder.AspectBuilderFactory">
+            <summary>
+            Aspect builder factory.
+            </summary>
+        </member>
+        <member name="M:CrossCutterN.Aspect.Builder.AspectBuilderFactory.InitializeAspectBuilderUtility">
+            <summary>
+            Initializes a new instance of of <see cref="T:CrossCutterN.Aspect.Builder.IAspectBuilderUtilityBuilder"/>.
+            </summary>
+            <returns>The initialized <see cref="T:CrossCutterN.Aspect.Builder.IAspectBuilderUtilityBuilder"/>.</returns>
+        </member>
+        <member name="M:CrossCutterN.Aspect.Builder.AspectBuilderFactory.InitializeAdviceUtility">
+            <summary>
+            Initializes a new instance of of <see cref="T:CrossCutterN.Aspect.Builder.IAdviceUtilityBuilder"/>.
+            </summary>
+            <returns>The initialized <see cref="T:CrossCutterN.Aspect.Builder.IAdviceUtilityBuilder"/>.</returns>
+        </member>
+        <member name="T:CrossCutterN.Aspect.Builder.AspectUtility">
+            <summary>
+            Utility to store available aspects.
+            </summary>
+        </member>
+        <member name="M:CrossCutterN.Aspect.Builder.AspectUtility.AddAspectBuilderConstructor(System.String,System.String,System.Func{CrossCutterN.Aspect.Builder.IAspectBuilder})">
+            <inheritdoc/>
+        </member>
+        <member name="M:CrossCutterN.Aspect.Builder.AspectUtility.Build">
+            <inheritdoc/>
+        </member>
+        <member name="M:CrossCutterN.Aspect.Builder.AspectUtility.GetAspectConstructor(System.String,System.String)">
+            <inheritdoc/>
+        </member>
+        <member name="T:CrossCutterN.Aspect.Builder.AspectUtilityExtension">
+            <summary>
+            Extensions of aspect utility.
+            </summary>
+        </member>
+        <member name="M:CrossCutterN.Aspect.Builder.AspectUtilityExtension.Import(CrossCutterN.Aspect.Builder.IAspectBuilderUtilityBuilder,System.String,CrossCutterN.Aspect.Builder.AspectAssembly)">
+            <summary>
+            Imports an advice assembly content into this advice utility according to it's configuration.
+            </summary>
+            <param name="utility">The aspect utility.</param>
+            <param name="assemblyKey">Key of the assembly.</param>
+            <param name="configuration">Configuration of advice assembly.</param>
+        </member>
+        <member name="T:CrossCutterN.Aspect.Builder.ConcernAttributeAspectBuilder">
+            <summary>
+            Definition for aspect that identifies target methods and assemblies by custom attributes.
+            </summary>
+        </member>
+        <member name="P:CrossCutterN.Aspect.Builder.ConcernAttributeAspectBuilder.ConcernClassAttributeType">
+            <summary>
+            Gets or sets type of class concern attribute.
+            </summary>
+        </member>
+        <member name="P:CrossCutterN.Aspect.Builder.ConcernAttributeAspectBuilder.ConcernMethodAttributeType">
+            <summary>
+            Gets or sets type of method concern attribute.
+            </summary>
+        </member>
+        <member name="P:CrossCutterN.Aspect.Builder.ConcernAttributeAspectBuilder.ConcernPropertyAttributeType">
+            <summary>
+            Gets or sets type of property concern attribute.
+            </summary>
+        </member>
+        <member name="P:CrossCutterN.Aspect.Builder.ConcernAttributeAspectBuilder.NoConcernAttributeType">
+            <summary>
+            Gets or sets type of no concern attribute.
+            </summary>
+        </member>
+        <member name="M:CrossCutterN.Aspect.Builder.ConcernAttributeAspectBuilder.Build(CrossCutterN.Aspect.Builder.IAdviceUtility,System.String)">
+            <inheritdoc/>
+        </member>
+        <member name="T:CrossCutterN.Aspect.Builder.ConcernOption">
+            <summary>
+            Concern option enumeration.
+            </summary>
+        </member>
+        <member name="F:CrossCutterN.Aspect.Builder.ConcernOption.Constructor">
+            <summary>
+            Concerns constructors.
+            </summary>
+        </member>
+        <member name="F:CrossCutterN.Aspect.Builder.ConcernOption.Instance">
+            <summary>
+            Concerns instance methods and properties.
+            </summary>
+        </member>
+        <member name="F:CrossCutterN.Aspect.Builder.ConcernOption.Internal">
+            <summary>
+            Concerns internal methods and properties.
+            </summary>
+        </member>
+        <member name="F:CrossCutterN.Aspect.Builder.ConcernOption.Method">
+            <summary>
+            Concerns methods.
+            </summary>
+        </member>
+        <member name="F:CrossCutterN.Aspect.Builder.ConcernOption.PropertyGetter">
+            <summary>
+            Concerns instance property getters.
+            </summary>
+        </member>
+        <member name="F:CrossCutterN.Aspect.Builder.ConcernOption.PropertySetter">
+            <summary>
+            Concerns instance property setters.
+            </summary>
+        </member>
+        <member name="F:CrossCutterN.Aspect.Builder.ConcernOption.Private">
+            <summary>
+            Concerns private methods and properties.
+            </summary>
+        </member>
+        <member name="F:CrossCutterN.Aspect.Builder.ConcernOption.Protected">
+            <summary>
+            Concerns protected methods and properties.
+            </summary>
+        </member>
+        <member name="F:CrossCutterN.Aspect.Builder.ConcernOption.Public">
+            <summary>
+            Concerns public methods and properties.
+            </summary>
+        </member>
+        <member name="F:CrossCutterN.Aspect.Builder.ConcernOption.Static">
+            <summary>
+            Concerns static methods and properties.
+            </summary>
+        </member>
+        <member name="T:CrossCutterN.Aspect.Builder.IAdviceUtility">
+            <summary>
+            Interface of utility to store advice assembly contents, including attributes and advices.
+            </summary>
+        </member>
+        <member name="M:CrossCutterN.Aspect.Builder.IAdviceUtility.GetAttribute(System.String,System.String)">
+            <summary>
+            Gets added attribute from the utility.
+            </summary>
+            <param name="assemblyKey">Key of assembly.</param>
+            <param name="attributeKey">Key of attribute.</param>
+            <returns>Attribute type retrieved.</returns>
+        </member>
+        <member name="M:CrossCutterN.Aspect.Builder.IAdviceUtility.GetMethod(System.String,System.String)">
+            <summary>
+            Gets added advice according to assembly key and advice key.
+            </summary>
+            <param name="assemblyKey">Key of assembly.</param>
+            <param name="adviceKey">Key of advice.</param>
+            <returns>Advice method.</returns>
+        </member>
+        <member name="T:CrossCutterN.Aspect.Builder.IAdviceUtilityBuilder">
+            <summary>
+            Interface for utility that contains advice information to be built up.
+            </summary>
+        </member>
+        <member name="M:CrossCutterN.Aspect.Builder.IAdviceUtilityBuilder.AddAttribute(System.String,System.String,System.Type)">
+            <summary>
+            Adds an attribute from advice assembly.
+            </summary>
+            <param name="assemblyKey">Key of advice assembly.</param>
+            <param name="attributeKey">Key of the attribute class.</param>
+            <param name="attribute">Type of the attribute.</param>
+        </member>
+        <member name="M:CrossCutterN.Aspect.Builder.IAdviceUtilityBuilder.AddAdvice(System.String,System.String,System.Reflection.MethodInfo)">
+            <summary>
+            Adds an advice in advice assembly to the utility.
+            </summary>
+            <param name="assemblyKey">Key of assembly.</param>
+            <param name="adviceKey">Key of advice method.</param>
+            <param name="advice">Advice method.</param>
+        </member>
+        <member name="T:CrossCutterN.Aspect.Builder.IAspectBuilder">
+            <summary>
+            Interface for aspect builder.
+            </summary>
+        </member>
+        <member name="M:CrossCutterN.Aspect.Builder.IAspectBuilder.Build(CrossCutterN.Aspect.Builder.IAdviceUtility,System.String)">
+            <summary>
+            Builds to <see cref="T:CrossCutterN.Aspect.Aspect.IAspect"/>.
+            </summary>
+            <param name="utility">Advice utility which contains advice information.</param>
+            <param name="defaultAdviceAssemblyKey">Default advice assembly key if relevant key is not set.</param>
+            <returns>The <see cref="T:CrossCutterN.Aspect.Aspect.IAspect"/> built to.</returns>
+        </member>
+        <member name="T:CrossCutterN.Aspect.Builder.IAspectBuilderUtility">
+            <summary>
+            Interface of aspect utility to store available aspects.
+            </summary>
+        </member>
+        <member name="M:CrossCutterN.Aspect.Builder.IAspectBuilderUtility.GetAspectConstructor(System.String,System.String)">
+            <summary>
+            Gets constructor of aspect configuration.
+            </summary>
+            <param name="assemblyKey">Key of assembly that contains aspects.</param>
+            <param name="aspectName">Name of the aspect, serves as key to the aspect in configuration.</param>
+            <returns>Consturctor for aspect configuration.</returns>
+        </member>
+        <member name="T:CrossCutterN.Aspect.Builder.IAspectBuilderUtilityBuilder">
+            <summary>
+            Interface of utility to store aspect configuration
+            </summary>
+        </member>
+        <member name="M:CrossCutterN.Aspect.Builder.IAspectBuilderUtilityBuilder.AddAspectBuilderConstructor(System.String,System.String,System.Func{CrossCutterN.Aspect.Builder.IAspectBuilder})">
+            <summary>
+            Adds an aspect build constructor to the utility.
+            </summary>
+            <param name="assemblyKey">Key of aspect assembly.</param>
+            <param name="aspectName">Name of the aspect, serves as key of the aspect in configuration.</param>
+            <param name="constructor">Constructor of aspect configuration.</param>
+        </member>
+        <member name="T:CrossCutterN.Aspect.Builder.NameExpressionAspectBuilder">
+            <summary>
+            Definition for aspect that identifies target methods and properties by name.
+            </summary>
+        </member>
+        <member name="P:CrossCutterN.Aspect.Builder.NameExpressionAspectBuilder.Includes">
+            <summary>
+            Gets or sets included patterns.
+            </summary>
+        </member>
+        <member name="P:CrossCutterN.Aspect.Builder.NameExpressionAspectBuilder.Excludes">
+            <summary>
+            Gets or sets excluded patterns.
+            </summary>
+        </member>
+        <member name="M:CrossCutterN.Aspect.Builder.NameExpressionAspectBuilder.Build(CrossCutterN.Aspect.Builder.IAdviceUtility,System.String)">
+            <inheritdoc/>
+        </member>
+        <member name="T:CrossCutterN.Aspect.Metadata.Accessibility">
+            <summary>
+            Accessibility
+            </summary>
+        </member>
+        <member name="F:CrossCutterN.Aspect.Metadata.Accessibility.Public">
+            <summary>
+            Public.
+            </summary>
+        </member>
+        <member name="F:CrossCutterN.Aspect.Metadata.Accessibility.Internal">
+            <summary>
+            Internal.
+            </summary>
+        </member>
+        <member name="F:CrossCutterN.Aspect.Metadata.Accessibility.Protected">
+            <summary>
+            Protected.
+            </summary>
+        </member>
+        <member name="F:CrossCutterN.Aspect.Metadata.Accessibility.Private">
+            <summary>
+            Private.
+            </summary>
+        </member>
+        <member name="T:CrossCutterN.Aspect.Metadata.AttributeProperty">
+            <summary>
+            Attribute property metadata implementation.
+            </summary>
+        </member>
+        <member name="M:CrossCutterN.Aspect.Metadata.AttributeProperty.#ctor(System.String,System.String,System.Int32,System.Object)">
+            <summary>
+            Initializes a new instance of the <see cref="T:CrossCutterN.Aspect.Metadata.AttributeProperty"/> class.
+            </summary>
+            <param name="name">Name of attribute property.</param>
+            <param name="typeName">Type name of attribute property.</param>
+            <param name="sequence">Sequence of attribute property in methods or properties.</param>
+            <param name="value">Value of the attribute property.</param>
+        </member>
+        <member name="P:CrossCutterN.Aspect.Metadata.AttributeProperty.Name">
+            <inheritdoc/>
+        </member>
+        <member name="P:CrossCutterN.Aspect.Metadata.AttributeProperty.TypeName">
+            <inheritdoc/>
+        </member>
+        <member name="P:CrossCutterN.Aspect.Metadata.AttributeProperty.Value">
+            <inheritdoc/>
+        </member>
+        <member name="P:CrossCutterN.Aspect.Metadata.AttributeProperty.Sequence">
+            <inheritdoc/>
+        </member>
+        <member name="P:CrossCutterN.Aspect.Metadata.AttributeProperty.Key">
+            <inheritdoc/>
+        </member>
+        <member name="P:CrossCutterN.Aspect.Metadata.AttributeProperty.SortKey">
+            <inheritdoc/>
+        </member>
+        <member name="T:CrossCutterN.Aspect.Metadata.CustomAttribute">
+            <summary>
+            Custom attribute metadata implementation.
+            </summary>
+        </member>
+        <member name="M:CrossCutterN.Aspect.Metadata.CustomAttribute.#ctor(System.String,System.Int32)">
+            <summary>
+            Initializes a new instance of the <see cref="T:CrossCutterN.Aspect.Metadata.CustomAttribute"/> class.
+            </summary>
+            <param name="typeName">Type name of the custom attribute</param>
+            <param name="sequence">Sequence of the custom attribute in the parameter.</param>
+        </member>
+        <member name="P:CrossCutterN.Aspect.Metadata.CustomAttribute.TypeName">
+            <inheritdoc/>
+        </member>
+        <member name="P:CrossCutterN.Aspect.Metadata.CustomAttribute.Sequence">
+            <inheritdoc/>
+        </member>
+        <member name="P:CrossCutterN.Aspect.Metadata.CustomAttribute.Properties">
+            <inheritdoc/>
+        </member>
+        <member name="M:CrossCutterN.Aspect.Metadata.CustomAttribute.GetProperty(System.String)">
+            <inheritdoc/>
+        </member>
+        <member name="M:CrossCutterN.Aspect.Metadata.CustomAttribute.HasProperty(System.String)">
+            <inheritdoc/>
+        </member>
+        <member name="M:CrossCutterN.Aspect.Metadata.CustomAttribute.AddAttributeProperty(CrossCutterN.Aspect.Metadata.IAttributeProperty)">
+            <inheritdoc/>
+        </member>
+        <member name="M:CrossCutterN.Aspect.Metadata.CustomAttribute.Build">
+            <inheritdoc/>
+        </member>
+        <member name="T:CrossCutterN.Aspect.Metadata.IAttributeProperty">
+            <summary>
+            Attribute property metadata interface.
+            </summary>
+        </member>
+        <member name="P:CrossCutterN.Aspect.Metadata.IAttributeProperty.Name">
+            <summary>
+            Gets name of the attribute property.
+            </summary>
+        </member>
+        <member name="P:CrossCutterN.Aspect.Metadata.IAttributeProperty.TypeName">
+            <summary>
+            Gets type name of the attribute property.
+            </summary>
+        </member>
+        <member name="P:CrossCutterN.Aspect.Metadata.IAttributeProperty.Sequence">
+            <summary>
+            Gets sequence of the attribute property in the attribute.
+            </summary>
+        </member>
+        <member name="P:CrossCutterN.Aspect.Metadata.IAttributeProperty.Value">
+            <summary>
+            Gets value of the attribute property.
+            </summary>
+        </member>
+        <member name="T:CrossCutterN.Aspect.Metadata.ICanAddAttributeProperty">
+            <summary>
+            Interface for custom attribute metadata to be built.
+            </summary>
+        </member>
+        <member name="M:CrossCutterN.Aspect.Metadata.ICanAddAttributeProperty.AddAttributeProperty(CrossCutterN.Aspect.Metadata.IAttributeProperty)">
+            <summary>
+            Adds an attribute property metadata to the custom attribute.
+            </summary>
+            <param name="property">The custom attribute metadata to be added.</param>
+        </member>
+        <member name="T:CrossCutterN.Aspect.Metadata.ICanAddCustomAttribute">
+            <summary>
+            Parameter metadata being built up.
+            </summary>
+        </member>
+        <member name="M:CrossCutterN.Aspect.Metadata.ICanAddCustomAttribute.AddCustomAttribute(CrossCutterN.Aspect.Metadata.ICustomAttribute)">
+            <summary>
+            Adds a custom attribute metadata.
+            </summary>
+            <param name="attribute">Custom attribute metadata to be added.</param>
+        </member>
+        <member name="T:CrossCutterN.Aspect.Metadata.ICustomAttribute">
+            <summary>
+            Custom attribute metadata interface.
+            </summary>
+        </member>
+        <member name="P:CrossCutterN.Aspect.Metadata.ICustomAttribute.TypeName">
+            <summary>
+            Gets type name of the custom attribute.
+            </summary>
+        </member>
+        <member name="P:CrossCutterN.Aspect.Metadata.ICustomAttribute.Sequence">
+            <summary>
+            Gets sequence of the custom attribute in the parameter.
+            </summary>
+        </member>
+        <member name="P:CrossCutterN.Aspect.Metadata.ICustomAttribute.Properties">
+            <summary>
+            Gets properties of the custom attribute.
+            </summary>
+        </member>
+        <member name="M:CrossCutterN.Aspect.Metadata.ICustomAttribute.GetProperty(System.String)">
+            <summary>
+            Gets a property according to the property name.
+            </summary>
+            <param name="name">Name of the property to be retrieved.</param>
+            <returns>The <see cref="T:CrossCutterN.Aspect.Metadata.IAttributeProperty"/> retrieved.</returns>
+        </member>
+        <member name="M:CrossCutterN.Aspect.Metadata.ICustomAttribute.HasProperty(System.String)">
+            <summary>
+            Gets a value indicating whether the custom attribute contains a property with the given name.
+            </summary>
+            <param name="name">Name of the property.</param>
+            <returns>True if the custom attribute has the proeprty, false elsewise.</returns>
+        </member>
+        <member name="T:CrossCutterN.Aspect.Metadata.IMethod">
+            <summary>
+            Method metadata interface.
+            </summary>
+        </member>
+        <member name="P:CrossCutterN.Aspect.Metadata.IMethod.AssemblyFullName">
+            <summary>
+            Gets full name of assembly this method is defined in.
+            </summary>
+        </member>
+        <member name="P:CrossCutterN.Aspect.Metadata.IMethod.Namespace">
+            <summary>
+            Gets namespace this method is defined in.
+            </summary>
+        </member>
+        <member name="P:CrossCutterN.Aspect.Metadata.IMethod.ClassFullName">
+            <summary>
+            Gets full name of the class this method is defined in.
+            </summary>
+        </member>
+        <member name="P:CrossCutterN.Aspect.Metadata.IMethod.ClassName">
+            <summary>
+            Gets name of the class this method is defined in.
+            </summary>
+        </member>
+        <member name="P:CrossCutterN.Aspect.Metadata.IMethod.MethodFullName">
+            <summary>
+            Gets full name of the method.
+            </summary>
+        </member>
+        <member name="P:CrossCutterN.Aspect.Metadata.IMethod.MethodName">
+            <summary>
+            Gets name of the method.
+            </summary>
+        </member>
+        <member name="P:CrossCutterN.Aspect.Metadata.IMethod.ReturnType">
+            <summary>
+            Gets return type of the method.
+            </summary>
+        </member>
+        <member name="P:CrossCutterN.Aspect.Metadata.IMethod.IsInstance">
+            <summary>
+            Gets a value indicating whether the method is instance method.
+            </summary>
+        </member>
+        <member name="P:CrossCutterN.Aspect.Metadata.IMethod.IsConstructor">
+            <summary>
+            Gets a value indicating whether the method is a constructor.
+            </summary>
+        </member>
+        <member name="P:CrossCutterN.Aspect.Metadata.IMethod.Accessibility">
+            <summary>
+            Gets accessibility of the method.
+            </summary>
+        </member>
+        <member name="P:CrossCutterN.Aspect.Metadata.IMethod.ClassCustomAttributes">
+            <summary>
+            Gets custom attributes of the class that contains the method.
+            </summary>
+        </member>
+        <member name="P:CrossCutterN.Aspect.Metadata.IMethod.CustomAttributes">
+            <summary>
+            Gets custom attributes of this method.
+            </summary>
+        </member>
+        <member name="P:CrossCutterN.Aspect.Metadata.IMethod.Parameters">
+            <summary>
+            Gets parameters of this method.
+            </summary>
+        </member>
+        <member name="M:CrossCutterN.Aspect.Metadata.IMethod.GetParameter(System.String)">
+            <summary>
+            Gets a parameter of the name given from this method.
+            </summary>
+            <param name="name">Name of the method.</param>
+            <returns>The <see cref="T:CrossCutterN.Aspect.Metadata.IParameter"/> retrieved.</returns>
+        </member>
+        <member name="M:CrossCutterN.Aspect.Metadata.IMethod.HasParameter(System.String)">
+            <summary>
+            Gets a value indicating whether this method contains a parameter with the given name.
+            </summary>
+            <param name="name">Name of parameter.</param>
+            <returns>True if the method contains a parameter with the name, false elsewise.</returns>
+        </member>
+        <member name="T:CrossCutterN.Aspect.Metadata.IMethodBuilder">
+            <summary>
+            Method metadata to be built interface.
+            </summary>
+        </member>
+        <member name="P:CrossCutterN.Aspect.Metadata.IMethodBuilder.ClassCustomAttributes">
+            <summary>
+            Sets custom attributes from the class that contains this method.
+            </summary>
+        </member>
+        <member name="M:CrossCutterN.Aspect.Metadata.IMethodBuilder.AddParameter(CrossCutterN.Aspect.Metadata.IParameter)">
+            <summary>
+            Adds a parameter metadata to the method metadata.
+            </summary>
+            <param name="parameter">The parameter metadata to be added.</param>
+        </member>
+        <member name="M:CrossCutterN.Aspect.Metadata.IMethodBuilder.AddCustomAttribute(CrossCutterN.Aspect.Metadata.ICustomAttribute)">
+            <summary>
+            Adds a custom attribute metadata to the method metadata.
+            </summary>
+            <param name="attribute">The custom attribute to be added.</param>
+        </member>
+        <member name="T:CrossCutterN.Aspect.Metadata.IParameter">
+            <summary>
+            Parameter metadata interface.
+            </summary>
+        </member>
+        <member name="P:CrossCutterN.Aspect.Metadata.IParameter.Name">
+            <summary>
+            Gets name of the parameter.
+            </summary>
+        </member>
+        <member name="P:CrossCutterN.Aspect.Metadata.IParameter.TypeName">
+            <summary>
+            Gets type name of the parameter.
+            </summary>
+        </member>
+        <member name="P:CrossCutterN.Aspect.Metadata.IParameter.Sequence">
+            <summary>
+            Gets sequence of the parameter in the method.
+            </summary>
+        </member>
+        <member name="P:CrossCutterN.Aspect.Metadata.IParameter.CustomAttributes">
+            <summary>
+            Gets custom attributes of the method.
+            </summary>
+        </member>
+        <member name="T:CrossCutterN.Aspect.Metadata.IProperty">
+            <summary>
+            Property metadata interface.
+            </summary>
+        </member>
+        <member name="P:CrossCutterN.Aspect.Metadata.IProperty.AssemblyFullName">
+            <summary>
+            Gets full name of assembly this property is defined in.
+            </summary>
+        </member>
+        <member name="P:CrossCutterN.Aspect.Metadata.IProperty.Namespace">
+            <summary>
+            Gets namespace this property is defined in.
+            </summary>
+        </member>
+        <member name="P:CrossCutterN.Aspect.Metadata.IProperty.ClassFullName">
+            <summary>
+            Gets full name of the class this property is defined in.
+            </summary>
+        </member>
+        <member name="P:CrossCutterN.Aspect.Metadata.IProperty.ClassName">
+            <summary>
+            Gets name of the class this property is defined in.
+            </summary>
+        </member>
+        <member name="P:CrossCutterN.Aspect.Metadata.IProperty.PropertyFullName">
+            <summary>
+            Gets full name of the property.
+            </summary>
+        </member>
+        <member name="P:CrossCutterN.Aspect.Metadata.IProperty.PropertyName">
+            <summary>
+            Gets name of the property.
+            </summary>
+        </member>
+        <member name="P:CrossCutterN.Aspect.Metadata.IProperty.Type">
+            <summary>
+            Gets type of the property.
+            </summary>
+        </member>
+        <member name="P:CrossCutterN.Aspect.Metadata.IProperty.IsInstance">
+            <summary>
+            Gets a value indicating whether the property is instance.
+            </summary>
+        </member>
+        <member name="P:CrossCutterN.Aspect.Metadata.IProperty.GetterAccessibility">
+            <summary>
+            Gets getter function accessibility.
+            </summary>
+        </member>
+        <member name="P:CrossCutterN.Aspect.Metadata.IProperty.SetterAccessibility">
+            <summary>
+            Gets setter function accessibility.
+            </summary>
+        </member>
+        <member name="P:CrossCutterN.Aspect.Metadata.IProperty.ClassCustomAttributes">
+            <summary>
+            Gets class custom attributes.
+            </summary>
+        </member>
+        <member name="P:CrossCutterN.Aspect.Metadata.IProperty.CustomAttributes">
+            <summary>
+            Gets property custom attributes.
+            </summary>
+        </member>
+        <member name="P:CrossCutterN.Aspect.Metadata.IProperty.GetterCustomAttributes">
+            <summary>
+            Gets property getter custom attributes;
+            </summary>
+        </member>
+        <member name="P:CrossCutterN.Aspect.Metadata.IProperty.SetterCustomAttributes">
+            <summary>
+            Gets property setter custom attributes;
+            </summary>
+        </member>
+        <member name="T:CrossCutterN.Aspect.Metadata.IPropertyBuilder">
+            <summary>
+            Property metadata to be built.
+            </summary>
+        </member>
+        <member name="P:CrossCutterN.Aspect.Metadata.IPropertyBuilder.ClassCustomAttributes">
+            <summary>
+            Sets custom attributes from class.
+            </summary>
+        </member>
+        <member name="M:CrossCutterN.Aspect.Metadata.IPropertyBuilder.AddCustomAttribute(CrossCutterN.Aspect.Metadata.ICustomAttribute)">
+            <summary>
+            Adds a custom attribute to the property.
+            </summary>
+            <param name="attribute">Custom attribute to be added.</param>
+        </member>
+        <member name="M:CrossCutterN.Aspect.Metadata.IPropertyBuilder.AddGetterCustomAttribute(CrossCutterN.Aspect.Metadata.ICustomAttribute)">
+            <summary>
+            Adds a custom attribute to the property getter.
+            </summary>
+            <param name="attribute">Custom attribute to be added.</param>
+        </member>
+        <member name="M:CrossCutterN.Aspect.Metadata.IPropertyBuilder.AddSetterCustomAttribute(CrossCutterN.Aspect.Metadata.ICustomAttribute)">
+            <summary>
+            Adds a custom attribute to the property setter.
+            </summary>
+            <param name="attribute">Custom attribute to be added.</param>
+        </member>
+        <member name="T:CrossCutterN.Aspect.Metadata.MetadataFactory">
+            <summary>
+            Concern factory.
+            </summary>
+        </member>
+        <member name="M:CrossCutterN.Aspect.Metadata.MetadataFactory.InitializeMethod(System.String,System.String,System.String,System.String,System.String,System.String,System.String,System.Boolean,System.Boolean,CrossCutterN.Aspect.Metadata.Accessibility)">
+            <summary>
+            Initializes a new instance of of <see cref="T:CrossCutterN.Aspect.Metadata.IMethodBuilder"/>.
+            </summary>
+            <param name="assemblyFullName">Full name of assembly this method is defined in.</param>
+            <param name="nameSpace">Namespace this method is defined in.</param>
+            <param name="classFullName">Full name of the class this method is defined in.</param>
+            <param name="className">Name of the class this method is defined in.</param>
+            <param name="methodFullName">Full name of the method.</param>
+            <param name="methodName">Name of the method.</param>
+            <param name="returnType">Return type of the method.</param>
+            <param name="isInstance">Whether the method is instance.</param>
+            <param name="isConstructor">Whether the method is constructor.</param>
+            <param name="accessibility">Accessibility of the method.</param>
+            <returns>The <see cref="T:CrossCutterN.Aspect.Metadata.IMethodBuilder"/> initialized.</returns>
+        </member>
+        <member name="M:CrossCutterN.Aspect.Metadata.MetadataFactory.InitializeParameter(System.String,System.String,System.Int32)">
+            <summary>
+            Initializes a new instance of of <see cref="T:CrossCutterN.Aspect.Metadata.ICanAddCustomAttribute"/>.
+            </summary>
+            <param name="name">Name of the parameter.</param>
+            <param name="typeName">Type name of the parameter.</param>
+            <param name="sequence">Sequence of the parameter in the method.</param>
+            <returns>The <see cref="T:CrossCutterN.Aspect.Metadata.ICanAddCustomAttribute"/> initialized.</returns>
+        </member>
+        <member name="M:CrossCutterN.Aspect.Metadata.MetadataFactory.InitializeCustomAttribute(System.String,System.Int32)">
+            <summary>
+            Initializes a new instance of of <see cref="T:CrossCutterN.Aspect.Metadata.ICanAddAttributeProperty"/>.
+            </summary>
+            <param name="typeName">Type name of the custom attribute.</param>
+            <param name="sequence">Sequence of the custom attribute in the parameter.</param>
+            <returns>The <see cref="T:CrossCutterN.Aspect.Metadata.ICanAddAttributeProperty"/> initialized.</returns>
+        </member>
+        <member name="M:CrossCutterN.Aspect.Metadata.MetadataFactory.InitializeAttributeProperty(System.String,System.String,System.Int32,System.Object)">
+            <summary>
+            Initializes a new instance of of <see cref="T:CrossCutterN.Aspect.Metadata.IAttributeProperty"/>.
+            </summary>
+            <param name="name">Name of the attribute property.</param>
+            <param name="typeName">Type name of the attribute property.</param>
+            <param name="sequence">Sequence of the attribute property in the custom attribute.</param>
+            <param name="value">Value of the attribute property.</param>
+            <returns>The <see cref="T:CrossCutterN.Aspect.Metadata.IAttributeProperty"/> initialized.</returns>
+        </member>
+        <member name="M:CrossCutterN.Aspect.Metadata.MetadataFactory.InitializeProperty(System.String,System.String,System.String,System.String,System.String,System.String,System.String,System.Boolean,System.Nullable{CrossCutterN.Aspect.Metadata.Accessibility},System.Nullable{CrossCutterN.Aspect.Metadata.Accessibility})">
+            <summary>
+            Initializes a new instance of of <see cref="T:CrossCutterN.Aspect.Metadata.IPropertyBuilder"/>.
+            </summary>
+            <param name="assemblyFullName">Full name of assembly this property is defined in.</param>
+            <param name="nameSpace">Namespace this property is defined in.</param>
+            <param name="classFullName">Full name of the class this property is defined in.</param>
+            <param name="className">Name of the class this property is defined in.</param>
+            <param name="propertyFullName">Full name of the property.</param>
+            <param name="propertyName">Name of the property.</param>
+            <param name="type">Type of the property.</param>
+            <param name="isInstance">Whether the property is instance.</param>
+            <param name="getterAccessibility">Getter function accessibility.</param>
+            <param name="setterAccessibility">Setter function accessibility.</param>
+            <returns>The <see cref="T:CrossCutterN.Aspect.Metadata.IPropertyBuilder"/> initialized.</returns>
+        </member>
+        <member name="T:CrossCutterN.Aspect.Metadata.Method">
+            <summary>
+            Method metadata implementation.
+            </summary>
+        </member>
+        <member name="M:CrossCutterN.Aspect.Metadata.Method.#ctor(System.String,System.String,System.String,System.String,System.String,System.String,System.String,System.Boolean,System.Boolean,CrossCutterN.Aspect.Metadata.Accessibility)">
+            <summary>
+            Initializes a new instance of the <see cref="T:CrossCutterN.Aspect.Metadata.Method"/> class.
+            </summary>
+            <param name="assemblyFullName">Full name of assembly this method is defined in.</param>
+            <param name="nameSpace">Namespace this method is defined in.</param>
+            <param name="classFullName">Full name of the class this method is defined in.</param>
+            <param name="className">Name of the class this method is defined in.</param>
+            <param name="methodFullName">Full name of the method.</param>
+            <param name="methodName">Name of the method.</param>
+            <param name="returnType">Return type of the method.</param>
+            <param name="isInstance">Whether the method is instance.</param>
+            <param name="isConstructor">Whether the method is constructor.</param>
+            <param name="accessibility">Accessibility of the method.</param>
+        </member>
+        <member name="P:CrossCutterN.Aspect.Metadata.Method.AssemblyFullName">
+            <inheritdoc/>
+        </member>
+        <member name="P:CrossCutterN.Aspect.Metadata.Method.Namespace">
+            <inheritdoc/>
+        </member>
+        <member name="P:CrossCutterN.Aspect.Metadata.Method.ClassFullName">
+            <inheritdoc/>
+        </member>
+        <member name="P:CrossCutterN.Aspect.Metadata.Method.ClassName">
+            <inheritdoc/>
+        </member>
+        <member name="P:CrossCutterN.Aspect.Metadata.Method.MethodFullName">
+            <inheritdoc/>
+        </member>
+        <member name="P:CrossCutterN.Aspect.Metadata.Method.MethodName">
+            <inheritdoc/>
+        </member>
+        <member name="P:CrossCutterN.Aspect.Metadata.Method.ReturnType">
+            <inheritdoc/>
+        </member>
+        <member name="P:CrossCutterN.Aspect.Metadata.Method.IsInstance">
+            <inheritdoc/>
+        </member>
+        <member name="P:CrossCutterN.Aspect.Metadata.Method.IsConstructor">
+            <inheritdoc/>
+        </member>
+        <member name="P:CrossCutterN.Aspect.Metadata.Method.Accessibility">
+            <inheritdoc/>
+        </member>
+        <member name="P:CrossCutterN.Aspect.Metadata.Method.ClassCustomAttributes">
+            <inheritdoc/>
+        </member>
+        <member name="P:CrossCutterN.Aspect.Metadata.Method.Parameters">
+            <inheritdoc/>
+        </member>
+        <member name="P:CrossCutterN.Aspect.Metadata.Method.CustomAttributes">
+            <inheritdoc/>
+        </member>
+        <member name="M:CrossCutterN.Aspect.Metadata.Method.AddParameter(CrossCutterN.Aspect.Metadata.IParameter)">
+            <inheritdoc/>
+        </member>
+        <member name="M:CrossCutterN.Aspect.Metadata.Method.AddCustomAttribute(CrossCutterN.Aspect.Metadata.ICustomAttribute)">
+            <inheritdoc/>
+        </member>
+        <member name="M:CrossCutterN.Aspect.Metadata.Method.GetParameter(System.String)">
+            <inheritdoc/>
+        </member>
+        <member name="M:CrossCutterN.Aspect.Metadata.Method.HasParameter(System.String)">
+            <inheritdoc/>
+        </member>
+        <member name="M:CrossCutterN.Aspect.Metadata.Method.Build">
+            <inheritdoc/>
+        </member>
+        <member name="T:CrossCutterN.Aspect.Metadata.Parameter">
+            <summary>
+            Parameter metadata implementation.
+            </summary>
+        </member>
+        <member name="M:CrossCutterN.Aspect.Metadata.Parameter.#ctor(System.String,System.String,System.Int32)">
+            <summary>
+            Initializes a new instance of the <see cref="T:CrossCutterN.Aspect.Metadata.Parameter"/> class.
+            </summary>
+            <param name="name">Name of parameter.</param>
+            <param name="typeName">Type name of parameter.</param>
+            <param name="sequence">Sequence of parameter in the method.</param>
+        </member>
+        <member name="P:CrossCutterN.Aspect.Metadata.Parameter.Name">
+            <inheritdoc/>
+        </member>
+        <member name="P:CrossCutterN.Aspect.Metadata.Parameter.TypeName">
+            <inheritdoc/>
+        </member>
+        <member name="P:CrossCutterN.Aspect.Metadata.Parameter.Sequence">
+            <inheritdoc/>
+        </member>
+        <member name="P:CrossCutterN.Aspect.Metadata.Parameter.Key">
+            <inheritdoc/>
+        </member>
+        <member name="P:CrossCutterN.Aspect.Metadata.Parameter.SortKey">
+            <inheritdoc/>
+        </member>
+        <member name="P:CrossCutterN.Aspect.Metadata.Parameter.CustomAttributes">
+            <inheritdoc/>
+        </member>
+        <member name="M:CrossCutterN.Aspect.Metadata.Parameter.AddCustomAttribute(CrossCutterN.Aspect.Metadata.ICustomAttribute)">
+            <inheritdoc/>
+        </member>
+        <member name="M:CrossCutterN.Aspect.Metadata.Parameter.Build">
+            <inheritdoc/>
+        </member>
+        <member name="T:CrossCutterN.Aspect.Metadata.Property">
+            <summary>
+            Prperty metadata implementation.
+            </summary>
+        </member>
+        <member name="M:CrossCutterN.Aspect.Metadata.Property.#ctor(System.String,System.String,System.String,System.String,System.String,System.String,System.String,System.Boolean,System.Nullable{CrossCutterN.Aspect.Metadata.Accessibility},System.Nullable{CrossCutterN.Aspect.Metadata.Accessibility})">
+            <summary>
+            Initializes a new instance of the <see cref="T:CrossCutterN.Aspect.Metadata.Property"/> class.
+            </summary>
+            <param name="assemblyFullName">Full name of assembly this property is defined in.</param>
+            <param name="nameSpace">Namespace this property is defined in.</param>
+            <param name="classFullName">Full name of the class this property is defined in.</param>
+            <param name="className">Name of the class this property is defined in.</param>
+            <param name="propertyFullName">Full name of the property.</param>
+            <param name="propertyName">Name of the property.</param>
+            <param name="type">Type of the property.</param>
+            <param name="isInstance">Whether the property is instance.</param>
+            <param name="getterAccessibility">Getter function accessibility.</param>
+            <param name="setterAccessibility">Setter function accessibility.</param>
+        </member>
+        <member name="P:CrossCutterN.Aspect.Metadata.Property.AssemblyFullName">
+            <inheritdoc/>
+        </member>
+        <member name="P:CrossCutterN.Aspect.Metadata.Property.Namespace">
+            <inheritdoc/>
+        </member>
+        <member name="P:CrossCutterN.Aspect.Metadata.Property.ClassFullName">
+            <inheritdoc/>
+        </member>
+        <member name="P:CrossCutterN.Aspect.Metadata.Property.ClassName">
+            <inheritdoc/>
+        </member>
+        <member name="P:CrossCutterN.Aspect.Metadata.Property.PropertyFullName">
+            <inheritdoc/>
+        </member>
+        <member name="P:CrossCutterN.Aspect.Metadata.Property.PropertyName">
+            <inheritdoc/>
+        </member>
+        <member name="P:CrossCutterN.Aspect.Metadata.Property.Type">
+            <inheritdoc/>
+        </member>
+        <member name="P:CrossCutterN.Aspect.Metadata.Property.IsInstance">
+            <inheritdoc/>
+        </member>
+        <member name="P:CrossCutterN.Aspect.Metadata.Property.GetterAccessibility">
+            <inheritdoc/>
+        </member>
+        <member name="P:CrossCutterN.Aspect.Metadata.Property.SetterAccessibility">
+            <inheritdoc/>
+        </member>
+        <member name="P:CrossCutterN.Aspect.Metadata.Property.ClassCustomAttributes">
+            <inheritdoc/>
+        </member>
+        <member name="P:CrossCutterN.Aspect.Metadata.Property.CustomAttributes">
+            <inheritdoc/>
+        </member>
+        <member name="P:CrossCutterN.Aspect.Metadata.Property.GetterCustomAttributes">
+            <inheritdoc/>
+        </member>
+        <member name="P:CrossCutterN.Aspect.Metadata.Property.SetterCustomAttributes">
+            <inheritdoc/>
+        </member>
+        <member name="M:CrossCutterN.Aspect.Metadata.Property.AddCustomAttribute(CrossCutterN.Aspect.Metadata.ICustomAttribute)">
+            <inheritdoc/>
+        </member>
+        <member name="M:CrossCutterN.Aspect.Metadata.Property.AddGetterCustomAttribute(CrossCutterN.Aspect.Metadata.ICustomAttribute)">
+            <inheritdoc/>
+        </member>
+        <member name="M:CrossCutterN.Aspect.Metadata.Property.AddSetterCustomAttribute(CrossCutterN.Aspect.Metadata.ICustomAttribute)">
+            <inheritdoc/>
+        </member>
+        <member name="M:CrossCutterN.Aspect.Metadata.Property.Build">
+            <inheritdoc/>
+        </member>
+        <member name="T:CrossCutterN.Aspect.Utilities.PathUtility">
+            <summary>
+            Utility class to handle path related features.
+            </summary>
+        </member>
+        <member name="M:CrossCutterN.Aspect.Utilities.PathUtility.ProcessPath(System.String)">
+            <summary>
+            Returns absolute path if input is relevant path.
+            </summary>
+            <param name="path">Path to be processed.</param>
+            <returns>Absolute path.</returns>
+        </member>
+    </members>
+</doc>

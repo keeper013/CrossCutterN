@@ -1,0 +1,162 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>CrossCutterN.Console</name>
+    </assembly>
+    <members>
+        <member name="T:CrossCutterN.Console.Application.AdviceConfigurationProcessor">
+            <summary>
+            Advice assembly configuration processor.
+            </summary>
+        </member>
+        <member name="M:CrossCutterN.Console.Application.AdviceConfigurationProcessor.#ctor(CrossCutterN.Aspect.Builder.IAdviceUtilityBuilder)">
+            <summary>
+            Initializes a new instance of the <see cref="T:CrossCutterN.Console.Application.AdviceConfigurationProcessor"/> class.
+            </summary>
+            <param name="utility">Advice utility that contains advice information.</param>
+        </member>
+        <member name="M:CrossCutterN.Console.Application.AdviceConfigurationProcessor.Process(Microsoft.Extensions.Configuration.IConfigurationSection,System.String,System.String)">
+            <inheritdoc/>
+        </member>
+        <member name="T:CrossCutterN.Console.Application.AspectBuilderConfigurationProcessor">
+            <summary>
+            Aspect builder configuration processor.
+            </summary>
+        </member>
+        <member name="M:CrossCutterN.Console.Application.AspectBuilderConfigurationProcessor.#ctor(CrossCutterN.Aspect.Builder.IAspectBuilderUtilityBuilder)">
+            <summary>
+            Initializes a new instance of the <see cref="T:CrossCutterN.Console.Application.AspectBuilderConfigurationProcessor"/> class.
+            </summary>
+            <param name="utility">aspect utility that contains aspect information.</param>
+        </member>
+        <member name="M:CrossCutterN.Console.Application.AspectBuilderConfigurationProcessor.Process(Microsoft.Extensions.Configuration.IConfigurationSection,System.String,System.String)">
+            <inheritdoc/>
+        </member>
+        <member name="T:CrossCutterN.Console.Application.ConsoleApplication">
+            <summary>
+            Console application implementation
+            </summary>
+        </member>
+        <member name="M:CrossCutterN.Console.Application.ConsoleApplication.Process(System.String[],System.String[],System.String[])">
+            <summary>
+            Processes configuration files.
+            </summary>
+            <param name="aspectConfigFiles">Aspect configuration files.</param>
+            <param name="adviceConfigFiles">Advice configuration files</param>
+            <param name="targetConfigFiles">Target configuration files</param>
+            <returns>List of Processed assemblies.</returns>
+        </member>
+        <member name="T:CrossCutterN.Console.Application.IConfigurationProcessor">
+            <summary>
+            Interface of configuration processor
+            </summary>
+        </member>
+        <member name="M:CrossCutterN.Console.Application.IConfigurationProcessor.Process(Microsoft.Extensions.Configuration.IConfigurationSection,System.String,System.String)">
+            <summary>
+            Processes configuration section.
+            </summary>
+            <param name="section">Configuration section to be configured.</param>
+            <param name="configurationFullPath">Configuration file full path.</param>
+            <param name="currentDirectory">Program work directory.</param>
+        </member>
+        <member name="T:CrossCutterN.Console.Application.LogWeavingStatistics">
+            <summary>
+            Weaving statistics logger.
+            </summary>
+        </member>
+        <member name="M:CrossCutterN.Console.Application.LogWeavingStatistics.Log(CrossCutterN.Weaver.Statistics.IAssemblyWeavingStatistics,System.IO.TextWriter)">
+            <summary>
+            Logs weaving statistics of an assembly to a text writer.
+            </summary>
+            <param name="statistics">Weaving statistics of an assembly.</param>
+            <param name="writer">Text writer.</param>
+        </member>
+        <member name="T:CrossCutterN.Console.Application.TargetConfigurationProcessor">
+            <summary>
+            Target configuration processor.
+            </summary>
+        </member>
+        <member name="M:CrossCutterN.Console.Application.TargetConfigurationProcessor.#ctor(CrossCutterN.Aspect.Builder.IAspectBuilderUtility,CrossCutterN.Aspect.Builder.IAdviceUtility,System.Collections.Generic.IList{System.String})">
+            <summary>
+            Initializes a new instance of the <see cref="T:CrossCutterN.Console.Application.TargetConfigurationProcessor"/> class.
+            </summary>
+            <param name="aspectUtility">Aspect utility that contains all aspect information.</param>
+            <param name="adviceUtility">Advice utility that contains all advice information.</param>
+            <param name="processed">Processed assembly list.</param>
+        </member>
+        <member name="M:CrossCutterN.Console.Application.TargetConfigurationProcessor.Process(Microsoft.Extensions.Configuration.IConfigurationSection,System.String,System.String)">
+            <inheritdoc/>
+        </member>
+        <member name="T:CrossCutterN.Console.Configuration.AspectBuilderReference">
+            <summary>
+            aspect reference configuration.
+            </summary>
+        </member>
+        <member name="P:CrossCutterN.Console.Configuration.AspectBuilderReference.AspectAssemblyKey">
+            <summary>
+            Gets or sets key for aspect assembly.
+            </summary>
+        </member>
+        <member name="P:CrossCutterN.Console.Configuration.AspectBuilderReference.AspectBuilderKey">
+            <summary>
+            Gets or sets key for aspect.
+            </summary>
+        </member>
+        <member name="T:CrossCutterN.Console.Configuration.AssemblySetting">
+            <summary>
+            Assembly setting configuration, for target assembly configuration.
+            </summary>
+        </member>
+        <member name="P:CrossCutterN.Console.Configuration.AssemblySetting.Output">
+            <summary>
+            Gets or sets output assembly path.
+            </summary>
+        </member>
+        <member name="P:CrossCutterN.Console.Configuration.AssemblySetting.IncludeSymbol">
+            <summary>
+            Gets or sets a value indicating whether symbol file (pdb) should be included.
+            </summary>
+        </member>
+        <member name="P:CrossCutterN.Console.Configuration.AssemblySetting.StrongNameKeyFile">
+            <summary>
+            Gets or sets path of strong name key file.
+            </summary>
+        </member>
+        <member name="T:CrossCutterN.Console.Configuration.TargetAssemblies">
+            <summary>
+            Target asssembly configuration.
+            </summary>
+        </member>
+        <member name="P:CrossCutterN.Console.Configuration.TargetAssemblies.DefaultAdviceAssemblyKey">
+            <summary>
+            Gets or sets default advice assembly key.
+            </summary>
+        </member>
+        <member name="P:CrossCutterN.Console.Configuration.TargetAssemblies.AspectBuilders">
+            <summary>
+            Gets or sets aspects configuration.
+            </summary>
+        </member>
+        <member name="P:CrossCutterN.Console.Configuration.TargetAssemblies.Order">
+            <summary>
+            Gets or sets order configuration for the advices in join points.
+            </summary>
+        </member>
+        <member name="P:CrossCutterN.Console.Configuration.TargetAssemblies.Targets">
+            <summary>
+            Gets or sets target assemblies configuration.
+            </summary>
+        </member>
+        <member name="T:CrossCutterN.Console.Program">
+            <summary>
+            Main program.
+            </summary>
+        </member>
+        <member name="M:CrossCutterN.Console.Program.Main(System.String[])">
+            <summary>
+            Main method.
+            </summary>
+            <param name="args">Command line arguments.</param>
+        </member>
+    </members>
+</doc>

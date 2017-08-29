@@ -254,7 +254,7 @@ namespace CrossCutterN.Weaver.Weaver
                 }
 
                 instructions.Add(processor.Create(OpCodes.Ldloc, switches[count - 1]));
-                instructions.Add(processor.Create(OpCodes.Brfalse_S, section.EndInstruction));
+                instructions.Add(processor.Create(OpCodes.Brfalse, section.EndInstruction));
                 var result = instructions.First();
                 IlUtilities.PersistentInstructions(instructions, processor, section.StartInstruction);
                 return result;
@@ -359,7 +359,7 @@ namespace CrossCutterN.Weaver.Weaver
             // apply switch from last advice call
             if (pendingSwitchIndex >= 0)
             {
-                instructions[pendingSwitchIndex] = processor.Create(OpCodes.Brfalse_S, instructions[firstIndex]);
+                instructions[pendingSwitchIndex] = processor.Create(OpCodes.Brfalse, instructions[firstIndex]);
 
                 // reset pending switch index if no switch this time
                 if (!advice.IsSwitchedOn.HasValue)
@@ -531,7 +531,7 @@ namespace CrossCutterN.Weaver.Weaver
             // apply switch from last advice call
             if (context.PendingSwitchIndex >= 0)
             {
-                instructions[context.PendingSwitchIndex] = processor.Create(OpCodes.Brfalse_S, context.TryStartInstruction);
+                instructions[context.PendingSwitchIndex] = processor.Create(OpCodes.Brfalse, context.TryStartInstruction);
                 context.PendingSwitchIndex = -1;
             }
 
@@ -541,9 +541,9 @@ namespace CrossCutterN.Weaver.Weaver
             {
                 var originalTryStart = context.TryStartInstruction;
                 context.TryStartInstruction = firstEntryInstruction;
+                context.ExecutionContextVariableSwitchableSection.AdjustEndInstruction(originalTryStart, firstEntryInstruction);
                 context.ExecutionVariableSwitchableSection.AdjustEndInstruction(originalTryStart, firstEntryInstruction);
                 context.ReturnVariableSwitchableSection.AdjustEndInstruction(originalTryStart, firstEntryInstruction);
-                context.ExecutionContextVariableSwitchableSection.AdjustEndInstruction(originalTryStart, firstEntryInstruction);
             }
         }
 
@@ -571,7 +571,7 @@ namespace CrossCutterN.Weaver.Weaver
                 // apply switch from last advice call
                 if (context.PendingSwitchIndex >= 0)
                 {
-                    instructions[context.PendingSwitchIndex] = processor.Create(OpCodes.Brfalse_S, rethrowInstruction);
+                    instructions[context.PendingSwitchIndex] = processor.Create(OpCodes.Brfalse, rethrowInstruction);
                     context.PendingSwitchIndex = -1;
                 }
 
@@ -693,7 +693,7 @@ namespace CrossCutterN.Weaver.Weaver
                 // apply switch from last advice call
                 if (context.PendingSwitchIndex >= 0)
                 {
-                    instructions[context.PendingSwitchIndex] = processor.Create(OpCodes.Brfalse_S, endFinally);
+                    instructions[context.PendingSwitchIndex] = processor.Create(OpCodes.Brfalse, endFinally);
                     context.PendingSwitchIndex = -1;
                 }
 

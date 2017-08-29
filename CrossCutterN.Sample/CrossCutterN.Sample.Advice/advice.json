@@ -4,21 +4,23 @@
       "AssemblyPath": "CrossCutterN.Sample.Advice.dll",
       "Attributes": { "method": "CrossCutterN.Sample.Advice.SampleConcernMethodAttribute" },
       "Advices": {
-        "CrossCutterN.Sample.Advice.Advices": {
-          "attributeEntry": {
-            "MethodName": "InjectByAttributeOnEntry",
+        "CrossCutterN.Sample.Advice.AdviceByAttribute": {
+          "entry1": {
+            "MethodName": "OnEntry",
             "Parameters": [ "Execution" ]
           },
-          "attributeExit": {
-            "MethodName": "InjectByAttributeOnExit",
+          "exit1": {
+            "MethodName": "OnExit",
             "Parameters": [ "Return" ]
-          },
-          "expressionEntry": {
-            "MethodName": "InjectByMethodNameOnEntry",
+          }
+        },
+        "CrossCutterN.Sample.Advice.AdviceByNameExpression": {
+          "testEntry": {
+            "MethodName": "OnEntry",
             "Parameters": [ "Execution" ]
           },
-          "expressionExit": {
-            "MethodName": "InjectByMethodNameOnExit",
+          "testExit": {
+            "MethodName": "OnExit",
             "Parameters": [ "Return" ]
           }
         }

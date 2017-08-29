@@ -46,81 +46,88 @@ namespace CrossCutterN.Aspect.Builder
                 throw new ApplicationException($"Invalid assembly path: {configuration.AssemblyPath}.");
             }
 
-            if ((configuration.Attributes == null || !configuration.Attributes.Any()) &&
-                (configuration.Advices == null || !configuration.Advices.Any()))
+            var hasAttributes = configuration.Attributes != null && configuration.Attributes.Any();
+            var hasAdvices = configuration.Advices != null && configuration.Advices.Any();
+            if (!hasAttributes && !hasAdvices)
             {
                 throw new ApplicationException($"Assembly {configuration.AssemblyPath} doesn't contain attributes or advices.");
             }
 
-            foreach (var attributeEntry in configuration.Attributes)
+            if (hasAttributes)
             {
-                var type = assembly.GetType(attributeEntry.Value);
-                if (type == null)
+                foreach (var attributeEntry in configuration.Attributes)
                 {
-                    throw new ApplicationException($"Invalid type: {attributeEntry.Value} in assembly: {configuration.AssemblyPath}");
-                }
+                    var type = assembly.GetType(attributeEntry.Value);
+                    if (type == null)
+                    {
+                        throw new ApplicationException($"Invalid type: {attributeEntry.Value} in assembly: {configuration.AssemblyPath}");
+                    }
 
-                utility.AddAttribute(assemblyKey, attributeEntry.Key, type);
+                    utility.AddAttribute(assemblyKey, attributeEntry.Key, type);
+                }
             }
 
-            var typeCache = new Dictionary<string, Type>();
-            foreach (var methodEntry in configuration.Advices)
+            if (hasAdvices)
             {
-                var typeName = methodEntry.Key;
-                Type type;
-                if (typeCache.ContainsKey(typeName))
+                var typeCache = new Dictionary<string, Type>();
+                foreach (var methodEntry in configuration.Advices)
                 {
-                    type = typeCache[typeName];
-                }
-                else
-                {
-                    type = assembly.GetType(typeName) ?? throw new ApplicationException($"Invalid type: {typeName} in assembly: {configuration.AssemblyPath}");
-                    typeCache[typeName] = type;
-                }
-
-                foreach (var adviceEntry in methodEntry.Value)
-                {
-                    var key = adviceEntry.Key;
-                    var adviceInfo = adviceEntry.Value;
-                    var parameterTypes = new List<Type>();
-                    var parameters = adviceInfo.Parameters;
-                    if (parameters != null && parameters.Any())
+                    var typeName = methodEntry.Key;
+                    Type type;
+                    if (typeCache.ContainsKey(typeName))
                     {
-                        if (parameters.Contains(AdviceParameterType.Context))
-                        {
-                            parameterTypes.Add(typeof(IExecutionContext));
-                        }
-
-                        if (parameters.Contains(AdviceParameterType.Execution))
-                        {
-                            parameterTypes.Add(typeof(IExecution));
-                        }
-
-                        if (parameters.Contains(AdviceParameterType.Exception))
-                        {
-                            parameterTypes.Add(typeof(Exception));
-                        }
-
-                        if (parameters.Contains(AdviceParameterType.Return))
-                        {
-                            parameterTypes.Add(typeof(IReturn));
-                        }
-
-                        if (parameters.Contains(AdviceParameterType.HasException))
-                        {
-                            parameterTypes.Add(typeof(bool));
-                        }
+                        type = typeCache[typeName];
+                    }
+                    else
+                    {
+                        type = assembly.GetType(typeName) ?? throw new ApplicationException($"Invalid type: {typeName} in assembly: {configuration.AssemblyPath}");
+                        typeCache[typeName] = type;
                     }
 
-                    var methodInfo = type.GetMethod(adviceInfo.MethodName, parameterTypes.ToArray());
-                    if (methodInfo == null)
+                    foreach (var adviceEntry in methodEntry.Value)
                     {
-                        var parameterList = parameters == null || !parameters.Any() ? string.Empty : string.Join(",", parameters);
-                        throw new ApplicationException(
-                            $"Method {adviceInfo.MethodName}({parameterList}) doesn't exist in type {type} in assembly {configuration.AssemblyPath}");
-                    }
+                        var key = adviceEntry.Key;
+                        var adviceInfo = adviceEntry.Value;
+                        var parameterTypes = new List<Type>();
+                        var parameters = adviceInfo.Parameters;
+                        if (parameters != null && parameters.Any())
+                        {
+                            if (parameters.Contains(AdviceParameterType.Context))
+                            {
+                                parameterTypes.Add(typeof(IExecutionContext));
+                            }
 
-                    utility.AddAdvice(assemblyKey, key, methodInfo);
+                            if (parameters.Contains(AdviceParameterType.Execution))
+                            {
+                                parameterTypes.Add(typeof(IExecution));
+                            }
+
+                            if (parameters.Contains(AdviceParameterType.Exception))
+                            {
+                                parameterTypes.Add(typeof(Exception));
+                            }
+
+                            if (parameters.Contains(AdviceParameterType.Return))
+                            {
+                                parameterTypes.Add(typeof(IReturn));
+                            }
+
+                            if (parameters.Contains(AdviceParameterType.HasException))
+                            {
+                                parameterTypes.Add(typeof(bool));
+                            }
+                        }
+
+                        var methodInfo = type.GetMethod(adviceInfo.MethodName, parameterTypes.ToArray());
+                        if (methodInfo == null)
+                        {
+                            var parameterList = parameters == null || !parameters.Any() ? string.Empty : string.Join(",", parameters);
+                            throw new ApplicationException(
+                                $"Method {adviceInfo.MethodName}({parameterList}) doesn't exist in type {type} in assembly {configuration.AssemblyPath}");
+                        }
+
+                        utility.AddAdvice(assemblyKey, key, methodInfo);
+                    }
                 }
             }
         }

@@ -1,0 +1,19 @@
+﻿{
+  "CrossCutterN": {
+    "sample": {
+      "AssemblyPath": "CrossCutterN.Sample.Advice.dll",
+      "Advices": {
+        "CrossCutterN.Sample.Advice.AdviceByNameExpression": {
+          "testEntry": {
+            "MethodName": "OnEntry",
+            "Parameters": [ "Execution" ]
+          },
+          "testExit": {
+            "MethodName": "OnExit",
+            "Parameters": [ "Return" ]
+          }
+        }
+      }
+    }
+  }
+}
