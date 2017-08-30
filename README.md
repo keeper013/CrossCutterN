@@ -52,7 +52,7 @@ Add ending
 
 What if I want to inject some AOP code to the Add method? For example, log the function call and all it's parameter values upon entering the method call, and log the return value before the method returns?
 
-Before going through with the examples, please build of CrossCutterN.Console project, and copy the output binaries to CrossCutterN.Sample\CrossCutterN.Console\ folder.
+Before going through with the examples, please build of CrossCutterN.Console project, and copy the output binaries to CrossCutterN.Sample\CrossCutterN.Console\ folder. Besides, before executing console application tool, please make sure the sample target project is rebuilt to have a refreshed target assembly to perform IL weaving to.
 
 ### Using Name of Methods to Find Target Methods to Be Injected
 
