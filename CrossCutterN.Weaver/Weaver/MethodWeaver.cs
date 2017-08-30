@@ -76,6 +76,45 @@ namespace CrossCutterN.Weaver.Weaver
 
         private static bool NeedHasExceptionVariable(MethodDefinition method, IWeavingPlan plan) => plan.NeedHasExceptionVariable() || (plan.NeedReturnVariable() && !method.IsVoidReturn());
 
+        private static int GetTransferOffset(Instruction from, Instruction to)
+        {
+            var offset = 0;
+            for (var current = from; current != to; current = current.Next)
+            {
+                offset += current.GetSize();
+            }
+
+            return offset;
+        }
+
+        private static int GetTransferOffset(IReadOnlyList<Instruction> insturctions, int fromIndex, int toIndex)
+        {
+            var offset = 0;
+            for (var i = fromIndex; i < toIndex; i++)
+            {
+                offset += insturctions[i].GetSize();
+            }
+
+            return offset;
+        }
+
+        private static int GetTransferOffset(IReadOnlyList<Instruction> insturctions, int fromIndex)
+        {
+            var offset = 0;
+            var toIndex = insturctions.Count;
+            for (var i = fromIndex; i < toIndex; i++)
+            {
+                offset += insturctions[i].GetSize();
+            }
+
+            return offset;
+        }
+
+        private static bool OffsetIsShort(int offset)
+        {
+            return offset >= -128 && offset <= 127;
+        }
+
         private void AddLocalVariables(MethodDefinition method, ILProcessor processor, IWeavingPlan plan)
         {
             var instructions = new List<Instruction>();
@@ -245,16 +284,27 @@ namespace CrossCutterN.Weaver.Weaver
         {
             if (switches != null && switches.Any() && section.HasSetStartEndInstruction)
             {
-                var instructions = new List<Instruction>();
                 var count = switches.Count;
-                for (var i = 0; i < count - 1; i++)
+                var instructions = new List<Instruction>(count * 2);
+                var sectionOffset = GetTransferOffset(section.StartInstruction, section.EndInstruction);
+                var offset = 0;
+                var instruction = processor.Create(OffsetIsShort(sectionOffset) ? OpCodes.Brfalse_S : OpCodes.Brfalse, section.EndInstruction);
+                offset += instruction.GetSize();
+                instructions.Add(instruction);
+                instruction = processor.Create(OpCodes.Ldloc, switches[count - 1]);
+                offset += instruction.GetSize();
+                instructions.Add(instruction);
+                for (var i = count - 2; i >= 0; i--)
                 {
-                    instructions.Add(processor.Create(OpCodes.Ldloc, switches[i]));
-                    instructions.Add(processor.Create(OpCodes.Brtrue_S, section.StartInstruction));
+                    instruction = processor.Create(OffsetIsShort(offset) ? OpCodes.Brtrue_S : OpCodes.Brtrue, section.StartInstruction);
+                    offset += instruction.GetSize();
+                    instructions.Add(instruction);
+                    instruction = processor.Create(OpCodes.Ldloc, switches[i]);
+                    offset += instruction.GetSize();
+                    instructions.Add(instruction);
                 }
 
-                instructions.Add(processor.Create(OpCodes.Ldloc, switches[count - 1]));
-                instructions.Add(processor.Create(OpCodes.Brfalse, section.EndInstruction));
+                instructions.Reverse();
                 var result = instructions.First();
                 IlUtilities.PersistentInstructions(instructions, processor, section.StartInstruction);
                 return result;
@@ -359,7 +409,8 @@ namespace CrossCutterN.Weaver.Weaver
             // apply switch from last advice call
             if (pendingSwitchIndex >= 0)
             {
-                instructions[pendingSwitchIndex] = processor.Create(OpCodes.Brfalse, instructions[firstIndex]);
+                var offset = GetTransferOffset(instructions, pendingSwitchIndex + 1, firstIndex);
+                instructions[pendingSwitchIndex] = processor.Create(OffsetIsShort(offset) ? OpCodes.Brfalse_S : OpCodes.Brfalse, instructions[firstIndex]);
 
                 // reset pending switch index if no switch this time
                 if (!advice.IsSwitchedOn.HasValue)
@@ -531,7 +582,8 @@ namespace CrossCutterN.Weaver.Weaver
             // apply switch from last advice call
             if (context.PendingSwitchIndex >= 0)
             {
-                instructions[context.PendingSwitchIndex] = processor.Create(OpCodes.Brfalse, context.TryStartInstruction);
+                var offset = GetTransferOffset(instructions, context.PendingSwitchIndex + 1);
+                instructions[context.PendingSwitchIndex] = processor.Create(OffsetIsShort(offset) ? OpCodes.Brfalse_S : OpCodes.Brfalse, context.TryStartInstruction);
                 context.PendingSwitchIndex = -1;
             }
 
@@ -571,7 +623,8 @@ namespace CrossCutterN.Weaver.Weaver
                 // apply switch from last advice call
                 if (context.PendingSwitchIndex >= 0)
                 {
-                    instructions[context.PendingSwitchIndex] = processor.Create(OpCodes.Brfalse, rethrowInstruction);
+                    var offset = GetTransferOffset(instructions, context.PendingSwitchIndex + 1);
+                    instructions[context.PendingSwitchIndex] = processor.Create(OffsetIsShort(offset) ? OpCodes.Brfalse_S : OpCodes.Brfalse, rethrowInstruction);
                     context.PendingSwitchIndex = -1;
                 }
 
@@ -650,7 +703,7 @@ namespace CrossCutterN.Weaver.Weaver
                     // evaluation stack after the following statement: bottom->IReturnBuilder
                     instructions.Add(ifEndInstruction);
 
-                    // fill back if start instruction
+                    // fill back if start instruction, BrTrue.S should be safe here, there aren't enough instructions to exceed offset of 127
                     instructions[ifStartIndex] = processor.Create(OpCodes.Brtrue_S, ifEndInstruction);
                 }
                 else
@@ -693,7 +746,8 @@ namespace CrossCutterN.Weaver.Weaver
                 // apply switch from last advice call
                 if (context.PendingSwitchIndex >= 0)
                 {
-                    instructions[context.PendingSwitchIndex] = processor.Create(OpCodes.Brfalse, endFinally);
+                    var offset = GetTransferOffset(instructions, context.PendingSwitchIndex + 1);
+                    instructions[context.PendingSwitchIndex] = processor.Create(OffsetIsShort(offset) ? OpCodes.Brfalse_S : OpCodes.Brfalse, endFinally);
                     context.PendingSwitchIndex = -1;
                 }
 

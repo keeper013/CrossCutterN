@@ -66,7 +66,7 @@ namespace CrossCutterN.Weaver.Weaver
             {
                 foreach (var module in assembly.Modules)
                 {
-                    var moduleStatistics = StatisticsFactory.InitializeModuleWeavingRecord(module.FileName);
+                    var moduleStatistics = StatisticsFactory.InitializeModuleWeavingRecord(module.Name);
                     var context = WeaverFactory.InitializeMethodWeavingContext(module);
                     foreach (var clazz in module.GetTypes().Where(tp => tp.IsClass && (tp.HasMethods || tp.HasFields)))
                     {
