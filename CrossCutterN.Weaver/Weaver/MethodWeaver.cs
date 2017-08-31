@@ -87,29 +87,6 @@ namespace CrossCutterN.Weaver.Weaver
             return offset;
         }
 
-        private static int GetTransferOffset(IReadOnlyList<Instruction> insturctions, int fromIndex, int toIndex)
-        {
-            var offset = 0;
-            for (var i = fromIndex; i < toIndex; i++)
-            {
-                offset += insturctions[i].GetSize();
-            }
-
-            return offset;
-        }
-
-        private static int GetTransferOffset(IReadOnlyList<Instruction> insturctions, int fromIndex)
-        {
-            var offset = 0;
-            var toIndex = insturctions.Count;
-            for (var i = fromIndex; i < toIndex; i++)
-            {
-                offset += insturctions[i].GetSize();
-            }
-
-            return offset;
-        }
-
         private static bool OffsetIsShort(int offset)
         {
             return offset >= -128 && offset <= 127;
@@ -409,8 +386,8 @@ namespace CrossCutterN.Weaver.Weaver
             // apply switch from last advice call
             if (pendingSwitchIndex >= 0)
             {
-                var offset = GetTransferOffset(instructions, pendingSwitchIndex + 1, firstIndex);
-                instructions[pendingSwitchIndex] = processor.Create(OffsetIsShort(offset) ? OpCodes.Brfalse_S : OpCodes.Brfalse, instructions[firstIndex]);
+                // here brfalse_S is safe, considering only several instructions are inserted after break instruction.
+                instructions[pendingSwitchIndex] = processor.Create(OpCodes.Brfalse_S, instructions[firstIndex]);
 
                 // reset pending switch index if no switch this time
                 if (!advice.IsSwitchedOn.HasValue)
@@ -582,8 +559,8 @@ namespace CrossCutterN.Weaver.Weaver
             // apply switch from last advice call
             if (context.PendingSwitchIndex >= 0)
             {
-                var offset = GetTransferOffset(instructions, context.PendingSwitchIndex + 1);
-                instructions[context.PendingSwitchIndex] = processor.Create(OffsetIsShort(offset) ? OpCodes.Brfalse_S : OpCodes.Brfalse, context.TryStartInstruction);
+                // here Brfalse_S is safe considering only several instructions are inserted after break instruction.
+                instructions[context.PendingSwitchIndex] = processor.Create(OpCodes.Brfalse_S, context.TryStartInstruction);
                 context.PendingSwitchIndex = -1;
             }
 
@@ -623,8 +600,8 @@ namespace CrossCutterN.Weaver.Weaver
                 // apply switch from last advice call
                 if (context.PendingSwitchIndex >= 0)
                 {
-                    var offset = GetTransferOffset(instructions, context.PendingSwitchIndex + 1);
-                    instructions[context.PendingSwitchIndex] = processor.Create(OffsetIsShort(offset) ? OpCodes.Brfalse_S : OpCodes.Brfalse, rethrowInstruction);
+                    // here Brfalse_S is safe considering only several instructions are inserted after break instruction.
+                    instructions[context.PendingSwitchIndex] = processor.Create(OpCodes.Brfalse_S, rethrowInstruction);
                     context.PendingSwitchIndex = -1;
                 }
 
@@ -746,8 +723,8 @@ namespace CrossCutterN.Weaver.Weaver
                 // apply switch from last advice call
                 if (context.PendingSwitchIndex >= 0)
                 {
-                    var offset = GetTransferOffset(instructions, context.PendingSwitchIndex + 1);
-                    instructions[context.PendingSwitchIndex] = processor.Create(OffsetIsShort(offset) ? OpCodes.Brfalse_S : OpCodes.Brfalse, endFinally);
+                    // here Brfalse_S is safe considering only several instructions are inserted after break instruction.
+                    instructions[context.PendingSwitchIndex] = processor.Create(OpCodes.Brfalse_S, endFinally);
                     context.PendingSwitchIndex = -1;
                 }
 

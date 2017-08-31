@@ -257,7 +257,8 @@
           "CrossCutterN.Test.SwitchTest.SwitchExceptionTestTarget.*",
           "CrossCutterN.Test.SwitchTest.SwitchNoReturnTestTarget.*",
           "CrossCutterN.Test.SwitchTest.SwitchNoExecutionTestTarget.*",
-          "CrossCutterN.Test.SwitchTest.SwitchOnlyExecutionTestTarget.*"
+          "CrossCutterN.Test.SwitchTest.SwitchOnlyExecutionTestTarget.*",
+          "CrossCutterN.Test.SwitchTest.SwitchManyParametersTestTarget.*"
         ],
         "Advices": {
           "Entry": { "MethodKey": "switchEntry2" },
@@ -274,7 +275,8 @@
           "CrossCutterN.Test.SwitchTest.SwitchExceptionTestTarget.*",
           "CrossCutterN.Test.SwitchTest.SwitchNoReturnTestTarget.*",
           "CrossCutterN.Test.SwitchTest.SwitchNoExecutionTestTarget.*",
-          "CrossCutterN.Test.SwitchTest.SwitchOnlyExecutionTestTarget.*"
+          "CrossCutterN.Test.SwitchTest.SwitchOnlyExecutionTestTarget.*",
+          "CrossCutterN.Test.SwitchTest.SwitchManyParametersTestTarget.*"
         ],
         "Advices": {
           "Entry": { "MethodKey": "switchEntry3" },
@@ -350,6 +352,276 @@
           "Exit": { "MethodKey": "switchExit8" }
         }
       },
+      "switchMany1": {
+        "AspectBuilderKey": "CrossCutterN.Aspect.Builder.NameExpressionAspectBuilder",
+        "IsSwitchedOn": true,
+        "Includes": [ "CrossCutterN.Test.SwitchTest.SwitchManyParametersTestTarget.Test" ],
+        "Advices": {
+          "Entry": { "MethodKey": "switchEntry1" },
+          "Exit": { "MethodKey": "switchExit9" }
+        }
+      },
+      "switchMany2": {
+        "AspectBuilderKey": "CrossCutterN.Aspect.Builder.NameExpressionAspectBuilder",
+        "IsSwitchedOn": true,
+        "Includes": [ "CrossCutterN.Test.SwitchTest.SwitchManyParametersTestTarget.Test" ],
+        "Advices": {
+          "Entry": { "MethodKey": "switchEntry1" },
+          "Exit": { "MethodKey": "switchExit9" }
+        }
+      },
+      "switchMany3": {
+        "AspectBuilderKey": "CrossCutterN.Aspect.Builder.NameExpressionAspectBuilder",
+        "IsSwitchedOn": true,
+        "Includes": [ "CrossCutterN.Test.SwitchTest.SwitchManyParametersTestTarget.Test" ],
+        "Advices": {
+          "Entry": { "MethodKey": "switchEntry1" },
+          "Exit": { "MethodKey": "switchExit9" }
+        }
+      },
+      "switchMany4": {
+        "AspectBuilderKey": "CrossCutterN.Aspect.Builder.NameExpressionAspectBuilder",
+        "IsSwitchedOn": true,
+        "Includes": [ "CrossCutterN.Test.SwitchTest.SwitchManyParametersTestTarget.Test" ],
+        "Advices": {
+          "Entry": { "MethodKey": "switchEntry1" },
+          "Exit": { "MethodKey": "switchExit9" }
+        }
+      },
+      "switchMany5": {
+        "AspectBuilderKey": "CrossCutterN.Aspect.Builder.NameExpressionAspectBuilder",
+        "IsSwitchedOn": true,
+        "Includes": [ "CrossCutterN.Test.SwitchTest.SwitchManyParametersTestTarget.Test" ],
+        "Advices": {
+          "Entry": { "MethodKey": "switchEntry1" },
+          "Exit": { "MethodKey": "switchExit9" }
+        }
+      },
+      "switchMany6": {
+        "AspectBuilderKey": "CrossCutterN.Aspect.Builder.NameExpressionAspectBuilder",
+        "IsSwitchedOn": true,
+        "Includes": [ "CrossCutterN.Test.SwitchTest.SwitchManyParametersTestTarget.Test" ],
+        "Advices": {
+          "Entry": { "MethodKey": "switchEntry1" },
+          "Exit": { "MethodKey": "switchExit9" }
+        }
+      },
+      "switchMany7": {
+        "AspectBuilderKey": "CrossCutterN.Aspect.Builder.NameExpressionAspectBuilder",
+        "IsSwitchedOn": true,
+        "Includes": [ "CrossCutterN.Test.SwitchTest.SwitchManyParametersTestTarget.Test" ],
+        "Advices": {
+          "Entry": { "MethodKey": "switchEntry1" },
+          "Exit": { "MethodKey": "switchExit9" }
+        }
+      },
+      "switchMany8": {
+        "AspectBuilderKey": "CrossCutterN.Aspect.Builder.NameExpressionAspectBuilder",
+        "IsSwitchedOn": true,
+        "Includes": [ "CrossCutterN.Test.SwitchTest.SwitchManyParametersTestTarget.Test" ],
+        "Advices": {
+          "Entry": { "MethodKey": "switchEntry1" },
+          "Exit": { "MethodKey": "switchExit9" }
+        }
+      },
+      "switchMany9": {
+        "AspectBuilderKey": "CrossCutterN.Aspect.Builder.NameExpressionAspectBuilder",
+        "IsSwitchedOn": true,
+        "Includes": [ "CrossCutterN.Test.SwitchTest.SwitchManyParametersTestTarget.Test" ],
+        "Advices": {
+          "Entry": { "MethodKey": "switchEntry1" },
+          "Exit": { "MethodKey": "switchExit9" }
+        }
+      },
+      "switchMany10": {
+        "AspectBuilderKey": "CrossCutterN.Aspect.Builder.NameExpressionAspectBuilder",
+        "IsSwitchedOn": true,
+        "Includes": [ "CrossCutterN.Test.SwitchTest.SwitchManyParametersTestTarget.Test" ],
+        "Advices": {
+          "Entry": { "MethodKey": "switchEntry1" },
+          "Exit": { "MethodKey": "switchExit9" }
+        }
+      },
+      "switchMany11": {
+        "AspectBuilderKey": "CrossCutterN.Aspect.Builder.NameExpressionAspectBuilder",
+        "IsSwitchedOn": true,
+        "Includes": [ "CrossCutterN.Test.SwitchTest.SwitchManyParametersTestTarget.Test" ],
+        "Advices": {
+          "Entry": { "MethodKey": "switchEntry1" },
+          "Exit": { "MethodKey": "switchExit9" }
+        }
+      },
+      "switchMany12": {
+        "AspectBuilderKey": "CrossCutterN.Aspect.Builder.NameExpressionAspectBuilder",
+        "IsSwitchedOn": true,
+        "Includes": [ "CrossCutterN.Test.SwitchTest.SwitchManyParametersTestTarget.Test" ],
+        "Advices": {
+          "Entry": { "MethodKey": "switchEntry1" },
+          "Exit": { "MethodKey": "switchExit9" }
+        }
+      },
+      "switchMany13": {
+        "AspectBuilderKey": "CrossCutterN.Aspect.Builder.NameExpressionAspectBuilder",
+        "IsSwitchedOn": true,
+        "Includes": [ "CrossCutterN.Test.SwitchTest.SwitchManyParametersTestTarget.Test" ],
+        "Advices": {
+          "Entry": { "MethodKey": "switchEntry1" },
+          "Exit": { "MethodKey": "switchExit9" }
+        }
+      },
+      "switchMany14": {
+        "AspectBuilderKey": "CrossCutterN.Aspect.Builder.NameExpressionAspectBuilder",
+        "IsSwitchedOn": true,
+        "Includes": [ "CrossCutterN.Test.SwitchTest.SwitchManyParametersTestTarget.Test" ],
+        "Advices": {
+          "Entry": { "MethodKey": "switchEntry1" },
+          "Exit": { "MethodKey": "switchExit9" }
+        }
+      },
+      "switchMany15": {
+        "AspectBuilderKey": "CrossCutterN.Aspect.Builder.NameExpressionAspectBuilder",
+        "IsSwitchedOn": true,
+        "Includes": [ "CrossCutterN.Test.SwitchTest.SwitchManyParametersTestTarget.Test" ],
+        "Advices": {
+          "Entry": { "MethodKey": "switchEntry1" },
+          "Exit": { "MethodKey": "switchExit9" }
+        }
+      },
+      "switchMany16": {
+        "AspectBuilderKey": "CrossCutterN.Aspect.Builder.NameExpressionAspectBuilder",
+        "IsSwitchedOn": true,
+        "Includes": [ "CrossCutterN.Test.SwitchTest.SwitchManyParametersTestTarget.Test" ],
+        "Advices": {
+          "Entry": { "MethodKey": "switchEntry1" },
+          "Exit": { "MethodKey": "switchExit9" }
+        }
+      },
+      "switchMany17": {
+        "AspectBuilderKey": "CrossCutterN.Aspect.Builder.NameExpressionAspectBuilder",
+        "IsSwitchedOn": true,
+        "Includes": [ "CrossCutterN.Test.SwitchTest.SwitchManyParametersTestTarget.Test" ],
+        "Advices": {
+          "Entry": { "MethodKey": "switchEntry1" },
+          "Exit": { "MethodKey": "switchExit9" }
+        }
+      },
+      "switchMany18": {
+        "AspectBuilderKey": "CrossCutterN.Aspect.Builder.NameExpressionAspectBuilder",
+        "IsSwitchedOn": true,
+        "Includes": [ "CrossCutterN.Test.SwitchTest.SwitchManyParametersTestTarget.Test" ],
+        "Advices": {
+          "Entry": { "MethodKey": "switchEntry1" },
+          "Exit": { "MethodKey": "switchExit9" }
+        }
+      },
+      "switchMany19": {
+        "AspectBuilderKey": "CrossCutterN.Aspect.Builder.NameExpressionAspectBuilder",
+        "IsSwitchedOn": true,
+        "Includes": [ "CrossCutterN.Test.SwitchTest.SwitchManyParametersTestTarget.Test" ],
+        "Advices": {
+          "Entry": { "MethodKey": "switchEntry1" },
+          "Exit": { "MethodKey": "switchExit9" }
+        }
+      },
+      "switchMany20": {
+        "AspectBuilderKey": "CrossCutterN.Aspect.Builder.NameExpressionAspectBuilder",
+        "IsSwitchedOn": true,
+        "Includes": [ "CrossCutterN.Test.SwitchTest.SwitchManyParametersTestTarget.Test" ],
+        "Advices": {
+          "Entry": { "MethodKey": "switchEntry1" },
+          "Exit": { "MethodKey": "switchExit9" }
+        }
+      },
+      "switchMany21": {
+        "AspectBuilderKey": "CrossCutterN.Aspect.Builder.NameExpressionAspectBuilder",
+        "IsSwitchedOn": true,
+        "Includes": [ "CrossCutterN.Test.SwitchTest.SwitchManyParametersTestTarget.Test" ],
+        "Advices": {
+          "Entry": { "MethodKey": "switchEntry1" },
+          "Exit": { "MethodKey": "switchExit9" }
+        }
+      },
+      "switchMany22": {
+        "AspectBuilderKey": "CrossCutterN.Aspect.Builder.NameExpressionAspectBuilder",
+        "IsSwitchedOn": true,
+        "Includes": [ "CrossCutterN.Test.SwitchTest.SwitchManyParametersTestTarget.Test" ],
+        "Advices": {
+          "Entry": { "MethodKey": "switchEntry1" },
+          "Exit": { "MethodKey": "switchExit9" }
+        }
+      },
+      "switchMany23": {
+        "AspectBuilderKey": "CrossCutterN.Aspect.Builder.NameExpressionAspectBuilder",
+        "IsSwitchedOn": true,
+        "Includes": [ "CrossCutterN.Test.SwitchTest.SwitchManyParametersTestTarget.Test" ],
+        "Advices": {
+          "Entry": { "MethodKey": "switchEntry1" },
+          "Exit": { "MethodKey": "switchExit9" }
+        }
+      },
+      "switchMany24": {
+        "AspectBuilderKey": "CrossCutterN.Aspect.Builder.NameExpressionAspectBuilder",
+        "IsSwitchedOn": true,
+        "Includes": [ "CrossCutterN.Test.SwitchTest.SwitchManyParametersTestTarget.Test" ],
+        "Advices": {
+          "Entry": { "MethodKey": "switchEntry1" },
+          "Exit": { "MethodKey": "switchExit9" }
+        }
+      },
+      "switchMany25": {
+        "AspectBuilderKey": "CrossCutterN.Aspect.Builder.NameExpressionAspectBuilder",
+        "IsSwitchedOn": true,
+        "Includes": [ "CrossCutterN.Test.SwitchTest.SwitchManyParametersTestTarget.Test" ],
+        "Advices": {
+          "Entry": { "MethodKey": "switchEntry1" },
+          "Exit": { "MethodKey": "switchExit9" }
+        }
+      },
+      "switchMany26": {
+        "AspectBuilderKey": "CrossCutterN.Aspect.Builder.NameExpressionAspectBuilder",
+        "IsSwitchedOn": true,
+        "Includes": [ "CrossCutterN.Test.SwitchTest.SwitchManyParametersTestTarget.Test" ],
+        "Advices": {
+          "Entry": { "MethodKey": "switchEntry1" },
+          "Exit": { "MethodKey": "switchExit9" }
+        }
+      },
+      "switchMany27": {
+        "AspectBuilderKey": "CrossCutterN.Aspect.Builder.NameExpressionAspectBuilder",
+        "IsSwitchedOn": true,
+        "Includes": [ "CrossCutterN.Test.SwitchTest.SwitchManyParametersTestTarget.Test" ],
+        "Advices": {
+          "Entry": { "MethodKey": "switchEntry1" },
+          "Exit": { "MethodKey": "switchExit9" }
+        }
+      },
+      "switchMany28": {
+        "AspectBuilderKey": "CrossCutterN.Aspect.Builder.NameExpressionAspectBuilder",
+        "IsSwitchedOn": true,
+        "Includes": [ "CrossCutterN.Test.SwitchTest.SwitchManyParametersTestTarget.Test" ],
+        "Advices": {
+          "Entry": { "MethodKey": "switchEntry1" },
+          "Exit": { "MethodKey": "switchExit9" }
+        }
+      },
+      "switchMany29": {
+        "AspectBuilderKey": "CrossCutterN.Aspect.Builder.NameExpressionAspectBuilder",
+        "IsSwitchedOn": true,
+        "Includes": [ "CrossCutterN.Test.SwitchTest.SwitchManyParametersTestTarget.Test" ],
+        "Advices": {
+          "Entry": { "MethodKey": "switchEntry1" },
+          "Exit": { "MethodKey": "switchExit9" }
+        }
+      },
+      "switchMany30": {
+        "AspectBuilderKey": "CrossCutterN.Aspect.Builder.NameExpressionAspectBuilder",
+        "IsSwitchedOn": true,
+        "Includes": [ "CrossCutterN.Test.SwitchTest.SwitchManyParametersTestTarget.Test" ],
+        "Advices": {
+          "Entry": { "MethodKey": "switchEntry1" },
+          "Exit": { "MethodKey": "switchExit9" }
+        }
+      },
       "loadAspectBuilder": {
         "AspectAssemblyKey": "CrossCutterN.Aspect.LoadTest",
         "AspectBuilderKey": "testBuilder",
@@ -389,6 +661,36 @@
         "switch8",
         "switch9",
         "switch10",
+        "switchMany1",
+        "switchMany2",
+        "switchMany3",
+        "switchMany4",
+        "switchMany5",
+        "switchMany6",
+        "switchMany7",
+        "switchMany8",
+        "switchMany9",
+        "switchMany10",
+        "switchMany11",
+        "switchMany12",
+        "switchMany13",
+        "switchMany14",
+        "switchMany15",
+        "switchMany16",
+        "switchMany17",
+        "switchMany18",
+        "switchMany19",
+        "switchMany20",
+        "switchMany21",
+        "switchMany22",
+        "switchMany23",
+        "switchMany24",
+        "switchMany25",
+        "switchMany26",
+        "switchMany27",
+        "switchMany28",
+        "switchMany29",
+        "switchMany30",
         "loadAspectBuilder"
       ],
       "Exception": [
@@ -435,7 +737,37 @@
         "switch7",
         "switch8",
         "switch9",
-        "switch10"
+        "switch10",
+        "switchMany1",
+        "switchMany2",
+        "switchMany3",
+        "switchMany4",
+        "switchMany5",
+        "switchMany6",
+        "switchMany7",
+        "switchMany8",
+        "switchMany9",
+        "switchMany10",
+        "switchMany11",
+        "switchMany12",
+        "switchMany13",
+        "switchMany14",
+        "switchMany15",
+        "switchMany16",
+        "switchMany17",
+        "switchMany18",
+        "switchMany19",
+        "switchMany20",
+        "switchMany21",
+        "switchMany22",
+        "switchMany23",
+        "switchMany24",
+        "switchMany25",
+        "switchMany26",
+        "switchMany27",
+        "switchMany28",
+        "switchMany29",
+        "switchMany30"
       ]
     },
     "Targets": {

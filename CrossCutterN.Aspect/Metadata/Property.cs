@@ -49,11 +49,7 @@ namespace CrossCutterN.Aspect.Metadata
                 throw new ArgumentNullException("assemblyFullName");
             }
 
-            if (string.IsNullOrWhiteSpace(nameSpace))
-            {
-                throw new ArgumentNullException("nameSpace");
-            }
-
+            // for internal class properties, name space might be null.
             if (string.IsNullOrWhiteSpace("classFullName"))
             {
                 throw new ArgumentNullException("classFullName");

@@ -7,6 +7,7 @@ namespace CrossCutterN.Test.SwitchTest
     using System;
     using System.Collections.Generic;
     using System.Linq;
+    using System.Text;
     using CrossCutterN.Base.Switch;
     using NUnit.Framework;
     using Utilities;
@@ -617,6 +618,52 @@ namespace CrossCutterN.Test.SwitchTest
             MethodAdviceContainer.PrintContent(Console.Out);
             Assert.AreEqual("Entry8", content.ElementAt(0).Name);
             Assert.AreEqual("Exit8", content.ElementAt(1).Name);
+        }
+
+        /// <summary>
+        /// Test many advice calls and many parameters for switching.
+        /// </summary>
+        [Test]
+        public void TestSwitchMany()
+        {
+            void CallTestMany()
+            {
+                void TestAction() => Console.WriteLine("TestAction");
+                object TestFunc() => new object();
+                SwitchManyParametersTestTarget.Test(
+                    1,
+                    "1",
+                    new object(),
+                    new StringBuilder("4"),
+                    new SwitchManyParametersTestTarget.ParameterObject { Property1 = 1 },
+                    new SwitchManyParametersTestTarget.ParameterStruct { Property2 = new StringBuilder("abc") },
+                    TestAction,
+                    TestFunc,
+                    new int[] { 1 },
+                    new List<string> { "string1" },
+                    2,
+                    "2",
+                    new object(),
+                    new StringBuilder("5"),
+                    new SwitchManyParametersTestTarget.ParameterObject { Property1 = 2 },
+                    new SwitchManyParametersTestTarget.ParameterStruct { Property2 = new StringBuilder("def") },
+                    TestAction,
+                    TestFunc,
+                    new int[] { 2 },
+                    new List<string> { "string2" });
+            }
+
+            MethodAdviceContainer.Clear();
+            var content = MethodAdviceContainer.Content;
+            CallTestMany();
+            Assert.AreEqual(60, content.Count);
+            for (var i = 30; i > 0; i--)
+            {
+                MethodAdviceContainer.Clear();
+                SwitchFacade.Controller.SwitchOff("switchMany" + i);
+                CallTestMany();
+                Assert.AreEqual(2 * (i - 1), content.Count);
+            }
         }
     }
 }

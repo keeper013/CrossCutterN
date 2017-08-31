@@ -270,6 +270,10 @@
           "switchExit8": {
             "MethodName": "Exit8",
             "Parameters": [ "Execution" ]
+          },
+          "switchExit9": {
+            "MethodName": "Exit9",
+            "Parameters": [ "Context", "Execution", "Return", "HasException" ]
           }
         },
         "CrossCutterN.Test.LoadAspectBuilderTest.LoadAspectBuilderTestAdvice": {

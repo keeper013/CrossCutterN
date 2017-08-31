@@ -144,5 +144,17 @@ namespace CrossCutterN.Test.SwitchTest
         {
             MethodAdviceContainer.Add(new MethodAdviceRecord("Exit8", null, execution, null, null, null));
         }
+
+        /// <summary>
+        /// Advice to be injected at exit join point.
+        /// </summary>
+        /// <param name="context"><see cref="IExecutionContext"/> parameter.</param>
+        /// <param name="execution"><see cref="IExecution"/> parameter.</param>
+        /// <param name="rtn"><see cref="IReturn"/> parameter.</param>
+        /// /// <param name="hasException">HasException parameter.</param>
+        public static void Exit9(IExecutionContext context, IExecution execution, IReturn rtn, bool hasException)
+        {
+            MethodAdviceContainer.Add(new MethodAdviceRecord("Exit9", null, execution, null, rtn, hasException));
+        }
     }
 }

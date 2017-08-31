@@ -103,6 +103,7 @@
     <Compile Include="SwitchTest\SwitchCompareTestTarget.cs" />
     <Compile Include="SwitchTest\SwitchExceptionTestTarget.cs" />
     <Compile Include="SwitchTest\SwitchLookUpTestTarget.cs" />
+    <Compile Include="SwitchTest\SwitchManyParametersTestTarget.cs" />
     <Compile Include="SwitchTest\SwitchMethodAspectTestTarget.cs" />
     <Compile Include="SwitchTest\SwitchMethodTestTarget.cs" />
     <Compile Include="SwitchTest\SwitchNoExecutionTestTarget.cs" />
