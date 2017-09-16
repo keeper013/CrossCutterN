@@ -7,7 +7,6 @@ environment:
 branches:  
     only:
         - master
-        - netstandard
 image: Visual Studio 2017
 clone_depth: 1  
 nuget:  
