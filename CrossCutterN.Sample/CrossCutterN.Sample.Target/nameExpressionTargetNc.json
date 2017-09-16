@@ -1,0 +1,18 @@
+﻿{
+  "CrossCutterN": {
+    "DefaultAdviceAssemblyKey": "sample",
+    "AspectBuilders": {
+      "aspectByMethodName": {
+        "AspectBuilderKey": "CrossCutterN.Aspect.Builder.NameExpressionAspectBuilder",
+        "Includes": [ "CrossCutterN.Sample.Target.Target.Ad*" ],
+        "Advices": {
+          "Entry": { "MethodKey": "testEntry" },
+          "Exit": { "MethodKey": "testExit" }
+        }
+      }
+    },
+    "Targets": {
+      "CrossCutterN.Sample.Target.dll": { "Output": "CrossCutterN.Sample.Target.dll" }
+    }
+  }
+}

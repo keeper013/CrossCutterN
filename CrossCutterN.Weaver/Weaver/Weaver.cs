@@ -105,10 +105,11 @@ namespace CrossCutterN.Weaver.Weaver
                     writerParameters.SymbolWriterProvider = new PdbWriterProvider();
                 }
 
-                if (!string.IsNullOrWhiteSpace(strongNameKeyFile))
+                // Need Momo.Cecil support for strong naming
+                /*if (!string.IsNullOrWhiteSpace(strongNameKeyFile))
                 {
                     writerParameters.StrongNameKeyPair = new StrongNameKeyPair(File.ReadAllBytes(strongNameKeyFile));
-                }
+                }*/
 
                 assembly.Write(outputAssemblyPath, writerParameters);
             }

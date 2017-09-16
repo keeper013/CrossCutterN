@@ -7,6 +7,7 @@ environment:
 branches:  
     only:
         - master
+        - netstandard
 image: Visual Studio 2017 Preview
 clone_depth: 1  
 nuget:  
@@ -18,6 +19,8 @@ before_build:
 build_script:  
     - cmd: msbuild CrossCutterN.sln
 before_test:
-    - cmd: CrossCutterN.Console\bin\Release\CrossCutterN.Console.exe /s:CrossCutterN.Test\bin\Release\aspect.json /d:CrossCutterN.Test\bin\Release\advice.json /t:CrossCutterN.Test\bin\Release\target.json
+    - cmd: CrossCutterN.Console\bin\Release\net461\CrossCutterN.Console.exe /s:CrossCutterN.Test\bin\Release\net641\aspect.json /d:CrossCutterN.Test\bin\Release\net461\advice.json /t:CrossCutterN.Test\bin\Release\net461\target.json
+    - cmd: dotnet CrossCutterN.Console\bin\Release\netcoreapp2.0\CrossCutterN.Console.dll /s:CrossCutterN.Test\bin\Release\netcoreapp2.0\aspect.json /d:CrossCutterN.Test\bin\Release\netcoreapp2.0\advice.json /t:CrossCutterN.Test\bin\Release\netcoreapp2.0\target.json
 test_script:
-    - cmd: nunit3-console CrossCutterN.Test\bin\Release\CrossCutterN.Test.dll --result=CrossCutterNResults.xml;format=AppVeyor
+    - cmd: nunit3-console CrossCutterN.Test\bin\Release\net461\CrossCutterN.Test.dll --result=CrossCutterNResults.xml;format=AppVeyor
+    - cmd: dotnet test -f netcoreapp2.0 --no-build CrossCutterN.Test\bin\Release\netcoreapp2.0\CrossCutterN.Test.dll

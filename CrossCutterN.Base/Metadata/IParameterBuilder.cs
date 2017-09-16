@@ -4,17 +4,21 @@
 
 namespace CrossCutterN.Base.Metadata
 {
-    using CrossCutterN.Base.Common;
-
     /// <summary>
     /// Parameter metadata being built up.
     /// </summary>
-    public interface IParameterBuilder : IBuilder<IParameter>
+    public interface IParameterBuilder
     {
         /// <summary>
         /// Adds a custom attribute metadata.
         /// </summary>
         /// <param name="attribute">Custom attribute metadata to be added.</param>
         void AddCustomAttribute(ICustomAttribute attribute);
+
+        /// <summary>
+        /// Builds to <see cref="IParameter"/>.
+        /// </summary>
+        /// <returns>Built result.</returns>
+        IParameter Build();
     }
 }

@@ -1,159 +1,59 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
-<Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+<Project Sdk="Microsoft.NET.Sdk">
+
   <PropertyGroup>
-    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
-    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{AF416A7F-6CA4-494E-8683-00F6E6F485C8}</ProjectGuid>
-    <OutputType>Library</OutputType>
-    <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>CrossCutterN.Test</RootNamespace>
-    <AssemblyName>CrossCutterN.Test</AssemblyName>
-    <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
-    <FileAlignment>512</FileAlignment>
-  </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
-    <DebugSymbols>true</DebugSymbols>
-    <DebugType>full</DebugType>
-    <Optimize>false</Optimize>
-    <OutputPath>bin\Debug\</OutputPath>
-    <DefineConstants>DEBUG;TRACE</DefineConstants>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
-    <DocumentationFile>bin\Debug\CrossCutterN.Test.xml</DocumentationFile>
-  </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
-    <DebugType>pdbonly</DebugType>
-    <Optimize>true</Optimize>
-    <OutputPath>bin\Release\</OutputPath>
-    <DefineConstants>TRACE</DefineConstants>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
-    <DocumentationFile>bin\Release\CrossCutterN.Test.xml</DocumentationFile>
-  </PropertyGroup>
-  <PropertyGroup>
+    <TargetFrameworks>netcoreapp2.0;net461;</TargetFrameworks>
     <ApplicationIcon>crosscuttern.ico</ApplicationIcon>
-  </PropertyGroup>
-  <PropertyGroup>
+    <Company />
+    <Authors>Cui Ziqiang</Authors>
+    <Version>0.1.0.0</Version>
+    <Description>Test module of CrossCutterN</Description>
+    <Copyright>Copyright (c) 2017 Cui Ziqiang</Copyright>
+    <AssemblyVersion>0.1.0.0</AssemblyVersion>
+    <FileVersion>0.1.0.0</FileVersion>
+    <PackageLicenseUrl>https://github.com/keeper013/CrossCutterN/blob/master/LICENSE</PackageLicenseUrl>
+    <PackageProjectUrl>https://github.com/keeper013/CrossCutterN</PackageProjectUrl>
+    <RepositoryUrl>https://github.com/keeper013/CrossCutterN.git</RepositoryUrl>
+    <RepositoryType>git</RepositoryType>
     <SignAssembly>true</SignAssembly>
-  </PropertyGroup>
-  <PropertyGroup>
-    <CodeAnalysisRuleSet>$(SolutionDir)_stylecop\StyleCopeRules.ruleset</CodeAnalysisRuleSet>
-    <SignAssembly>true</SignAssembly>
-    <DelaySign>false</DelaySign>
     <AssemblyOriginatorKeyFile>CrossCutterN.snk</AssemblyOriginatorKeyFile>
+    <CodeAnalysisRuleSet>$(SolutionDir)_stylecop\StyleCopeRules.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Debug|netcoreapp2.0|AnyCPU'">
+    <DocumentationFile>bin\Debug\CrossCutterN.Test.xml</DocumentationFile>
+    <OutputPath>bin\Debug\</OutputPath>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Release|netcoreapp2.0|AnyCPU'">
+    <DocumentationFile>bin\Release\CrossCutterN.Test.xml</DocumentationFile>
+    <OutputPath>bin\Release\</OutputPath>
+  </PropertyGroup>
+
   <ItemGroup>
-    <Reference Include="nunit.framework, Version=3.7.1.0, Culture=neutral, PublicKeyToken=2638cd05610744eb, processorArchitecture=MSIL">
-      <HintPath>..\packages\NUnit.3.7.1\lib\net45\nunit.framework.dll</HintPath>
-    </Reference>
-    <Reference Include="System" />
-    <Reference Include="System.Core" />
-    <Reference Include="System.Xml.Linq" />
-    <Reference Include="System.Data.DataSetExtensions" />
-    <Reference Include="Microsoft.CSharp" />
-    <Reference Include="System.Data" />
-    <Reference Include="System.Net.Http" />
-    <Reference Include="System.Xml" />
+    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="15.5.0-preview-20170914-09" Condition="'$(TargetFramework)'=='netcoreapp2.0'" />
+    <PackageReference Include="NUnit" Version="3.8.1" />
+    <PackageReference Include="NUnit3TestAdapter" Version="3.8.0" Condition="'$(TargetFramework)'=='netcoreapp2.0'" />
+    <PackageReference Include="StyleCop.Analyzers" Version="1.1.0-beta004" />
   </ItemGroup>
+
   <ItemGroup>
-    <Compile Include="ContextTest\ContextConcernMethodAttribute.cs" />
-    <Compile Include="ContextTest\ContextEntryExceptionConcernMethodAttribute.cs" />
-    <Compile Include="ContextTest\ContextEntryExitConcernMethodAttribute.cs" />
-    <Compile Include="ContextTest\ContextExceptionExitConcernMethodAttribute.cs" />
-    <Compile Include="ContextTest\ContextTest.cs" />
-    <Compile Include="ContextTest\ContextTestAdvice.cs" />
-    <Compile Include="ContextTest\ContextTestTarget.cs" />
-    <Compile Include="ContextTest\TestObj.cs" />
-    <Compile Include="LoadAspectBuilderTest\LoadAspectBuilderTest.cs" />
-    <Compile Include="LoadAspectBuilderTest\LoadAspectBuilderTestAdvice.cs" />
-    <Compile Include="LoadAspectBuilderTest\LoadAspectBuilderTestTarget.cs" />
-    <Compile Include="LoadAspectBuilderTest\TestAspect.cs" />
-    <Compile Include="LoadAspectBuilderTest\TestAspectBuilder.cs" />
-    <Compile Include="MixedTest\MixedConcernClass3Attribute.cs" />
-    <Compile Include="MixedTest\MixedConcernMethod1Attribute.cs" />
-    <Compile Include="MixedTest\MixedConcernMethod2Attribute.cs" />
-    <Compile Include="MixedTest\MixedTest.cs" />
-    <Compile Include="MixedTest\MixedTestAdvice.cs" />
-    <Compile Include="MixedTest\MixedTestTarget.cs" />
-    <Compile Include="NameExpressionTest\NameExpressionTest.cs" />
-    <Compile Include="NameExpressionTest\NameExpressionTestAdvice.cs" />
-    <Compile Include="NameExpressionTest\NameExpressionTestTarget.cs" />
-    <Compile Include="OptionsTest\OptionsConcernClassAttribute.cs" />
-    <Compile Include="OptionsTest\OptionsTest.cs" />
-    <Compile Include="OptionsTest\OptionsTestAdvice.cs" />
-    <Compile Include="OptionsTest\OptionsTestTargetBase.cs" />
-    <Compile Include="OptionsTest\OptionsTestTargetDerived.cs" />
-    <Compile Include="OverwriteTest\OverwriteConcernClassAttribute.cs" />
-    <Compile Include="OverwriteTest\OverwriteConcernMethodAttribute.cs" />
-    <Compile Include="OverwriteTest\OverwriteConcernPropertyAttribute.cs" />
-    <Compile Include="OverwriteTest\OverwriteNoConcernAttribute.cs" />
-    <Compile Include="OverwriteTest\OverwriteTest.cs" />
-    <Compile Include="OverwriteTest\OverwriteTestAdvice.cs" />
-    <Compile Include="OverwriteTest\OverwriteTestClassNotMarked.cs" />
-    <Compile Include="OverwriteTest\OverwriteTestClassPropertyConcerned.cs" />
-    <Compile Include="OverwriteTest\OverwriteTestTarget.cs" />
-    <Compile Include="ParameterTest\ParameterTest.cs" />
-    <Compile Include="ParameterTest\ParameterTestAdvice.cs" />
-    <Compile Include="ParameterTest\ParameterTestTarget.cs" />
-    <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="SwitchTest\SwitchAspectTestTarget.cs" />
-    <Compile Include="SwitchTest\SwitchClassAspectTestTarget.cs" />
-    <Compile Include="SwitchTest\SwitchClassTestTarget.cs" />
-    <Compile Include="SwitchTest\SwitchCompareTestTarget.cs" />
-    <Compile Include="SwitchTest\SwitchExceptionTestTarget.cs" />
-    <Compile Include="SwitchTest\SwitchLookUpTestTarget.cs" />
-    <Compile Include="SwitchTest\SwitchManyParametersTestTarget.cs" />
-    <Compile Include="SwitchTest\SwitchMethodAspectTestTarget.cs" />
-    <Compile Include="SwitchTest\SwitchMethodTestTarget.cs" />
-    <Compile Include="SwitchTest\SwitchNoExecutionTestTarget.cs" />
-    <Compile Include="SwitchTest\SwitchNoReturnTestTarget.cs" />
-    <Compile Include="SwitchTest\SwitchOnlyExecutionTestTarget.cs" />
-    <Compile Include="SwitchTest\SwitchPropertyAspectTestTarget.cs" />
-    <Compile Include="SwitchTest\SwitchPropertyTestTarget.cs" />
-    <Compile Include="SwitchTest\SwitchStatusLookUpTestTarget.cs" />
-    <Compile Include="SwitchTest\SwitchTest.cs" />
-    <Compile Include="SwitchTest\SwitchTestAdvice.cs" />
-    <Compile Include="Utilities\MethodAdviceContainer.cs" />
-    <Compile Include="Utilities\MethodAdviceRecord.cs" />
+    <ProjectReference Include="..\CrossCutterN.Aspect\CrossCutterN.Aspect.csproj" />
+    <ProjectReference Include="..\CrossCutterN.Base\CrossCutterN.Base.csproj" />
   </ItemGroup>
+
   <ItemGroup>
-    <Content Include="crosscuttern.ico" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="advice.json">
+    <None Update="advice.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="aspect.json">
+    <None Update="aspect.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="CrossCutterN.snk">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Include="packages.config" />
-    <None Include="target.json">
+    <None Update="target.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
   </ItemGroup>
+
   <ItemGroup>
     <AdditionalFiles Include="$(SolutionDir)_stylecop\stylecop.json" />
   </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\CrossCutterN.Aspect\CrossCutterN.Aspect.csproj">
-      <Project>{aaf69078-24b5-4a9b-8a5b-dcc29161668c}</Project>
-      <Name>CrossCutterN.Aspect</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\CrossCutterN.Base\CrossCutterN.Base.csproj">
-      <Project>{7a9343a8-26b0-4591-b881-ebbeaf3ada55}</Project>
-      <Name>CrossCutterN.Base</Name>
-    </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
-    <Analyzer Include="..\packages\StyleCop.Analyzers.1.1.0-beta004\analyzers\dotnet\cs\StyleCop.Analyzers.CodeFixes.dll" />
-    <Analyzer Include="..\packages\StyleCop.Analyzers.1.1.0-beta004\analyzers\dotnet\cs\StyleCop.Analyzers.dll" />
-  </ItemGroup>
-  <ItemGroup>
-    <Service Include="{82A7F48D-3B50-4B1E-B82E-3ADA8210C358}" />
-  </ItemGroup>
-  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

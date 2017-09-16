@@ -9,6 +9,7 @@ The advantages of **_CrossCutterN_** comparing with other AOP technologies inclu
 
 * **Free**: **_CrossCutterN_** is open source and free under MIT license.
 * **Light Weight**: Instead of adding compile time dependency to projects, **_CrossCutterN_** injects AOP code after project assemblies are built. This approach allows AOP code injection into assemblies whose source code are not available, and decouples project code from AOP code as much as possible.
+* **Cross Platform**: CrossCutterN works in both .net framework and .net core environments.
 * **Out of the box aspect switching support**: **_CrossCutterN_** allows users to switch on/off AOP code that is injected to methods/properties during project run-time at multiple granularity levels.
 * **Designed for optimized performance**: **_CrossCutterN_** uses IL weaving technology to make the injected AOP code work as efficient as directly coded in target projects, and the implementation is optimized to avoid unnecessary local variable initializations and method calls.
 
@@ -190,18 +191,26 @@ Meaning of the configuration file is like the following:
 * AOP code added by this aspect builder can be referred to as "**aspectByMethodName**" in configuration for ordering and C# code to switch on/off.
 * One assembly is in the **Targets** assemblies to be injected. The assembly is "**CrossCutterN.Sample.Target.exe**". It's not an absolute path, so the path is relevant to the configuration file, in this case it's in the same folder of the configuration file. The weaved assembly will be saved as "CrossCutterN.Sample.Target.exe", path relevant to the configuration file, in this case also the same folder of the configuration file. The file name of the output assembly is exactly the same with the target assembly, so the original assembly will be overwritten by the weaved one.
 
+The above target module configuration example is given for .net framework, for .net core environment, the "exe" should be "dll"
+
 #### Execute Console Application Tool
 
-Build the AOP and target assemblies with Release configuration, navigate to CrossCutterN.Sample\ folder, execute:
+Build the AOP and target assemblies with Release configuration, navigate to CrossCutterN.Sample\ folder, for .net framework environment, execute:
 ```batch
-CrossCutterN.Console\CrossCutterN.Console.exe /d:CrossCutterN.Sample.Advice\bin\Release\adviceByNameExpression.json /t:CrossCutterN.Sample.Target\bin\Release\nameExpressionTarget.json
+CrossCutterN.Console\CrossCutterN.Console.exe /d:CrossCutterN.Sample.Advice\bin\Release\netstandard2.0\adviceByNameExpression.json /t:CrossCutterN.Sample.Target\bin\Release\net461\nameExpressionTargetNf.json
+```
+
+For .net core environment, execute:
+
+```batch
+dotnet CrossCutterN.Console\CrossCutterN.Console.dll /d:CrossCutterN.Sample.Advice\bin\Release\netstandard2.0\adviceByNameExpression.json /t:CrossCutterN.Sample.Target\bin\Release\netcoreapp2.0\nameExpressionTargetNc.json
 ```
 
 Meaning of the command is:
 
-Execute console application of **_CrossCutterN_**, using **CrossCutterN.Sample.Advice\bin\Release\adviceByNameExpression.json** file as AOP code assembly configuration, and using **CrossCutterN.Sample.Target\bin\Release\nameExpressionTarget.json** file as target assembly configuration.
+Execute console application of **_CrossCutterN_**, using **adviceByNameExpression.json** file as AOP code assembly configuration, and using **nameExpressionTargetNf.json (nameExpressionTargetNc.json)** file as target assembly configuration.
 
-If the execution is successful, the original CrossCutterN.Sample.Target.exe file is replaced with newly generated one. Execute the new assembly, something like the following output is expected:
+If the execution is successful, the original CrossCutterN.Sample.Target.exe (or dll) file is replaced with newly generated one. Execute the new assembly, something like the following output is expected:
 
 ```
 yyyy-MM-dd HH:mm:ss fff tt Injected by method name on entry: Add(x=1,y=2)
@@ -316,12 +325,20 @@ In **Attributes** section an attribute of type "**CrossCutterN.Sample.Advice.Sam
 
 Here **AspectBuilderKey** is changed to "**CrossCutterN.Aspect.Builder.ConcernAttributeAspectBuilder**", which is also implemented and provided by **_CrossCutterN_** tool, it will find methods marked by checking predefined attributes. The configuration file is attributeTarget.json.
 
+The above target module configuration example is given for .net framework, for .net core environment, the "exe" should be "dll"
+
 #### Execute Console Application Tool
 
-Build the AOP and target assemblies with Release configuration, navigate to CrossCutterN.Sample\ folder, execute:
+Build the AOP and target assemblies with Release configuration, navigate to CrossCutterN.Sample\ folder, for .net framework environment, execute:
 
 ```batch
-CrossCutterN.Console\CrossCutterN.Console.exe /d:CrossCutterN.Sample.Advice\bin\Release\adviceByAttribute.json /t:CrossCutterN.Sample.Target\bin\Release\attributeTarget.json
+CrossCutterN.Console\CrossCutterN.Console.exe /d:CrossCutterN.Sample.Advice\bin\Release\netstandard2.0\adviceByAttribute.json /t:CrossCutterN.Sample.Target\bin\Release\net461\attributeTargetNf.json
+```
+
+for .net core environment, execute:
+
+```batch
+dotnet CrossCutterN.Console\CrossCutterN.Console.dll /d:CrossCutterN.Sample.Advice\bin\Release\netstandard2.0\adviceByAttribute.json /t:CrossCutterN.Sample.Target\bin\Release\netcoreapp2.0\attributeTargetNc.json
 ```
 
 The expected result is similar with previous example when executing the weaved assembly:
@@ -335,9 +352,9 @@ yyyy-MM-dd HH:mm:ss fff tt Injected by attribute name on exit: returns 3
 
 ### Perform AOP Code Injection Using Multiple Aspect Builders
 
-Surely to inject multiple AOP method calls, multiple aspect builders can be declared in single AOP assemlby configuration files and single target assembly configuration files. Please check the "advice.json" and "target.json" configuration files in the sample project. Detailed processes and results are ignored to reduce text redundancy.
+Surely to inject multiple AOP method calls, multiple aspect builders can be declared in single AOP assemlby configuration files and single target assembly configuration files. Please check the "advice.json" and "targetNf.json (targetNc.json)" configuration files in the sample project. Detailed processes and results are ignored to reduce text redundancy.
 
-One thing to mentioned though, for multiple aspect builders to work together, AOP method call order must be specified, like the "**Order**" section in "target.json":
+One thing to mentioned though, for multiple aspect builders to work together, AOP method call order must be specified, like the "**Order**" section in "targetNf.json (targetNc.json)":
 
 ```json
 "Order": {
@@ -706,7 +723,7 @@ Please refer to [Mono.Cecil web site](http://www.mono-project.com/docs/tools+lib
 ## Considerations:
 
 * **Custom MsBuild Task**: Having an msbuild task certainly helps the tool to be integrated into projects much easier. The situation is that currently msbuild tool has a assembly binding redirection issue that custom msbuild tasks won't work with certain assembly binding redirection, and unfortunately **_CrossCutterN_** is one of them (mostly for the json configuration feature). Either msbuild solves this issue or **_CrossCutterN_** tries to fix the issue otherwise can this feature be provided.
-* **To migrate to DotNetCore and DotNetStandard**: The source code is almost compilable in dotnet core environment except that currently some features needed from Mono.Cecil isn't completed yet, including referencing interfaces with generic patterns and outputing strong named assemblies. After that Mono.Cecil completes the relevant features, the code can be easily migrated to dotnet core and dotnet standard environments.
+* **DotNetCore and DotNetStandard**: Due to the reason that Mono.Cecil doesn't support strong name for netstandard yet, the strong name feature doesn't work for netstandard branch. Besides, since support to generic methods is not complete in Mono.Cecil, some metadata builder interface can't inherit from IBuilder interface.
 * **Weaver Interface Design**: Currently **CrossCutterN.Weaver.Weaver.IWeaver** interface requires file names instead of streams for input and output assemblies. This is because current Mono.Cecil support for outputing weaved assemblies with pdb files using stream completely, which leads to the current design. This can be approved after Mono.Cecil is updated.
 
 ## Contact Author

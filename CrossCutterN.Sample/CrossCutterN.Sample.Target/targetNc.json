@@ -1,0 +1,37 @@
+﻿{
+  "CrossCutterN": {
+    "DefaultAdviceAssemblyKey": "sample",
+    "AspectBuilders": {
+      "aspectByAttribute": {
+        "AspectBuilderKey": "CrossCutterN.Aspect.Builder.ConcernAttributeAspectBuilder",
+        "ConcernMethodAttributeType": { "TypeKey": "method" },
+        "Advices": {
+          "Entry": { "MethodKey": "entry1" },
+          "Exit": { "MethodKey": "exit1" }
+        }
+        //,"IsSwitchedOn": false
+      },
+      "aspectByMethodName": {
+        "AspectBuilderKey": "CrossCutterN.Aspect.Builder.NameExpressionAspectBuilder",
+        "Includes": [ "CrossCutterN.Sample.Target.Target.Ad*" ],
+        "Advices": {
+          "Entry": { "MethodKey": "testEntry" },
+          "Exit": { "MethodKey": "testExit" }
+        }
+      }
+    },
+    "Order": {
+      "Entry": [
+        "aspectByAttribute",
+        "aspectByMethodName"
+      ],
+      "Exit": [
+        "aspectByMethodName",
+        "aspectByAttribute"
+      ]
+    },
+    "Targets": {
+      "CrossCutterN.Sample.Target.dll": { "Output": "CrossCutterN.Sample.Target.dll" }
+    }
+  }
+}

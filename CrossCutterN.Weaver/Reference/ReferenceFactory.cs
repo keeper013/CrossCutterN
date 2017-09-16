@@ -74,7 +74,7 @@ namespace CrossCutterN.Weaver.Reference
             reference.AddParameterMethod = type.GetMethod(methodAddParameter);
             reference.ReadOnlyTypeReference = typeof(IExecution);
             reference.TypeReference = type;
-            reference.BuildMethod = typeof(IBuilder<IExecution>).GetMethod(methodBuild);
+            reference.BuildMethod = type.GetMethod(methodBuild);
             return reference.Build();
         }
 
@@ -94,7 +94,7 @@ namespace CrossCutterN.Weaver.Reference
             var type = typeof(IParameterBuilder);
             reference.AddCustomAttributeMethod = type.GetMethod(methodAddCustomAttribute);
             reference.ReadOnlyTypeReference = typeof(IParameter);
-            reference.BuildMethod = typeof(IBuilder<IParameter>).GetMethod(methodBuild);
+            reference.BuildMethod = type.GetMethod(methodBuild);
             reference.TypeReference = type;
             return reference.Build();
         }
@@ -107,7 +107,7 @@ namespace CrossCutterN.Weaver.Reference
             var type = typeof(ICustomAttributeBuilder);
             reference.AddAttributePropertyMethod = type.GetMethod(methodAddAttributeProperty);
             reference.ReadOnlyTypeReference = typeof(CrossCutterN.Base.Metadata.ICustomAttribute);
-            reference.BuildMethod = typeof(IBuilder<CrossCutterN.Base.Metadata.ICustomAttribute>).GetMethod(methodBuild);
+            reference.BuildMethod = type.GetMethod(methodBuild);
             reference.TypeReference = type;
             return reference.Build();
         }
@@ -129,7 +129,7 @@ namespace CrossCutterN.Weaver.Reference
             var type = typeof(IReturnBuilder);
             reference.HasReturnSetter = type.GetProperty(propertyHasReturn).GetSetMethod();
             reference.ReadOnlyTypeReference = typeof(IReturn);
-            reference.BuildMethod = typeof(IBuilder<IReturn>).GetMethod(methodBuild);
+            reference.BuildMethod = type.GetMethod(methodBuild);
             reference.TypeReference = type;
             reference.ValueSetter = type.GetProperty(propertyValue).GetSetMethod();
             return reference.Build();
