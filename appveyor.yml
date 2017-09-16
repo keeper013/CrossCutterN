@@ -8,7 +8,7 @@ branches:
     only:
         - master
         - netstandard
-image: Visual Studio 2017 Preview
+image: Visual Studio 2017
 clone_depth: 1  
 nuget:  
     disable_publish_on_pr: true
