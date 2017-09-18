@@ -89,7 +89,9 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Application\AdviceConfigurationProcessor.cs" />
+    <Compile Include="Application\AdviceUtilityExtension.cs" />
     <Compile Include="Application\AspectBuilderConfigurationProcessor.cs" />
+    <Compile Include="Application\AspectUtilityExtension.cs" />
     <Compile Include="Application\ConsoleApplication.cs" />
     <Compile Include="Application\IConfigurationProcessor.cs" />
     <Compile Include="Application\LogWeavingStatistics.cs" />
@@ -124,10 +126,6 @@
       <Project>{96dd14b3-679f-41e6-8dfd-044ed2e9d9b3}</Project>
       <Name>CrossCutterN.Weaver</Name>
     </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
-    <Analyzer Include="..\packages\StyleCop.Analyzers.1.1.0-beta004\analyzers\dotnet\cs\StyleCop.Analyzers.CodeFixes.dll" />
-    <Analyzer Include="..\packages\StyleCop.Analyzers.1.1.0-beta004\analyzers\dotnet\cs\StyleCop.Analyzers.dll" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

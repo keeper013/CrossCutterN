@@ -2,13 +2,14 @@
 // Copyright (c) 2017 Cui Ziqiang
 // </copyright>
 
-namespace CrossCutterN.Aspect.Builder
+namespace CrossCutterN.Console.Application
 {
     using System;
     using System.Collections.Generic;
     using System.IO;
     using System.Linq;
     using System.Reflection;
+    using CrossCutterN.Aspect.Builder;
     using CrossCutterN.Aspect.Utilities;
     using CrossCutterN.Base.Metadata;
 

@@ -71,12 +71,10 @@
     <Compile Include="Builder\AdviceIndex.cs" />
     <Compile Include="Builder\AdviceParameterType.cs" />
     <Compile Include="Builder\AdviceUtility.cs" />
-    <Compile Include="Builder\AdviceUtilityExtension.cs" />
     <Compile Include="Builder\AspectAssembly.cs" />
     <Compile Include="Builder\AspectBuilder.cs" />
     <Compile Include="Builder\AspectBuilderFactory.cs" />
     <Compile Include="Builder\AspectUtility.cs" />
-    <Compile Include="Builder\AspectUtilityExtension.cs" />
     <Compile Include="Builder\ConcernAttributeAspectBuilder.cs" />
     <Compile Include="Builder\ConcernOption.cs" />
     <Compile Include="Builder\IAdviceUtility.cs" />
@@ -119,10 +117,6 @@
   </ItemGroup>
   <ItemGroup>
     <AdditionalFiles Include="$(SolutionDir)_stylecop\stylecop.json" />
-  </ItemGroup>
-  <ItemGroup>
-    <Analyzer Include="..\packages\StyleCop.Analyzers.1.1.0-beta004\analyzers\dotnet\cs\StyleCop.Analyzers.CodeFixes.dll" />
-    <Analyzer Include="..\packages\StyleCop.Analyzers.1.1.0-beta004\analyzers\dotnet\cs\StyleCop.Analyzers.dll" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

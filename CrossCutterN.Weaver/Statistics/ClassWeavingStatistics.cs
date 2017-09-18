@@ -37,11 +37,6 @@ namespace CrossCutterN.Weaver.Statistics
             {
                 throw new ArgumentNullException("fullName");
             }
-
-            if (string.IsNullOrWhiteSpace(nameSpace))
-            {
-                throw new ArgumentNullException("nameSpace");
-            }
 #endif
             Name = name;
             FullName = fullName;
