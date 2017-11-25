@@ -545,10 +545,11 @@ namespace CrossCutterN.Weaver.Weaver
 
         private void CompleteAddingLocalVariableInstructions(MethodDefinition method, List<Instruction> instructions, ILProcessor processor)
         {
-            if(instructions.Any())
+            if (instructions.Any())
             {
                 method.Body.InitLocals = true;
             }
+
             context.TryStartInstruction = method.Body.Instructions.First();
             context.ExecutionContextVariableSwitchableSection.SetInstructions(instructions, context.TryStartInstruction);
             context.ExecutionVariableSwitchableSection.SetInstructions(instructions, context.TryStartInstruction);
