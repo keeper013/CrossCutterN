@@ -6,3 +6,4 @@ packages
 *.user
 *.ide
 applicationhost.config
+.vs
