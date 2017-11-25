@@ -61,7 +61,6 @@ namespace CrossCutterN.Weaver.Weaver
             }
 #endif
             context.Reset();
-            var instructions = new List<Instruction>();
             var methodSignature = method.GetSignature();
             var processor = method.Body.GetILProcessor();
 
@@ -546,6 +545,10 @@ namespace CrossCutterN.Weaver.Weaver
 
         private void CompleteAddingLocalVariableInstructions(MethodDefinition method, List<Instruction> instructions, ILProcessor processor)
         {
+            if(instructions.Any())
+            {
+                method.Body.InitLocals = true;
+            }
             context.TryStartInstruction = method.Body.Instructions.First();
             context.ExecutionContextVariableSwitchableSection.SetInstructions(instructions, context.TryStartInstruction);
             context.ExecutionVariableSwitchableSection.SetInstructions(instructions, context.TryStartInstruction);
@@ -787,7 +790,10 @@ namespace CrossCutterN.Weaver.Weaver
                     {
                         if (instructions[i].OpCode == OpCodes.Ret)
                         {
-                            instructions[i] = processor.Create(OpCodes.Leave, context.EndingInstruction);
+                            // here we must use the original instruction and can't create a new one instead
+                            // because other br or br_s insturctions may be referencing this insturction.
+                            instructions[i].OpCode = OpCodes.Leave;
+                            instructions[i].Operand = context.EndingInstruction;
                         }
                     }
                 }
@@ -803,7 +809,10 @@ namespace CrossCutterN.Weaver.Weaver
                             continue;
                         }
 
-                        instructions[i] = processor.Create(OpCodes.Leave, context.EndingInstruction);
+                        // here we must use the original instruction and can't create a new one instead
+                        // because other br or br_s insturctions may be referencing this insturction.
+                        instructions[i].OpCode = OpCodes.Leave;
+                        instructions[i].Operand = context.EndingInstruction;
                         instructions.Insert(i, processor.Create(OpCodes.Stloc, context.ReturnValueVariableIndex));
                         i++;
                         count++;

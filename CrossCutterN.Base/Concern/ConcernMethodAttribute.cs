@@ -9,7 +9,7 @@ namespace CrossCutterN.Base.Concern
     /// <summary>
     /// Base attribute for concerning method and property getter/setter methods. It is declared to be abstract to force users to use customized attributes.
     /// </summary>
-    [AttributeUsage(AttributeTargets.Method, AllowMultiple = false)]
+    [AttributeUsage(AttributeTargets.Method | AttributeTargets.Constructor, AllowMultiple = false)]
     public abstract class ConcernMethodAttribute : Attribute
     {
     }
