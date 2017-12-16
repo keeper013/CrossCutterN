@@ -56,10 +56,10 @@ namespace CrossCutterN.Test.OptionsTest
             Assert.AreNotEqual(0, content.ElementAt(6).Execution.HashCode);
             Assert.AreEqual("InstanceEntry", content.ElementAt(7).Name);
             Assert.AreEqual(".ctor", content.ElementAt(7).Execution.Name);
-            Assert.AreNotEqual(7, content.ElementAt(6).Execution.HashCode);
+            Assert.AreNotEqual(7, content.ElementAt(7).Execution.HashCode);
             Assert.AreEqual("MethodEntry", content.ElementAt(8).Name);
             Assert.AreEqual(".ctor", content.ElementAt(8).Execution.Name);
-            Assert.AreNotEqual(8, content.ElementAt(6).Execution.HashCode);
+            Assert.AreNotEqual(8, content.ElementAt(8).Execution.HashCode);
             Assert.AreEqual("InternalEntry", content.ElementAt(9).Name);
             Assert.AreEqual("set_InternalInstanceFunc", content.ElementAt(9).Execution.Name);
             Assert.AreNotEqual(0, content.ElementAt(9).Execution.HashCode);
