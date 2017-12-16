@@ -525,7 +525,7 @@ The allowed parameter type of advice methods include:
 | Parameter Type | Configuration String | Description |
 | --- | --- | --- |
 | CrossCutterN.Base.Metadata.IExecutionContext | Context | This parameter is used for passing objects among the advice methods injected in one method |
-| CrossCutterN.Base.Metadata.IExecution | Execution | This parameter contains execution method information, including method information, name, value and custom attributes of each input parameter |
+| CrossCutterN.Base.Metadata.IExecution | Execution | This parameter contains execution method information, including method information, hash code of the instance whose method this advice is injected into (0 if the method is static), name, value and custom attributes of each input parameter |
 | System.Exception | Exception | This is the exception thrown, only available for exception join point |
 | CrossCutterN.Base.Metadata.IReturn | Return | This parameter contains the return type and value of the method, only available for exit join point |
 | bool | HasException | This parameter indicates whether an exception has been thrown, only available for exit join point |
