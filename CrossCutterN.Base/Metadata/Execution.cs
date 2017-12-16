@@ -80,6 +80,7 @@ namespace CrossCutterN.Base.Metadata
             Namespace = nameSpace;
             ClassFullName = classFullName;
             ClassName = className;
+            HashCode = hashCode;
             FullName = fullName;
             Name = name;
             ReturnType = returnType;
