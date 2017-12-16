@@ -18,6 +18,7 @@ namespace CrossCutterN.Base.Metadata
         /// <param name="nameSpace">Namespace in which the method is defined.</param>
         /// <param name="classFullName">Full name of the class in which the method is defined.</param>
         /// <param name="className">Name of the class in which the method is defined.</param>
+        /// <param name="hashCode">Hash code of the class the injected method belongs to, if the method is not static.</param>
         /// <param name="fullName">Full name of the method</param>
         /// <param name="name">Name of the method.</param>
         /// <param name="returnType">Return type of the method.</param>
@@ -27,11 +28,12 @@ namespace CrossCutterN.Base.Metadata
             string nameSpace,
             string classFullName,
             string className,
+            int hashCode,
             string fullName,
             string name,
             string returnType)
         {
-            return new Execution(assemblyFullName, nameSpace, classFullName, className, fullName, name, returnType);
+            return new Execution(assemblyFullName, nameSpace, classFullName, className, hashCode, fullName, name, returnType);
         }
 
         /// <summary>

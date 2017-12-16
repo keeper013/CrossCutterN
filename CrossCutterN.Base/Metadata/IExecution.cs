@@ -32,6 +32,11 @@ namespace CrossCutterN.Base.Metadata
         string ClassName { get; }
 
         /// <summary>
+        /// Gets hash code of the class the injected method belongs to, if the method is not static.
+        /// </summary>
+        int HashCode { get; }
+
+        /// <summary>
         /// Gets full name of the method.
         /// </summary>
         string FullName { get; }

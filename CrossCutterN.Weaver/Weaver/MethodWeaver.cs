@@ -7,6 +7,7 @@ namespace CrossCutterN.Weaver.Weaver
     using System;
     using System.Collections.Generic;
     using System.Linq;
+    using System.Reflection;
     using CrossCutterN.Aspect.Aspect;
     using CrossCutterN.Base.Common;
     using CrossCutterN.Weaver.Statistics;
@@ -23,6 +24,7 @@ namespace CrossCutterN.Weaver.Weaver
         private readonly IReadOnlyList<CrossCutterN.Aspect.Metadata.ICustomAttribute> classCustomAttributes;
         private readonly IWeavingContext context;
         private readonly ISwitchHandlerBuilder switchHandlerBuilder;
+        private readonly MethodInfo getHashCodeMethod = typeof(object).GetMethod("GetHashCode");
 
         /// <summary>
         /// Initializes a new instance of the <see cref="MethodWeaver"/> class.
@@ -415,6 +417,16 @@ namespace CrossCutterN.Weaver.Weaver
             instructions.Add(processor.Create(OpCodes.Ldstr, method.DeclaringType.Namespace));
             instructions.Add(processor.Create(OpCodes.Ldstr, method.DeclaringType.FullName));
             instructions.Add(processor.Create(OpCodes.Ldstr, method.DeclaringType.Name));
+            if (method.HasThis)
+            {
+                instructions.Add(processor.Create(OpCodes.Ldarg_0));
+                instructions.Add(processor.Create(OpCodes.Callvirt, context.GetMethodReference(getHashCodeMethod)));
+            }
+            else
+            {
+                instructions.Add(processor.Create(OpCodes.Ldc_I4_0));
+            }
+
             instructions.Add(processor.Create(OpCodes.Ldstr, method.FullName));
             instructions.Add(processor.Create(OpCodes.Ldstr, method.Name));
             instructions.Add(processor.Create(OpCodes.Ldstr, method.ReturnType.FullName));
