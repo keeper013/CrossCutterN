@@ -1,7 +1,7 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFrameworks>netcoreapp2.0;net461;</TargetFrameworks>
+    <TargetFramework>netcoreapp2.1</TargetFramework>
     <ApplicationIcon>crosscuttern.ico</ApplicationIcon>
     <Company />
     <Authors>Cui Ziqiang</Authors>

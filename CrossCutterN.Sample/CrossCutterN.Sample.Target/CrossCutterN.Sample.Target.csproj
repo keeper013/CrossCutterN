@@ -1,8 +1,8 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <OutputType>Exe</OutputType>
-    <TargetFrameworks>netcoreapp2.0;net461;</TargetFrameworks>
+    <TargetFramework>netcoreapp2.1</TargetFramework>
     <Authors>Cui Ziqiang</Authors>
     <Version>0.1.0.0</Version>
     <Company />
@@ -30,16 +30,13 @@
     <None Update="attributeTarget.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="attributeTargetNc.json">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="attributeTargetNf.json">
+    <None Update="attributeTarget.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Update="nameExpressionTarget.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="nameExpressionTargetNc.json">
+    <None Update="nameExpressionTarget.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Update="nameExpressionTargetNf.json">
@@ -48,10 +45,7 @@
     <None Update="target.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="targetNc.json">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="targetNf.json">
+    <None Update="target.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
   </ItemGroup>
