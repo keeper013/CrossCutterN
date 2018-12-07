@@ -562,12 +562,33 @@ namespace CrossCutterN.Weaver.Weaver
                 method.Body.InitLocals = true;
             }
 
-            context.TryStartInstruction = method.Body.Instructions.First();
+            context.TryStartInstruction = GetTryStartInstruction(method);
             context.ExecutionContextVariableSwitchableSection.SetInstructions(instructions, context.TryStartInstruction);
             context.ExecutionVariableSwitchableSection.SetInstructions(instructions, context.TryStartInstruction);
             context.ReturnVariableSwitchableSection.SetInstructions(instructions, context.TryStartInstruction);
 
             IlUtilities.PersistentInstructions(instructions, processor, context.TryStartInstruction);
+        }
+
+        private Instruction GetTryStartInstruction(MethodDefinition method)
+        {
+            // instance constructors compiled into il call parent constructors first
+            // this parent constructor calling part should always be the first instructions to call and not affected by il weaving with any means
+            if (method.IsConstructor && method.HasThis)
+            {
+                var instructions = method.Body.Instructions;
+                var count = instructions.Count;
+                for (var i = 0; i < count; i++)
+                {
+                    var instruction = instructions[i];
+                    if (instruction.OpCode == OpCodes.Call && instruction.Operand.ToString().Contains("::.ctor("))
+                    {
+                        return instructions[i + 1];
+                    }
+                }
+            }
+
+            return method.Body.Instructions.First();
         }
 
         private void CompleteWeavingEntry(List<Instruction> instructions, ILProcessor processor)
